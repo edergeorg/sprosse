@@ -13,7 +13,8 @@
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%232d5f4a'/><path d='M90 140 C90 140 90 85 90 68' stroke='%2386c9a0' stroke-width='8' stroke-linecap='round'/><path d='M90 100 C90 100 63 90 59 72 C77 72 90 86 90 100Z' fill='%234caf7d'/><path d='M90 82 C90 82 117 72 121 54 C103 54 90 68 90 82Z' fill='%236fcf8f'/><path d='M90 140 C81 140 72 148 68 153' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><path d='M90 140 C99 140 108 148 112 153' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><path d='M90 140 C90 146 90 152 90 157' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><ellipse cx='90' cy='140' rx='32' ry='7' fill='%231a3a2a' opacity='0.35'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Bricolage+Grotesque:opsz,wght@12..96,700&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --bg:#f6f3ee;
@@ -1651,17 +1652,18 @@ localStorage.setItem(‘sprosse_install_dismissed’,‘1’);
 // INIT
 // ═══════════════════════════════════════════
 if(!load()||!state.children.length) seedDemo();
-// Hide splash after 1.6s
-setTimeout(()=>{
+// Hide splash - always after max 1.8s regardless of font loading
+function hideSplash(){
 const s=document.getElementById(‘splash’);
-if(s){s.style.opacity=‘0’;setTimeout(()=>s.style.display=‘none’,500);}
-},1400);
-// Hide splash after 1.6s
-setTimeout(()=>{
-const s=document.getElementById(‘splash’);
-s.style.opacity=‘0’;
-setTimeout(()=>s.style.display=‘none’,500);
-},1400);
+if(s&&s.style.display!==‘none’){s.style.opacity=‘0’;setTimeout(()=>s.style.display=‘none’,400);}
+}
+setTimeout(hideSplash, 1800);
+// Also hide immediately if fonts already loaded
+if(document.fonts){
+document.fonts.ready.then(()=>setTimeout(hideSplash,300));
+} else {
+setTimeout(hideSplash,800);
+}
 document.getElementById(‘top-sub’).textContent = todayHuman();
 document.getElementById(‘remind-days’).value = state.remindDays;
 renderGroup();
