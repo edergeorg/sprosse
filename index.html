@@ -7,881 +7,589 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Sprosse">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#1a3a2a">
-<title>Sprosse – Kinderentwicklung begleiten</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%232d5f4a'/><path d='M90 140 C90 140 90 85 90 68' stroke='%2386c9a0' stroke-width='8' stroke-linecap='round'/><path d='M90 100 C90 100 63 90 59 72 C77 72 90 86 90 100Z' fill='%234caf7d'/><path d='M90 82 C90 82 117 72 121 54 C103 54 90 68 90 82Z' fill='%236fcf8f'/><path d='M90 140 C81 140 72 148 68 153' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><path d='M90 140 C99 140 108 148 112 153' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><path d='M90 140 C90 146 90 152 90 157' stroke='%2386c9a0' stroke-width='5' stroke-linecap='round' fill='none'/><ellipse cx='90' cy='140' rx='32' ry='7' fill='%231a3a2a' opacity='0.35'/></svg>">
-
+<meta name="theme-color" content="#2d5f4a">
+<title>Sprosse</title>
 <style>
 :root{
   --bg:#f6f3ee;
-  --surface:#ffffff;
-  --surface-2:#ede9e0;
-  --surface-3:#e4dfd4;
+  --surface:#fff;
+  --surface2:#ede9e0;
   --border:#ddd8ce;
-  --border-2:#ccc6ba;
+  --border2:#ccc6ba;
   --text:#1c1a16;
-  --text-2:#5c574e;
-  --text-3:#9c9790;
-  --green:#1a3a2a;
-  --green-mid:#2d6048;
+  --text2:#5c574e;
+  --text3:#9c9790;
+  --green:#2d5f4a;
+  --green-dark:#1a3a2a;
   --green-soft:#e6f2ec;
   --green-accent:#4caf7d;
   --amber:#c87820;
   --amber-soft:#fef4e4;
   --amber-border:#e8c080;
   --red:#c03030;
-  --radius:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
+  --r:12px;
+  --rlg:18px;
+  --sh:0 2px 12px rgba(0,0,0,0.06);
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
-  --nav-h:70px;
-  --shadow:0 2px 16px rgba(26,58,42,0.08);
-  --shadow-lg:0 8px 32px rgba(26,58,42,0.12);
+  --nav-h:62px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overscroll-behavior:none}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
-  background:var(--bg);color:var(--text);
-  font-size:15px;line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-  padding-bottom:calc(var(--nav-h) + var(--safe-bottom));
-}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px);overflow-x:hidden}
 
-/* ── HEADER ── */
-.hdr{
-  position:sticky;top:0;z-index:50;
-  background:rgba(246,243,238,0.92);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  padding:calc(var(--safe-top) + 14px) 18px 14px;
-  display:flex;align-items:center;gap:12px;
-}
-.hdr-back{
-  width:38px;height:38px;border-radius:12px;
-  display:none;align-items:center;justify-content:center;
-  border:none;background:transparent;cursor:pointer;color:var(--text);
-}
-.hdr-back.show{display:flex}
-.hdr-back:active{background:var(--surface-2)}
-.hdr-titles{flex:1;min-width:0}
-.hdr-title{
-  font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:22px;font-weight:500;
-  letter-spacing:-0.02em;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.hdr-sub{font-size:11px;color:var(--text-3);margin-top:1px;letter-spacing:0.02em}
-.hdr-btn{
-  width:40px;height:40px;border-radius:13px;
-  border:1.5px solid var(--border-2);background:var(--surface);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text);flex-shrink:0;
-  box-shadow:var(--shadow);
-}
-.hdr-btn:active{background:var(--surface-2)}
-.hdr-btn.primary{background:var(--green);color:white;border-color:var(--green)}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:9999;background:var(–green);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity 0.4s}
+#splash.hide{opacity:0;pointer-events:none}
+.splash-logo{animation:popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both}
+@keyframes popIn{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+.splash-name{font-size:34px;font-weight:700;color:#fff;letter-spacing:-0.03em}
+.splash-sub{font-size:13px;color:rgba(255,255,255,0.65);letter-spacing:0.03em}
 
-/* ── CONTENT ── */
-.content{padding:18px;padding-bottom:28px}
+/* HEADER */
+#hdr{
+position:sticky;top:0;z-index:100;
+background:rgba(246,243,238,0.95);
+backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+border-bottom:1px solid var(–border);
+padding:calc(var(–safe-top) + 12px) 16px 12px;
+display:flex;align-items:center;gap:10px;
+min-height:56px;
+}
+#back-btn{width:36px;height:36px;border-radius:10px;border:none;background:transparent;cursor:pointer;color:var(–text);display:none;align-items:center;justify-content:center;flex-shrink:0}
+#back-btn.show{display:flex}
+#back-btn:active{background:var(–surface2)}
+#hdr-logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#hdr-title{font-size:22px;font-weight:700;letter-spacing:-0.03em;color:var(–green-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+#hdr-sub{font-size:11px;color:var(–text3);margin-top:1px}
+#hdr-plus{width:38px;height:38px;border-radius:12px;border:1.5px solid var(–border2);background:var(–green);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:var(–sh)}
+#hdr-plus.show{display:flex}
+#hdr-plus:active{background:var(–green-dark)}
+
+/* CONTENT */
+#content{padding:16px;min-height:100px}
 .panel{display:none}
-.panel.active{display:block;animation:fadeUp 0.22s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.panel.active{display:block}
 
-/* ── BOTTOM NAV ── */
-.bnav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-top:1px solid var(--border);
-  padding:8px 0 calc(8px + var(--safe-bottom));
-  display:flex;justify-content:space-around;
+/* BOTTOM NAV */
+#bnav{
+position:fixed;bottom:0;left:0;right:0;z-index:100;
+background:rgba(255,255,255,0.97);
+border-top:1px solid var(–border);
+padding:6px 0 calc(6px + var(–safe-bottom));
+display:flex;
 }
-.nbtn{
-  flex:1;padding:6px 4px;border:none;background:transparent;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  cursor:pointer;color:var(--text-3);font-family:inherit;
-  font-size:10px;font-weight:500;position:relative;
-  border-radius:12px;transition:color 0.15s;
+.nb{
+flex:1;border:none;background:transparent;
+display:flex;flex-direction:column;align-items:center;gap:3px;
+padding:6px 4px;cursor:pointer;color:var(–text3);
+font-size:10px;font-weight:500;font-family:inherit;
+position:relative;border-radius:10px;
 }
-.nbtn:active{background:var(--surface-2)}
-.nbtn.active{color:var(--green-mid)}
-.nbtn svg{width:22px;height:22px;stroke-width:1.6}
-.nbadge{
-  position:absolute;top:2px;right:calc(50% - 20px);
-  background:var(--amber);color:white;
-  font-size:9px;font-weight:600;min-width:15px;height:15px;
-  border-radius:8px;padding:0 4px;
-  display:flex;align-items:center;justify-content:center;
+.nb:active{background:var(–surface2)}
+.nb.on{color:var(–green)}
+.nb svg{width:22px;height:22px;stroke-width:1.6;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.nb-badge{
+position:absolute;top:3px;right:calc(50% - 18px);
+background:var(–amber);color:#fff;font-size:9px;font-weight:700;
+min-width:14px;height:14px;border-radius:7px;padding:0 3px;
+display:none;align-items:center;justify-content:center;
 }
+.nb-badge.show{display:flex}
 
-/* ── BUTTONS ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:13px 18px;border-radius:var(--radius);
-  border:1.5px solid var(--border-2);background:var(--surface);
-  cursor:pointer;font-size:14px;color:var(--text);
-  font-family:inherit;font-weight:500;min-height:48px;
-  transition:transform 0.08s;box-shadow:var(--shadow);
-}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:var(–r);border:1.5px solid var(–border2);background:var(–surface);cursor:pointer;font-size:14px;color:var(–text);font-family:inherit;font-weight:500;min-height:46px;transition:transform 0.08s;box-shadow:var(–sh);width:100%;margin-bottom:8px}
 .btn:active{transform:scale(0.97)}
-.btn-primary{background:var(--green);color:white;border-color:var(--green);box-shadow:0 4px 16px rgba(26,58,42,0.25)}
-.btn-primary:active{background:var(--green-mid)}
-.btn-amber{background:var(--amber-soft);color:var(--amber);border-color:var(--amber-border)}
-.btn-danger{color:var(--red);border-color:var(--border-2)}
-.btn-full{width:100%}
-.btn-sm{padding:9px 14px;min-height:38px;font-size:13px}
+.btn.primary{background:var(–green);color:#fff;border-color:var(–green);box-shadow:0 4px 14px rgba(45,95,74,0.3)}
+.btn.primary:active{background:var(–green-dark)}
+.btn.amber{background:var(–amber-soft);color:var(–amber);border-color:var(–amber-border)}
+.btn.danger{color:var(–red)}
+.btn.sm{padding:8px 12px;min-height:36px;font-size:13px;width:auto;margin-bottom:0}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.btn-row .btn{margin-bottom:0}
 
-/* ── CARDS ── */
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:20px;margin-bottom:16px;
-  box-shadow:var(--shadow);
-}
-.card-title{
-  font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:17px;font-weight:500;
-  margin-bottom:16px;color:var(--text);letter-spacing:-0.01em;
-}
+/* CARDS */
+.card{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);padding:18px;margin-bottom:14px;box-shadow:var(–sh)}
+.card-title{font-size:17px;font-weight:600;letter-spacing:-0.01em;margin-bottom:14px;color:var(–text)}
 
-/* ── FORMS ── */
-label{display:block;font-size:13px;color:var(--text-2);margin-bottom:6px;font-weight:500;letter-spacing:0.01em}
-textarea,input[type=text],input[type=password],select{
-  width:100%;padding:13px 15px;
-  border:1.5px solid var(--border-2);border-radius:var(--radius);
-  font-size:16px;font-family:inherit;color:var(--text);
-  background:var(--surface-2);min-height:50px;
-  -webkit-appearance:none;transition:border-color 0.15s,background 0.15s;
-}
-textarea{resize:none;min-height:110px;line-height:1.55}
-textarea:focus,input:focus,select:focus{
-  outline:none;border-color:var(--green-mid);background:var(--surface);
-}
-.form-row{margin-bottom:18px}
+/* FORMS */
+label{display:block;font-size:13px;color:var(–text2);margin-bottom:5px;font-weight:500}
+textarea,input,select{width:100%;padding:12px 14px;border:1.5px solid var(–border2);border-radius:var(–r);font-size:16px;font-family:inherit;color:var(–text);background:var(–surface2);min-height:46px;-webkit-appearance:none;appearance:none}
+textarea{resize:none;min-height:100px;line-height:1.5}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(–green);background:var(–surface)}
+.frow{margin-bottom:16px}
 
-/* ── VOICE ── */
-.voice-zone{
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  padding:24px 20px;margin-bottom:16px;
-  background:linear-gradient(135deg,var(--green-soft) 0%,#f0f8f4 100%);
-  border-radius:var(--radius-lg);
-  border:1px solid rgba(76,175,125,0.2);
-}
-.mic-ring{
-  width:96px;height:96px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--green);
-  box-shadow:0 6px 24px rgba(26,58,42,0.3);
-  cursor:pointer;border:none;color:white;
-  transition:transform 0.12s;
-}
-.mic-ring:active{transform:scale(0.94)}
-.mic-ring.rec{
-  background:var(--red);
-  box-shadow:0 6px 24px rgba(192,48,48,0.35);
-  animation:ringpulse 1.2s infinite;
-}
-@keyframes ringpulse{
-  0%,100%{box-shadow:0 6px 24px rgba(192,48,48,0.35),0 0 0 0 rgba(192,48,48,0.4)}
-  50%{box-shadow:0 6px 24px rgba(192,48,48,0.35),0 0 0 14px rgba(192,48,48,0)}
-}
-.voice-lbl{font-size:15px;font-weight:500;color:var(--text);letter-spacing:-0.01em}
-.voice-hint{font-size:12px;color:var(--text-2)}
-.vbars{display:flex;gap:4px;align-items:center;height:26px}
-.vbar{width:4px;background:var(--red);border-radius:3px;animation:vwave 0.6s ease-in-out infinite}
-.vbar:nth-child(2){animation-delay:0.1s}
-.vbar:nth-child(3){animation-delay:0.2s}
-.vbar:nth-child(4){animation-delay:0.3s}
-.vbar:nth-child(5){animation-delay:0.4s}
-@keyframes vwave{0%,100%{height:5px}50%{height:22px}}
+/* VOICE */
+.voice-zone{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 16px;margin-bottom:14px;background:var(–green-soft);border-radius:var(–rlg);border:1px solid rgba(76,175,125,0.25)}
+.mic{width:88px;height:88px;border-radius:50%;background:var(–green);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(45,95,74,0.3);transition:transform 0.1s}
+.mic:active{transform:scale(0.94)}
+.mic.rec{background:var(–red);animation:micpulse 1.2s infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 6px 20px rgba(192,48,48,0.3),0 0 0 0 rgba(192,48,48,0.4)}50%{box-shadow:0 6px 20px rgba(192,48,48,0.3),0 0 0 12px rgba(192,48,48,0)}}
+.vlbl{font-size:14px;font-weight:600;color:var(–text)}
+.vhint{font-size:12px;color:var(–text2)}
+.vbars{display:none;gap:3px;align-items:center;height:22px}
+.vbars.show{display:flex}
+.vbar{width:4px;background:var(–red);border-radius:3px;animation:vw 0.6s ease-in-out infinite}
+.vbar:nth-child(2){animation-delay:.1s}.vbar:nth-child(3){animation-delay:.2s}.vbar:nth-child(4){animation-delay:.3s}.vbar:nth-child(5){animation-delay:.4s}
+@keyframes vw{0%,100%{height:5px}50%{height:20px}}
 
-/* ── TAGS ── */
-.tag-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-.tag{
-  padding:9px 14px;border-radius:100px;font-size:13px;
-  border:1.5px solid var(--border-2);cursor:pointer;
-  color:var(--text-2);background:var(--surface);
-  font-weight:500;display:flex;align-items:center;
-  transition:transform 0.08s,background 0.1s;
-}
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.tag{padding:9px 13px;border-radius:100px;font-size:13px;border:1.5px solid var(–border2);cursor:pointer;color:var(–text2);background:var(–surface);font-weight:500;transition:transform 0.08s}
 .tag:active{transform:scale(0.95)}
-.tag.sel{border-width:2px}
-.tag.sozial.sel{background:#daeeff;border-color:#1a6fbd;color:#0c447c}
-.tag.motorik.sel{background:#d4f0e8;border-color:#2a8a5c;color:#0a5035}
-.tag.sprache.sel{background:#ece8fe;border-color:#5040c0;color:#3a2ea8}
-.tag.kognitiv.sel{background:#fef3d0;border-color:#c07010;color:#7a4a0a}
-.tag.kreativ.sel{background:#fde8d8;border-color:#c05a20;color:#a04018}
-.tag.emotional.sel{background:#fde8e8;border-color:#b02020;color:#901818}
-.obs-tag{padding:3px 9px;border-radius:100px;font-size:11px;font-weight:500}
-.obs-tag.sozial{background:#daeeff;color:#0c447c}
-.obs-tag.motorik{background:#d4f0e8;color:#0a5035}
-.obs-tag.sprache{background:#ece8fe;color:#3a2ea8}
-.obs-tag.kognitiv{background:#fef3d0;color:#7a4a0a}
-.obs-tag.kreativ{background:#fde8d8;color:#a04018}
-.obs-tag.emotional{background:#fde8e8;color:#901818}
+.tag.on{border-width:2px}
+.tag.sozial.on{background:#daeeff;border-color:#1a6fbd;color:#0c447c}
+.tag.motorik.on{background:#d4f0e8;border-color:#2a8a5c;color:#0a5035}
+.tag.sprache.on{background:#ece8fe;border-color:#5040c0;color:#3a2ea8}
+.tag.kognitiv.on{background:#fef3d0;border-color:#c07010;color:#7a4a0a}
+.tag.kreativ.on{background:#fde8d8;border-color:#c05a20;color:#a04018}
+.tag.emotional.on{background:#fde8e8;border-color:#b02020;color:#901818}
+.otag{padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.otag.sozial{background:#daeeff;color:#0c447c}
+.otag.motorik{background:#d4f0e8;color:#0a5035}
+.otag.sprache{background:#ece8fe;color:#3a2ea8}
+.otag.kognitiv{background:#fef3d0;color:#7a4a0a}
+.otag.kreativ{background:#fde8d8;color:#a04018}
+.otag.emotional{background:#fde8e8;color:#901818}
 
-/* ── MOOD ── */
-.mood-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.mbtn{
-  font-size:28px;padding:8px;border-radius:var(--radius);
-  border:2px solid transparent;cursor:pointer;background:var(--surface-2);
-  min-width:52px;min-height:52px;
-  display:flex;align-items:center;justify-content:center;
-  transition:transform 0.08s;
-}
-.mbtn:active{transform:scale(0.9)}
-.mbtn.sel{border-color:var(--green-mid);background:var(--green-soft)}
+/* MOOD */
+.moods{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.mood{font-size:26px;padding:7px 9px;border-radius:var(–r);border:2px solid transparent;cursor:pointer;background:var(–surface2);min-width:50px;min-height:50px;display:flex;align-items:center;justify-content:center;transition:transform 0.08s}
+.mood:active{transform:scale(0.9)}
+.mood.on{border-color:var(–green);background:var(–green-soft)}
 
-/* ── OBS CARDS ── */
-.obs-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;
-  box-shadow:var(--shadow);
-}
-.obs-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.obs-date{font-size:12px;color:var(--text-3);font-weight:500}
-.obs-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
-.obs-text{font-size:14px;color:var(--text);line-height:1.65}
-.obs-photo{
-  margin-top:10px;border-radius:var(--radius);overflow:hidden;
-  max-height:220px;
-}
-.obs-photo img{width:100%;height:220px;object-fit:cover;display:block}
-.vbadge{
-  font-size:11px;color:#1a6fbd;background:#daeeff;
-  padding:3px 8px;border-radius:100px;display:inline-flex;align-items:center;gap:3px;font-weight:500;
-}
-.obs-del{
-  margin-left:auto;padding:7px;border:none;background:transparent;
-  cursor:pointer;color:var(--text-3);border-radius:8px;
-}
-.obs-del:active{background:var(--surface-2);color:var(--red)}
+/* OBS CARDS */
+.obs-card{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);padding:14px;margin-bottom:10px;box-shadow:var(–sh)}
+.obs-meta{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+.obs-date{font-size:12px;color:var(–text3);font-weight:500}
+.obs-otags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.obs-text{font-size:14px;color:var(–text);line-height:1.6}
+.obs-photos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.obs-photo{width:76px;height:76px;object-fit:cover;border-radius:10px;border:1.5px solid var(–border)}
+.vbadge{font-size:11px;color:#1a6fbd;background:#daeeff;padding:2px 7px;border-radius:100px;font-weight:600}
+.del-btn{margin-left:auto;padding:6px;border:none;background:transparent;cursor:pointer;color:var(–text3);border-radius:8px;display:flex;align-items:center}
+.del-btn:active{background:var(–surface2);color:var(–red)}
 
-/* ── PHOTO UPLOAD AREA ── */
-.photo-zone{
-  border:2px dashed var(--border-2);border-radius:var(--radius);
-  padding:20px;text-align:center;cursor:pointer;
-  background:var(--surface-2);transition:border-color 0.15s;
-  margin-top:6px;
-}
-.photo-zone:active{border-color:var(--green-mid)}
-.photo-preview{
-  display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;
-}
-.photo-thumb{
-  width:72px;height:72px;border-radius:10px;
-  object-fit:cover;border:1.5px solid var(--border);
-  position:relative;
-}
-.photo-del{
-  position:absolute;top:-6px;right:-6px;
-  width:20px;height:20px;border-radius:50%;
-  background:var(--red);color:white;
-  border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;line-height:1;
-}
-.photo-thumb-wrap{position:relative;width:72px;flex-shrink:0}
+/* PHOTO UPLOAD */
+.photo-zone{border:2px dashed var(–border2);border-radius:var(–r);padding:18px;text-align:center;cursor:pointer;background:var(–surface2);margin-top:4px}
+.photo-zone:active{border-color:var(–green)}
+.photo-thumbs{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.thumb-wrap{position:relative;width:70px}
+.thumb-wrap img{width:70px;height:70px;object-fit:cover;border-radius:9px;border:1.5px solid var(–border);display:block}
+.thumb-del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(–red);color:#fff;border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;line-height:1}
 
-/* ── STATS ── */
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.scard{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow);
-}
-.snum{font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:32px;font-weight:500;letter-spacing:-0.03em;line-height:1}
-.slbl{font-size:11px;color:var(--text-2);margin-top:5px;font-weight:500;letter-spacing:0.02em}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:12px;color:var(--text-2);width:74px;flex-shrink:0;font-weight:500}
-.bar-bg{flex:1;height:8px;background:var(--surface-2);border-radius:100px;overflow:hidden}
-.bar-fill{height:100%;border-radius:100px;transition:width 0.5s ease}
-.bar-ct{font-size:12px;color:var(--text-3);width:22px;text-align:right}
-
-/* ── WARN ── */
-.warn-card{
-  background:var(--amber-soft);border:1px solid var(--amber-border);
-  border-radius:var(--radius-lg);padding:18px;margin-bottom:16px;
-  box-shadow:0 2px 12px rgba(200,120,32,0.1);
-}
-.warn-title{
-  font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:16px;font-weight:500;
-  color:var(--amber);margin-bottom:12px;display:flex;align-items:center;gap:8px;
-}
-.warn-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 0;border-bottom:1px solid rgba(200,120,32,0.15);
-  gap:8px;flex-wrap:wrap;
-}
-.warn-row:last-child{border-bottom:none}
-.warn-child{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;flex:1}
-.warn-info{font-size:11px;color:var(--amber);font-weight:500}
-
-/* ── CHILD GRID ── */
+/* CHILD GRID */
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ccard{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:16px;cursor:pointer;
-  transition:transform 0.12s;position:relative;
-  box-shadow:var(--shadow);
-}
+.ccard{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);padding:14px;cursor:pointer;transition:transform 0.1s;position:relative;box-shadow:var(–sh)}
 .ccard:active{transform:scale(0.96)}
-.ccard.warn{border-color:var(--amber-border);border-width:1.5px;background:#fffbf4}
-.wbadge{
-  position:absolute;top:10px;right:10px;
-  background:var(--amber);color:white;
-  font-size:10px;padding:3px 8px;border-radius:100px;font-weight:600;
-}
-.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
-.av-sm{width:28px;height:28px;font-size:11px}
-.av-md{width:32px;height:32px;font-size:13px}
-.av-lg{width:48px;height:48px;font-size:16px}
-.cname{font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:17px;font-weight:500;margin-top:12px;letter-spacing:-0.01em}
-.cage{font-size:12px;color:var(--text-2);margin-top:2px}
-.clast{font-size:11px;color:var(--text-3);margin-top:6px;line-height:1.5}
+.ccard.warn{border-color:var(–amber-border);border-width:2px;background:#fffbf3}
+.warn-badge{position:absolute;top:9px;right:9px;background:var(–amber);color:#fff;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:700}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.av-lg{width:46px;height:46px;font-size:16px}
+.av-sm{width:26px;height:26px;font-size:10px}
+.cname{font-size:17px;font-weight:700;letter-spacing:-0.02em;margin-top:10px}
+.cage{font-size:12px;color:var(–text2)}
+.clast{font-size:11px;color:var(–text3);margin-top:5px;line-height:1.4}
 
-/* ── RASTER ── */
-.raster-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.raster-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);padding:14px;
-  box-shadow:var(--shadow);
-}
-.raster-area{font-size:11px;font-weight:600;color:var(--text-3);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px}
-.raster-item{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 0;border-bottom:1px solid var(--border);
-  cursor:pointer;
-}
+/* WARN CARD */
+.warn-card{background:var(–amber-soft);border:1px solid var(–amber-border);border-radius:var(–rlg);padding:16px;margin-bottom:14px}
+.warn-title{font-size:15px;font-weight:700;color:var(–amber);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.warn-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(200,120,32,0.15);gap:8px;flex-wrap:wrap}
+.warn-row:last-child{border-bottom:none}
+.warn-child{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;flex:1}
+.warn-info{font-size:11px;color:var(–amber);font-weight:600}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.scard{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);padding:16px;box-shadow:var(–sh)}
+.snum{font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1}
+.slbl{font-size:11px;color:var(–text2);margin-top:4px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase}
+.bar-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.bar-lbl{font-size:12px;color:var(–text2);width:70px;flex-shrink:0;font-weight:500}
+.bar-bg{flex:1;height:8px;background:var(–surface2);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;transition:width 0.4s}
+.bar-ct{font-size:12px;color:var(–text3);width:22px;text-align:right}
+
+/* RASTER */
+.raster-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(–border);cursor:pointer}
 .raster-item:last-child{border-bottom:none}
-.raster-cb{
-  width:22px;height:22px;border-radius:7px;
-  border:1.5px solid var(--border-2);
-  background:transparent;flex-shrink:0;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.1s;
-}
-.raster-cb.checked{background:var(--green);border-color:var(--green)}
-.raster-lbl{font-size:12px;color:var(--text);line-height:1.35;flex:1}
-.raster-progress{
-  height:6px;background:var(--surface-2);border-radius:100px;
-  margin-top:8px;overflow:hidden;
-}
-.raster-bar{height:100%;border-radius:100px;background:var(--green-accent);transition:width 0.4s}
-.raster-pct{font-size:11px;color:var(--text-2);margin-top:4px;font-weight:500}
+.rcb{width:24px;height:24px;border-radius:7px;border:1.5px solid var(–border2);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.1s;margin-top:1px}
+.rcb.on{background:var(–green);border-color:var(–green)}
+.rlbl{font-size:13px;color:var(–text);line-height:1.4;flex:1}
+.raster-section{font-size:11px;font-weight:700;color:var(–text3);letter-spacing:0.06em;text-transform:uppercase;margin:14px 0 6px;padding-top:14px;border-top:1px solid var(–border)}
+.raster-section:first-child{margin-top:0;padding-top:0;border-top:none}
+.rprog{height:6px;background:var(–surface2);border-radius:100px;overflow:hidden;margin-top:6px}
+.rprog-fill{height:100%;background:var(–green-accent);border-radius:100px;transition:width 0.4s}
 
-/* ── SUMMARY ── */
-.sum-child-row{
-  display:flex;align-items:center;gap:12px;
-  padding:14px;border-radius:var(--radius);cursor:pointer;
-  border:1.5px solid var(--border);margin-bottom:8px;
-  background:var(--surface);transition:transform 0.08s;
-  box-shadow:var(--shadow);
-}
-.sum-child-row:active{transform:scale(0.98)}
-.sum-child-row.sel{border-color:var(--green-mid);background:var(--green-soft)}
-.chkbox{
-  width:24px;height:24px;border-radius:7px;margin-left:auto;
-  border:1.5px solid var(--border-2);background:transparent;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.sum-child-row.sel .chkbox{background:var(--green);border-color:var(--green)}
-.sum-result{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius-lg);padding:22px;margin-top:16px;
-  font-size:14px;color:var(--text);line-height:1.75;
-  box-shadow:var(--shadow);
-}
-.sum-result h2{
-  font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-weight:500;font-size:19px;
-  border-bottom:1px solid var(--border);padding-bottom:6px;
-  margin-top:1.4em;margin-bottom:0.5em;letter-spacing:-0.01em;
-}
-.sum-result h3{font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:15px;font-weight:500;margin-top:1em;margin-bottom:0.3em;color:var(--green-mid)}
-.sum-result strong{font-weight:600}
+/* SUMMARY */
+.sum-row{display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(–r);cursor:pointer;border:1.5px solid var(–border);margin-bottom:8px;background:var(–surface);transition:transform 0.08s;box-shadow:var(–sh)}
+.sum-row:active{transform:scale(0.98)}
+.sum-row.on{border-color:var(–green);background:var(–green-soft)}
+.chk{width:22px;height:22px;border-radius:6px;margin-left:auto;border:1.5px solid var(–border2);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sum-row.on .chk{background:var(–green);border-color:var(–green)}
+.sum-result{background:var(–surface);border:1px solid var(–border);border-radius:var(–rlg);padding:20px;margin-top:14px;font-size:14px;line-height:1.75;box-shadow:var(–sh)}
+.sum-result h2{font-size:18px;font-weight:700;border-bottom:1px solid var(–border);padding-bottom:5px;margin-top:1.3em;margin-bottom:0.4em;letter-spacing:-0.01em}
 .sum-result h2:first-child{margin-top:0}
-.sum-loading{display:flex;gap:6px;align-items:center;padding:16px 0;justify-content:center}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--text-3);animation:dp 1.4s ease-in-out infinite}
-.dot:nth-child(2){animation-delay:0.2s}.dot:nth-child(3){animation-delay:0.4s}
+.sum-result h3{font-size:15px;font-weight:600;margin-top:0.9em;margin-bottom:0.2em;color:var(–green)}
+.sum-result strong{font-weight:600}
+.sum-loading{display:none;align-items:center;justify-content:center;gap:5px;padding:14px 0}
+.sum-loading.show{display:flex}
+.dot{width:8px;height:8px;border-radius:50%;background:var(–text3);animation:dp 1.4s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes dp{0%,80%,100%{opacity:0.2;transform:scale(1)}40%{opacity:1;transform:scale(1.3)}}
 
-/* ── FILTER CHIPS ── */
-.frow{
-  display:flex;gap:8px;margin-bottom:16px;
-  overflow-x:auto;padding-bottom:4px;
-  -webkit-overflow-scrolling:touch;scrollbar-width:none;
-}
-.frow::-webkit-scrollbar{display:none}
-.fc{
-  padding:9px 16px;border-radius:100px;font-size:13px;
-  border:1.5px solid var(--border-2);cursor:pointer;
-  color:var(--text-2);background:var(--surface);
-  white-space:nowrap;flex-shrink:0;font-weight:500;
-  box-shadow:var(--shadow);
-}
-.fc.active{background:var(--green);color:white;border-color:var(--green)}
+/* FILTER CHIPS */
+.fchips{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.fchips::-webkit-scrollbar{display:none}
+.fc{padding:8px 14px;border-radius:100px;font-size:13px;border:1.5px solid var(–border2);cursor:pointer;color:var(–text2);background:var(–surface);white-space:nowrap;flex-shrink:0;font-weight:500;box-shadow:var(–sh)}
+.fc.on{background:var(–green);color:#fff;border-color:var(–green)}
 
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 18px);
-  left:50%;transform:translateX(-50%) translateY(24px);
-  background:var(--text);color:white;
-  padding:13px 22px;border-radius:var(--radius);
-  font-size:14px;font-weight:500;opacity:0;transition:all 0.25s;
-  pointer-events:none;z-index:1000;
-  box-shadow:0 8px 24px rgba(0,0,0,0.25);
-  max-width:calc(100vw - 40px);
-}
+/* LETTER TYPES */
+.ltypes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.ltype{padding:14px 12px;border-radius:var(–r);border:1.5px solid var(–border2);cursor:pointer;text-align:center;background:var(–surface);transition:transform 0.08s;box-shadow:var(–sh)}
+.ltype:active{transform:scale(0.96)}
+.ltype.on{border-color:var(–green);background:var(–green-soft)}
+.ltype-icon{font-size:26px;margin-bottom:6px}
+.ltype-lbl{font-size:12px;font-weight:600;color:var(–text2)}
+.ltype.on .ltype-lbl{color:var(–green)}
+
+/* SECTION HEADER */
+.shdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+.stitle{font-size:19px;font-weight:700;letter-spacing:-0.02em}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(–nav-h) + var(–safe-bottom) + 16px);left:50%;transform:translateX(-50%) translateY(20px);background:var(–text);color:#fff;padding:12px 20px;border-radius:var(–r);font-size:14px;font-weight:500;opacity:0;transition:all 0.25s;pointer-events:none;z-index:9000;box-shadow:0 6px 20px rgba(0,0,0,0.25);max-width:calc(100vw - 40px);white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── MODAL ── */
-.mbdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,0.45);
-  z-index:500;display:none;align-items:flex-end;
-}
-.mbdrop.show{display:flex}
-.msheet{
-  background:var(--surface);border-radius:var(--radius-xl) var(--radius-xl) 0 0;
-  width:100%;max-height:88vh;overflow-y:auto;
-  padding:20px 20px calc(24px + var(--safe-bottom));
-  animation:slideUp 0.28s cubic-bezier(0.32,0.72,0,1);
-}
-.mhandle{width:44px;height:5px;background:var(--border-2);border-radius:100px;margin:0 auto 18px}
-.mtitle{font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:22px;font-weight:500;margin-bottom:18px;letter-spacing:-0.01em}
-@keyframes slideUp{from{transform:translateY(110%)}to{transform:none}}
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:500;display:none;align-items:flex-end}
+.modal-bg.show{display:flex}
+.modal{background:var(–surface);border-radius:22px 22px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:20px 20px calc(24px + var(–safe-bottom));animation:slideUp 0.28s cubic-bezier(0.32,0.72,0,1)}
+.modal-handle{width:42px;height:5px;background:var(–border2);border-radius:100px;margin:0 auto 16px}
+.modal-title{font-size:20px;font-weight:700;letter-spacing:-0.02em;margin-bottom:16px}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
 
-/* ── ELTERNBRIEF ── */
-.letter-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.ltype{
-  padding:16px 14px;border-radius:var(--radius);border:1.5px solid var(--border-2);
-  cursor:pointer;text-align:center;background:var(--surface);
-  transition:transform 0.08s;box-shadow:var(--shadow);
-}
-.ltype:active{transform:scale(0.96)}
-.ltype.sel{border-color:var(--green-mid);background:var(--green-soft)}
-.ltype-icon{font-size:28px;margin-bottom:8px}
-.ltype-label{font-size:12px;font-weight:500;color:var(--text-2)}
-.ltype.sel .ltype-label{color:var(--green-mid)}
-
-/* ── INSTALL BANNER ── */
-.ibanner{
-  position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 14px);
-  left:14px;right:14px;z-index:200;
-  background:var(--green);color:white;
-  padding:16px;border-radius:var(--radius-lg);
-  display:none;align-items:center;gap:14px;
-  box-shadow:var(--shadow-lg);
-}
-.ibanner.show{display:flex;animation:slideUp 0.3s ease}
-.itext{flex:1;font-size:13px;line-height:1.45}
-.ititle{font-weight:500;margin-bottom:2px}
-.isub{font-size:11px;opacity:0.85}
-.iclose{
-  width:34px;height:34px;border-radius:10px;border:none;
-  background:rgba(255,255,255,0.15);color:white;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
-.section-title{font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:20px;font-weight:500;letter-spacing:-0.01em}
-.empty{text-align:center;padding:44px 20px;color:var(--text-3);font-size:14px;line-height:1.6}
-.api-notice{
-  background:var(--amber-soft);border:1px solid var(--amber-border);
-  border-radius:var(--radius);padding:13px 15px;
-  font-size:12px;color:#7a5a00;margin-bottom:14px;line-height:1.55;
-}
-.api-notice a{color:#7a5a00;font-weight:600}
-.color-pick{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
-.copt{width:42px;height:42px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform 0.1s}
+/* COLOR PICKER */
+.cpick{display:flex;gap:11px;flex-wrap:wrap;margin-top:6px}
+.copt{width:40px;height:40px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform 0.1s}
 .copt:active{transform:scale(0.9)}
-.copt.sel{border-color:var(--text)}
-.divider{height:1px;background:var(--border);margin:4px 0 14px}
-@media(min-width:720px){
-  body{max-width:600px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,0.08)}
-  .cgrid{grid-template-columns:repeat(3,1fr)}
-  .stats-grid{grid-template-columns:repeat(4,1fr)}
-  .raster-grid{grid-template-columns:1fr 1fr 1fr}
+.copt.on{border-color:var(–text)}
+
+/* INSTALL BANNER */
+#ibanner{position:fixed;bottom:calc(var(–nav-h) + var(–safe-bottom) + 12px);left:12px;right:12px;z-index:200;background:var(–green);color:#fff;padding:14px;border-radius:var(–rlg);display:none;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+#ibanner.show{display:flex;animation:slideUp 0.3s ease}
+.itext{flex:1;font-size:13px;line-height:1.4}
+.ititle{font-weight:700;margin-bottom:2px}
+.isub{font-size:11px;opacity:0.8}
+.iclose{width:32px;height:32px;border-radius:9px;border:none;background:rgba(255,255,255,0.2);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.empty{text-align:center;padding:40px 16px;color:var(–text3);font-size:14px;line-height:1.6}
+.notice{background:var(–amber-soft);border:1px solid var(–amber-border);border-radius:var(–r);padding:12px 14px;font-size:12px;color:#7a5a00;margin-bottom:14px;line-height:1.55}
+.notice a{color:#7a5a00;font-weight:700}
+.divider{height:1px;background:var(–border);margin:12px 0}
+
+@media(min-width:600px){
+.cgrid{grid-template-columns:repeat(3,1fr)}
+.sgrid{grid-template-columns:repeat(4,1fr)}
 }
 </style>
 
 </head>
 <body>
-<!-- HEADER -->
-<!-- SPLASH SCREEN -->
-<div id="splash" style="
-  position:fixed;inset:0;z-index:9999;
-  background:#2d5f4a;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  transition:opacity 0.4s ease;
-  animation:splashAuto 2s forwards;
-">
-<style>
-@keyframes splashAuto{
-  0%{opacity:1}
-  70%{opacity:1}
-  100%{opacity:0;visibility:hidden;display:none}
-}
-</style>
-  <svg width="100" height="100" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="animation:splashGrow 0.8s cubic-bezier(0.34,1.56,0.64,1) both">
-    <rect width="80" height="80" rx="22" fill="rgba(255,255,255,0.12)"/>
+
+<!-- SPLASH -->
+
+<div id="splash">
+  <svg class="splash-logo" width="96" height="96" viewBox="0 0 80 80">
+    <rect width="80" height="80" rx="22" fill="rgba(255,255,255,0.15)"/>
     <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="5" stroke-linecap="round"/>
     <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
-    <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#6fcf8f"/>
+    <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
     <path d="M40 62 C36 62 32 66 30 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
     <path d="M40 62 C44 62 48 66 50 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-    <path d="M40 62 C40 65 40 68 40 70" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-    <ellipse cx="40" cy="62" rx="14" ry="3" fill="#1a3a2a" opacity="0.4"/>
+    <path d="M40 62 C40 65 40 69 40 71" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <ellipse cx="40" cy="62" rx="13" ry="3" fill="#1a3a2a" opacity="0.4"/>
   </svg>
-  <div style="text-align:center">
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:36px;font-weight:700;color:white;letter-spacing:-0.05em;line-height:1">Sprosse</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.65);margin-top:4px;letter-spacing:0.04em">Kinderentwicklung begleiten</div>
-  </div>
+  <div class="splash-name">Sprosse</div>
+  <div class="splash-sub">Kinderentwicklung begleiten</div>
 </div>
-<style>
-@keyframes splashGrow{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-</style>
 
-<header class="hdr">
-  <button class="hdr-back" id="back-btn" onclick="goBack()">
+<!-- HEADER -->
+
+<div id="hdr">
+  <button id="back-btn" onclick="goBack()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
   </button>
-  <div class="hdr-titles" style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
-    <div id="hdr-logo-wrap" style="flex-shrink:0">
-      <svg width="34" height="34" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" id="hdr-logo">
-        <rect width="80" height="80" rx="18" fill="#2d5f4a"/>
-        <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="5" stroke-linecap="round"/>
-        <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
-        <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#6fcf8f"/>
-        <path d="M40 62 C36 62 32 66 30 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-        <path d="M40 62 C44 62 48 66 50 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-        <path d="M40 62 C40 65 40 68 40 70" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-        <ellipse cx="40" cy="62" rx="14" ry="3" fill="#1a3a2a" opacity="0.4"/>
-      </svg>
-    </div>
-    <div style="min-width:0;flex:1">
-      <div id="top-title" style="
-        font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
-        font-size:23px;
-        font-weight:700;
-        letter-spacing:-0.04em;
-        color:#1a3a2a;
-        line-height:1;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-      ">Sprosse</div>
-      <div class="hdr-sub" id="top-sub"></div>
-    </div>
-  </div>
-  <button class="hdr-btn primary" id="hdr-act" style="display:none" onclick="handleHdrAct()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  </button>
-</header>
-
-<div class="content">
-
-<!-- GRUPPE -->
-
-<div class="panel active" id="panel-gruppe">
-  <div id="warn-banner" style="display:none" class="warn-card">
-    <div class="warn-title">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Zu wenig beobachtet
-    </div>
-    <div id="warn-banner-list"></div>
-  </div>
-  <div class="section-hdr">
-    <div class="section-title">Meine Gruppe</div>
-    <div style="font-size:12px;color:var(--text-2)" id="group-summary"></div>
-  </div>
-  <div class="cgrid" id="group-grid"></div>
-</div>
-
-<!-- KIND DETAIL -->
-
-<div class="panel" id="panel-kind">
-  <div class="voice-zone">
-    <button class="mic-ring" id="mic-btn" onclick="toggleRec()">
-      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg>
-    </button>
-    <div class="voice-lbl" id="vlbl">Zum Sprechen tippen</div>
-    <div class="voice-hint" id="vhint">Beobachtung direkt diktieren</div>
-    <div class="vbars" id="vbars" style="display:none">
-      <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="form-row">
-      <label>Beobachtung</label>
-      <textarea id="obs-ta" placeholder="Sprich oder tippe deine Beobachtung…"></textarea>
-    </div>
-
-```
-<div class="form-row">
-  <label>Fotos hinzufügen</label>
-  <div class="photo-zone" onclick="document.getElementById('photo-input').click()">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;display:block"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
-    <div style="font-size:13px;color:var(--text-3)">Bild auswählen</div>
-  </div>
-  <input type="file" id="photo-input" accept="image/*" multiple style="display:none" onchange="handlePhotos(event)">
-  <div class="photo-preview" id="photo-preview"></div>
-</div>
-
-<div class="form-row">
-  <label>Stimmung</label>
-  <div class="mood-strip">
-    <button class="mbtn" onclick="selMood(this,'😊')">😊</button>
-    <button class="mbtn" onclick="selMood(this,'😐')">😐</button>
-    <button class="mbtn" onclick="selMood(this,'😢')">😢</button>
-    <button class="mbtn" onclick="selMood(this,'😠')">😠</button>
-    <button class="mbtn" onclick="selMood(this,'😴')">😴</button>
-    <button class="mbtn" onclick="selMood(this,'🤔')">🤔</button>
-  </div>
-</div>
-
-<div class="form-row">
-  <label>Entwicklungsbereiche</label>
-  <div class="tag-wrap">
-    <span class="tag sozial" onclick="toggleTag(this,'sozial')">Sozial</span>
-    <span class="tag motorik" onclick="toggleTag(this,'motorik')">Motorik</span>
-    <span class="tag sprache" onclick="toggleTag(this,'sprache')">Sprache</span>
-    <span class="tag kognitiv" onclick="toggleTag(this,'kognitiv')">Kognitiv</span>
-    <span class="tag kreativ" onclick="toggleTag(this,'kreativ')">Kreativ</span>
-    <span class="tag emotional" onclick="toggleTag(this,'emotional')">Emotional</span>
-  </div>
-</div>
-<button class="btn btn-primary btn-full" onclick="saveObs()">Beobachtung speichern</button>
-```
-
-  </div>
-
-  <!-- RASTER für dieses Kind -->
-
-  <div class="card">
-    <div class="card-title">Entwicklungsraster</div>
-    <div id="kind-raster-summary"></div>
-    <button class="btn btn-full" onclick="openRaster()" style="margin-top:8px">Raster bearbeiten</button>
-  </div>
-
-  <div class="section-hdr" style="margin-top:4px">
-    <div class="section-title" id="obs-list-title">Beobachtungen</div>
-  </div>
-  <div class="frow">
-    <span class="fc active" onclick="setFilter(this,'alle')">Alle</span>
-    <span class="fc" onclick="setFilter(this,'sozial')">Sozial</span>
-    <span class="fc" onclick="setFilter(this,'motorik')">Motorik</span>
-    <span class="fc" onclick="setFilter(this,'sprache')">Sprache</span>
-    <span class="fc" onclick="setFilter(this,'kognitiv')">Kognitiv</span>
-    <span class="fc" onclick="setFilter(this,'kreativ')">Kreativ</span>
-    <span class="fc" onclick="setFilter(this,'emotional')">Emotional</span>
-  </div>
-  <div id="obs-list"></div>
-</div>
-
-<!-- ERINNERUNGEN -->
-
-<div class="panel" id="panel-erinnerungen">
-  <div class="warn-card" id="warn-main" style="display:none">
-    <div class="warn-title">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      Brauchen mehr Aufmerksamkeit
-    </div>
-    <div id="warn-list"></div>
-  </div>
-  <div class="card">
-    <div class="card-title">Alle Kinder</div>
-    <div id="remind-all-list"></div>
-  </div>
-  <div class="card">
-    <div class="card-title">Intervall</div>
-    <label>Warnen wenn länger als</label>
-    <select id="remind-days" onchange="updateRemindDays()">
-      <option value="3">3 Tage ohne Beobachtung</option>
-      <option value="5" selected>5 Tage ohne Beobachtung</option>
-      <option value="7">7 Tage ohne Beobachtung</option>
-      <option value="14">2 Wochen ohne Beobachtung</option>
-    </select>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-
-<div class="panel" id="panel-dashboard">
-  <div class="stats-grid">
-    <div class="scard"><div class="snum" id="d-kinder">0</div><div class="slbl">Kinder</div></div>
-    <div class="scard"><div class="snum" id="d-total">0</div><div class="slbl">Beobachtungen</div></div>
-    <div class="scard"><div class="snum" id="d-heute">0</div><div class="slbl">Heute</div></div>
-    <div class="scard"><div class="snum" id="d-voice">0</div><div class="slbl">Per Sprache</div></div>
-  </div>
-  <div class="card"><div class="card-title">Entwicklungsbereiche</div><div id="d-bars"></div></div>
-  <div class="card"><div class="card-title">Letzte Beobachtungen</div><div id="d-recent"></div></div>
-</div>
-
-<!-- BERICHTE -->
-
-<div class="panel" id="panel-berichte">
-  <div class="card">
-    <div class="card-title">Elternbrief erstellen</div>
-    <div id="api-notice-area"></div>
-    <div class="form-row">
-      <label>Kind auswählen</label>
-      <select id="letter-child-sel"></select>
-    </div>
-    <div class="form-row">
-      <label>Art des Berichts</label>
-      <div class="letter-type-grid" id="letter-types">
-        <div class="ltype sel" onclick="selLetterType(this,'elternbrief')">
-          <div class="ltype-icon">📝</div>
-          <div class="ltype-label">Elternbrief</div>
-        </div>
-        <div class="ltype" onclick="selLetterType(this,'entwicklung')">
-          <div class="ltype-icon">📈</div>
-          <div class="ltype-label">Entwicklungsbericht</div>
-        </div>
-        <div class="ltype" onclick="selLetterType(this,'gespraech')">
-          <div class="ltype-icon">💬</div>
-          <div class="ltype-label">Gesprächsvorbereitung</div>
-        </div>
-        <div class="ltype" onclick="selLetterType(this,'zusammenfassung')">
-          <div class="ltype-icon">📋</div>
-          <div class="ltype-label">Kurzzusammenfassung</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-row">
-      <label>Zeitraum (optional)</label>
-      <select id="letter-period">
-        <option value="alle">Alle Beobachtungen</option>
-        <option value="monat">Letzter Monat</option>
-        <option value="quartal">Letztes Quartal</option>
-        <option value="halbjahr">Letztes Halbjahr</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <label>Zusätzliche Hinweise (optional)</label>
-      <textarea id="letter-extra" placeholder="z.B. Besondere Ereignisse, die erwähnt werden sollen…" style="min-height:70px"></textarea>
-    </div>
-    <button class="btn btn-primary btn-full" onclick="generateLetter()" id="letter-btn">Bericht erstellen</button>
-  </div>
-
-  <!-- Gruppen-Zusammenfassung -->
-
-  <div class="card">
-    <div class="card-title">Gruppen-Zusammenfassung</div>
-    <p style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.55">KI-Zusammenfassung für mehrere Kinder auf einmal.</p>
-    <div id="sum-child-list"></div>
-    <button class="btn btn-full" onclick="selectAllSum()" style="margin-top:10px">Alle aus-/abwählen</button>
-    <button class="btn btn-primary btn-full" onclick="generateSummary()" id="sum-btn" style="margin-top:8px">Zusammenfassung erstellen</button>
-  </div>
-
-  <div id="report-output" style="display:none">
-    <div class="card">
-      <div class="section-hdr">
-        <div class="section-title" id="report-out-title">Ergebnis</div>
-      </div>
-      <div id="report-loading" class="sum-loading" style="display:none">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        <span style="font-size:13px;color:var(--text-3);margin-left:8px">Wird erstellt…</span>
-      </div>
-      <div class="sum-result" id="report-result"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px">
-        <button class="btn btn-sm" onclick="copyReport()">📋 Kopieren</button>
-        <button class="btn btn-sm" onclick="shareReport()">📤 Teilen</button>
-        <button class="btn btn-sm" onclick="downloadReport()">💾 TXT</button>
-        <button class="btn btn-sm" onclick="printReport()">🖨️ Drucken</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MEHR -->
-
-<div class="panel" id="panel-mehr">
-  <div class="card">
-    <div class="card-title">Kind anlegen</div>
-    <button class="btn btn-primary btn-full" onclick="openModal('modal-kind')">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Neues Kind anlegen
-    </button>
-  </div>
-  <div class="card">
-    <div class="card-title">KI / API</div>
-    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px;line-height:1.55">Für automatische Berichte und Zusammenfassungen. Ohne Key: Beobachtungen werden als kopierbarer Prompt angezeigt.</p>
-    <label>Anthropic API Key (optional)</label>
-    <input type="password" id="api-key" placeholder="sk-ant-…" style="font-family:monospace;font-size:13px">
-    <button class="btn btn-full" onclick="saveApiKey()" style="margin-top:10px">Speichern</button>
-    <p style="font-size:11px;color:var(--text-3);margin-top:8px">Wird ausschließlich lokal gespeichert.</p>
-  </div>
-  <div class="card">
-    <div class="card-title">Daten</div>
-    <button class="btn btn-full" onclick="exportData()" style="margin-bottom:8px">📥 Exportieren (JSON)</button>
-    <button class="btn btn-full" onclick="document.getElementById('import-file').click()" style="margin-bottom:8px">📤 Importieren</button>
-    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
-    <button class="btn btn-amber btn-full" onclick="resetDemo()" style="margin-bottom:8px">🔄 Demo-Daten</button>
-    <button class="btn btn-danger btn-full" onclick="deleteAll()">🗑 Alles löschen</button>
-  </div>
-  <div class="card">
-    <div class="card-title">App installieren</div>
-    <p style="font-size:13px;color:var(--text-2);line-height:1.7"><strong>iPhone:</strong> Safari → Teilen → „Zum Home-Bildschirm"<br><strong>Android:</strong> Chrome → Menü → „Zum Startbildschirm"</p>
-  </div>
-  <div class="card" style="text-align:center;padding:28px">
-    <svg width="64" height="64" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 14px;display:block">
-      <rect width="80" height="80" rx="20" fill="#2d5f4a"/>
+  <div id="hdr-logo">
+    <svg width="32" height="32" viewBox="0 0 80 80">
+      <rect width="80" height="80" rx="18" fill="#2d5f4a"/>
       <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="5" stroke-linecap="round"/>
       <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
-      <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#6fcf8f"/>
+      <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
       <path d="M40 62 C36 62 32 66 30 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
       <path d="M40 62 C44 62 48 66 50 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <path d="M40 62 C40 65 40 68 40 70" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <ellipse cx="40" cy="62" rx="14" ry="3" fill="#1a3a2a" opacity="0.4"/>
+      <path d="M40 62 C40 65 40 69 40 71" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <ellipse cx="40" cy="62" rx="13" ry="3" fill="#1a3a2a" opacity="0.4"/>
     </svg>
-    <div style="font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:22px;font-weight:500;margin-bottom:5px;letter-spacing:-0.01em">Sprosse</div>
-    <div style="font-size:12px;color:var(--text-3);letter-spacing:0.02em">Kinderentwicklung liebevoll begleiten</div>
   </div>
+  <div style="flex:1;min-width:0">
+    <div id="hdr-title">Sprosse</div>
+    <div id="hdr-sub"></div>
+  </div>
+  <button id="hdr-plus" onclick="openModal('modal-kind')">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
 </div>
+
+<!-- CONTENT -->
+
+<div id="content">
+
+  <!-- GRUPPE -->
+
+  <div class="panel active" id="panel-gruppe">
+    <div id="warn-banner" class="warn-card" style="display:none">
+      <div class="warn-title">⚠️ Zu wenig beobachtet</div>
+      <div id="warn-banner-list"></div>
+    </div>
+    <div class="shdr">
+      <div class="stitle">Meine Gruppe</div>
+      <div style="font-size:12px;color:var(--text2)" id="group-summary"></div>
+    </div>
+    <div class="cgrid" id="group-grid"></div>
+  </div>
+
+  <!-- KIND -->
+
+  <div class="panel" id="panel-kind">
+    <div class="voice-zone">
+      <button class="mic" id="mic-btn" onclick="toggleRec()">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/></svg>
+      </button>
+      <div class="vlbl" id="vlbl">Zum Sprechen tippen</div>
+      <div class="vhint" id="vhint">Beobachtung direkt diktieren</div>
+      <div class="vbars" id="vbars">
+        <div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div><div class="vbar"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="frow"><label>Beobachtung</label><textarea id="obs-ta" placeholder="Sprich oder tippe…"></textarea></div>
+      <div class="frow">
+        <label>Fotos</label>
+        <div class="photo-zone" onclick="document.getElementById('photo-in').click()">
+          <div style="font-size:24px;margin-bottom:4px">📷</div>
+          <div style="font-size:13px;color:var(--text3)">Bild hinzufügen</div>
+        </div>
+        <input type="file" id="photo-in" accept="image/*" multiple style="display:none" onchange="addPhotos(event)">
+        <div class="photo-thumbs" id="photo-thumbs"></div>
+      </div>
+      <div class="frow"><label>Stimmung</label>
+        <div class="moods">
+          <button class="mood" onclick="pickMood(this,'😊')">😊</button>
+          <button class="mood" onclick="pickMood(this,'😐')">😐</button>
+          <button class="mood" onclick="pickMood(this,'😢')">😢</button>
+          <button class="mood" onclick="pickMood(this,'😠')">😠</button>
+          <button class="mood" onclick="pickMood(this,'😴')">😴</button>
+          <button class="mood" onclick="pickMood(this,'🤔')">🤔</button>
+        </div>
+      </div>
+      <div class="frow"><label>Entwicklungsbereiche</label>
+        <div class="tags">
+          <span class="tag sozial" onclick="pickTag(this,'sozial')">Sozial</span>
+          <span class="tag motorik" onclick="pickTag(this,'motorik')">Motorik</span>
+          <span class="tag sprache" onclick="pickTag(this,'sprache')">Sprache</span>
+          <span class="tag kognitiv" onclick="pickTag(this,'kognitiv')">Kognitiv</span>
+          <span class="tag kreativ" onclick="pickTag(this,'kreativ')">Kreativ</span>
+          <span class="tag emotional" onclick="pickTag(this,'emotional')">Emotional</span>
+        </div>
+      </div>
+      <button class="btn primary" onclick="saveObs()">Speichern</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Entwicklungsraster</div>
+      <div id="raster-summary"></div>
+      <button class="btn" onclick="openModal('modal-raster')" style="margin-top:8px">Raster bearbeiten</button>
+    </div>
+    <div class="shdr" style="margin-top:4px">
+      <div class="stitle" id="obs-count">Beobachtungen</div>
+    </div>
+    <div class="fchips">
+      <span class="fc on" onclick="setFilter(this,'alle')">Alle</span>
+      <span class="fc" onclick="setFilter(this,'sozial')">Sozial</span>
+      <span class="fc" onclick="setFilter(this,'motorik')">Motorik</span>
+      <span class="fc" onclick="setFilter(this,'sprache')">Sprache</span>
+      <span class="fc" onclick="setFilter(this,'kognitiv')">Kognitiv</span>
+      <span class="fc" onclick="setFilter(this,'kreativ')">Kreativ</span>
+      <span class="fc" onclick="setFilter(this,'emotional')">Emotional</span>
+    </div>
+    <div id="obs-list"></div>
+  </div>
+
+  <!-- ERINNERUNGEN -->
+
+  <div class="panel" id="panel-erinnerungen">
+    <div class="warn-card" id="warn-main" style="display:none">
+      <div class="warn-title">⚠️ Brauchen Aufmerksamkeit</div>
+      <div id="warn-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Alle Kinder</div>
+      <div id="remind-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Intervall</div>
+      <label>Warnen nach</label>
+      <select id="remind-days" onchange="setRemind()">
+        <option value="3">3 Tagen</option>
+        <option value="5" selected>5 Tagen</option>
+        <option value="7">7 Tagen</option>
+        <option value="14">14 Tagen</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+
+  <div class="panel" id="panel-dashboard">
+    <div class="sgrid">
+      <div class="scard"><div class="snum" id="d-kids">0</div><div class="slbl">Kinder</div></div>
+      <div class="scard"><div class="snum" id="d-obs">0</div><div class="slbl">Beobachtungen</div></div>
+      <div class="scard"><div class="snum" id="d-today">0</div><div class="slbl">Heute</div></div>
+      <div class="scard"><div class="snum" id="d-voice">0</div><div class="slbl">Per Sprache</div></div>
+    </div>
+    <div class="card"><div class="card-title">Entwicklungsbereiche</div><div id="d-bars"></div></div>
+    <div class="card"><div class="card-title">Letzte Beobachtungen</div><div id="d-recent"></div></div>
+  </div>
+
+  <!-- BERICHTE -->
+
+  <div class="panel" id="panel-berichte">
+    <div class="card">
+      <div class="card-title">Bericht erstellen</div>
+      <div id="api-notice"></div>
+      <div class="frow"><label>Kind</label><select id="letter-child"></select></div>
+      <div class="frow"><label>Art</label>
+        <div class="ltypes">
+          <div class="ltype on" onclick="pickLetter(this,'elternbrief')"><div class="ltype-icon">📝</div><div class="ltype-lbl">Elternbrief</div></div>
+          <div class="ltype" onclick="pickLetter(this,'entwicklung')"><div class="ltype-icon">📈</div><div class="ltype-lbl">Entwicklungsbericht</div></div>
+          <div class="ltype" onclick="pickLetter(this,'gespraech')"><div class="ltype-icon">💬</div><div class="ltype-lbl">Gesprächsvorb.</div></div>
+          <div class="ltype" onclick="pickLetter(this,'zusammenfassung')"><div class="ltype-icon">📋</div><div class="ltype-lbl">Kurzzusammenfassung</div></div>
+        </div>
+      </div>
+      <div class="frow"><label>Zeitraum</label>
+        <select id="letter-period">
+          <option value="alle">Alle Beobachtungen</option>
+          <option value="monat">Letzter Monat</option>
+          <option value="quartal">Letztes Quartal</option>
+          <option value="halbjahr">Letztes Halbjahr</option>
+        </select>
+      </div>
+      <div class="frow"><label>Zusätzliche Hinweise (optional)</label><textarea id="letter-extra" style="min-height:60px" placeholder="z.B. Besondere Ereignisse…"></textarea></div>
+      <button class="btn primary" onclick="genLetter()" id="letter-btn">Bericht erstellen</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Gruppen-Zusammenfassung</div>
+      <div id="sum-list"></div>
+      <button class="btn" onclick="toggleAllSum()" style="margin-top:8px">Alle aus-/abwählen</button>
+      <button class="btn primary" onclick="genSummary()" id="sum-btn" style="margin-top:6px">Zusammenfassung erstellen</button>
+    </div>
+    <div id="report-out" style="display:none">
+      <div class="card">
+        <div class="shdr"><div class="stitle" id="report-title">Ergebnis</div></div>
+        <div class="sum-loading" id="report-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="sum-result" id="report-result"></div>
+        <div class="btn-row" style="margin-top:14px">
+          <button class="btn sm" onclick="copyReport()">📋 Kopieren</button>
+          <button class="btn sm" onclick="shareReport()">📤 Teilen</button>
+          <button class="btn sm" onclick="dlReport()">💾 TXT</button>
+          <button class="btn sm" onclick="printReport()">🖨️ Drucken</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEHR -->
+
+  <div class="panel" id="panel-mehr">
+    <div class="card">
+      <div class="card-title">Kind anlegen</div>
+      <button class="btn primary" onclick="openModal('modal-kind')">+ Neues Kind anlegen</button>
+    </div>
+    <div class="card">
+      <div class="card-title">KI / API Key</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.55">Für automatische Berichte. Ohne Key: Prompt wird in Zwischenablage kopiert.</p>
+      <label>Anthropic API Key</label>
+      <input type="password" id="api-key" placeholder="sk-ant-…" style="font-family:monospace;font-size:13px">
+      <button class="btn" onclick="saveKey()" style="margin-top:10px">Speichern</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Daten</div>
+      <button class="btn" onclick="exportData()">📥 Exportieren (JSON)</button>
+      <button class="btn" onclick="document.getElementById('import-in').click()">📤 Importieren</button>
+      <input type="file" id="import-in" accept=".json" style="display:none" onchange="importData(event)">
+      <button class="btn amber" onclick="resetDemo()">🔄 Demo-Daten laden</button>
+      <button class="btn danger" onclick="deleteAll()">🗑 Alles löschen</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Als App installieren</div>
+      <p style="font-size:13px;color:var(--text2);line-height:1.7"><strong>iPhone/iPad:</strong> Safari → Teilen → „Zum Home-Bildschirm"<br><strong>Android:</strong> Chrome → Menü → „Zum Startbildschirm"</p>
+    </div>
+    <div class="card" style="text-align:center;padding:28px">
+      <svg width="56" height="56" viewBox="0 0 80 80" style="margin:0 auto 12px;display:block">
+        <rect width="80" height="80" rx="20" fill="#2d5f4a"/>
+        <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="5" stroke-linecap="round"/>
+        <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
+        <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
+        <path d="M40 62 C36 62 32 66 30 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <path d="M40 62 C44 62 48 66 50 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <ellipse cx="40" cy="62" rx="13" ry="3" fill="#1a3a2a" opacity="0.4"/>
+      </svg>
+      <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px">Sprosse</div>
+      <div style="font-size:12px;color:var(--text3)">Kinderentwicklung liebevoll begleiten</div>
+    </div>
+  </div>
 
 </div><!-- /content -->
 
 <!-- BOTTOM NAV -->
 
-<nav class="bnav">
-  <button class="nbtn active" data-p="gruppe" onclick="nav('gruppe')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+<nav id="bnav">
+  <button class="nb on" data-p="gruppe" onclick="nav('gruppe')">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
     <span>Gruppe</span>
   </button>
-  <button class="nbtn" data-p="erinnerungen" onclick="nav('erinnerungen')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+  <button class="nb" data-p="erinnerungen" onclick="nav('erinnerungen')">
+    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
     <span>Warnungen</span>
-    <span class="nbadge" id="nav-badge" style="display:none">0</span>
+    <span class="nb-badge" id="nav-badge">0</span>
   </button>
-  <button class="nbtn" data-p="dashboard" onclick="nav('dashboard')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+  <button class="nb" data-p="dashboard" onclick="nav('dashboard')">
+    <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
     <span>Übersicht</span>
   </button>
-  <button class="nbtn" data-p="berichte" onclick="nav('berichte')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+  <button class="nb" data-p="berichte" onclick="nav('berichte')">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
     <span>Berichte</span>
   </button>
-  <button class="nbtn" data-p="mehr" onclick="nav('mehr')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+  <button class="nb" data-p="mehr" onclick="nav('mehr')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
     <span>Mehr</span>
   </button>
 </nav>
 
-<!-- MODAL: Neues Kind -->
+<!-- MODAL: Kind anlegen -->
 
-<div class="mbdrop" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
-  <div class="msheet">
-    <div class="mhandle"></div>
-    <div class="mtitle">Neues Kind anlegen</div>
-    <div class="form-row"><label>Vorname</label><input type="text" id="nk-name" placeholder="z.B. Emma"></div>
-    <div class="form-row"><label>Alter</label>
+<div class="modal-bg" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Neues Kind anlegen</div>
+    <div class="frow"><label>Vorname</label><input type="text" id="nk-name" placeholder="z.B. Emma"></div>
+    <div class="frow"><label>Alter</label>
       <select id="nk-age"><option>3 Jahre</option><option>4 Jahre</option><option selected>5 Jahre</option><option>6 Jahre</option></select>
     </div>
-    <div class="form-row"><label>Farbe</label>
-      <div class="color-pick" id="color-pick">
-        <div class="copt sel" style="background:#daeeff" onclick="pickColor(this,'#daeeff','#0c447c')"></div>
+    <div class="frow"><label>Farbe</label>
+      <div class="cpick" id="cpick">
+        <div class="copt on" style="background:#daeeff" onclick="pickColor(this,'#daeeff','#0c447c')"></div>
         <div class="copt" style="background:#d4f0e8" onclick="pickColor(this,'#d4f0e8','#065e3f')"></div>
         <div class="copt" style="background:#ece8fe" onclick="pickColor(this,'#ece8fe','#3a2ea8')"></div>
         <div class="copt" style="background:#fef3d0" onclick="pickColor(this,'#fef3d0','#7a4a0a')"></div>
@@ -891,780 +599,494 @@ textarea:focus,input:focus,select:focus{
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <button class="btn" onclick="closeModal('modal-kind')">Abbrechen</button>
-      <button class="btn btn-primary" onclick="addChild()">Anlegen</button>
+      <button class="btn primary" onclick="addChild()">Anlegen</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Entwicklungsraster -->
+<!-- MODAL: Raster -->
 
-<div class="mbdrop" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
-  <div class="msheet">
-    <div class="mhandle"></div>
-    <div class="mtitle" id="raster-modal-title">Entwicklungsraster</div>
-    <div id="raster-modal-content"></div>
-    <button class="btn btn-primary btn-full" onclick="saveRaster()">Speichern</button>
+<div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="raster-title">Entwicklungsraster</div>
+    <div id="raster-content"></div>
+    <button class="btn primary" onclick="saveRaster()">Speichern</button>
   </div>
 </div>
 
 <!-- Install Banner -->
 
-<div class="ibanner" id="ibanner">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
-  <div class="itext">
-    <div class="ititle">Als App installieren</div>
-    <div class="isub">Teilen → „Zum Home-Bildschirm"</div>
-  </div>
-  <button class="iclose" onclick="dismissInstall()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
+<div id="ibanner">
+  <div>📲</div>
+  <div class="itext"><div class="ititle">Als App installieren</div><div class="isub">Teilen → „Zum Home-Bildschirm"</div></div>
+  <button class="iclose" onclick="dismissInstall()">✕</button>
 </div>
 
 <div class="toast" id="toast"></div>
+
 <script>
-// ═══════════════════════════════════════════
-// KONSTANTEN & STATE
-// ═══════════════════════════════════════════
-const BEREICHE=['sozial','motorik','sprache','kognitiv','kreativ','emotional'];
+// ── KONSTANTEN ──
 const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
 const BC={sozial:'#1a6fbd',motorik:'#2a8a5c',sprache:'#5040c0',kognitiv:'#c07010',kreativ:'#c05a20',emotional:'#b02020'};
-
-// Entwicklungsraster nach Bildungs-/Lerngeschichten-Orientierung
-const RASTER_DEF = {
-sozial: [
-‘Spielt kooperativ mit anderen Kindern’,
-‘Löst Konflikte zunehmend selbständig’,
-‘Zeigt Empathie gegenüber Gleichaltrigen’,
-‘Hält Gruppenregeln ein’,
-‘Nimmt Rücksicht auf Bedürfnisse anderer’
-],
-motorik: [
-‘Hält Gleichgewicht sicher’,
-‘Führt Feinmotorik-Aufgaben aus (Schneiden, Malen)’,
-‘Klettert und turnt sicher’,
-‘Koordiniert beide Hände beim Basteln’,
-‘Schreibt / zeichnet mit Stift’
-],
-sprache: [
-‘Drückt Bedürfnisse sprachlich aus’,
-‘Versteht und folgt Anweisungen’,
-‘Erzählt Erlebnisse zusammenhängend’,
-‘Interesse an Büchern und Schrift’,
-‘Reimer, Lieder, Verse’
-],
-kognitiv: [
-‘Löst einfache Probleme selbständig’,
-‘Konzentriert sich länger auf eine Aufgabe’,
-‘Versteht Mengen und einfache Zahlen’,
-‘Erkennt Muster und Zusammenhänge’,
-‘Stellt Fragen und forscht’
-],
-kreativ: [
-‘Nutzt Materialien experimentierfreudig’,
-‘Gestaltet eigene Werke mit Ausdruck’,
-‘Fantasievolles Rollenspiel’,
-‘Findet kreative Lösungen’,
-‘Freude am Singen und Tanzen’
-],
-emotional: [
-‘Benennt eigene Gefühle’,
-‘Reguliert Emotionen zunehmend selbst’,
-‘Trennungssituationen meistern’,
-‘Zeigt Neugier und Lernfreude’,
-‘Selbstvertrauen und Eigeninitiative’
-]
+const BEREICHE=Object.keys(BL);
+const RASTER={
+  sozial:['Spielt kooperativ mit anderen','Löst Konflikte zunehmend selbst','Zeigt Empathie gegenüber Gleichaltrigen','Hält Gruppenregeln ein','Nimmt Rücksicht auf andere'],
+  motorik:['Hält Gleichgewicht sicher','Feinmotorik (Schneiden, Malen)','Klettert und turnt sicher','Koordiniert beide Hände','Schreibt/zeichnet mit Stift'],
+  sprache:['Drückt Bedürfnisse sprachlich aus','Versteht und folgt Anweisungen','Erzählt Erlebnisse zusammenhängend','Interesse an Büchern/Schrift','Reimer, Lieder, Verse'],
+  kognitiv:['Löst Probleme selbständig','Konzentriert sich länger','Versteht Mengen und Zahlen','Erkennt Muster und Zusammenhänge','Stellt Fragen und forscht'],
+  kreativ:['Nutzt Materialien experimentierfreudig','Gestaltet eigene Werke','Fantasievolles Rollenspiel','Findet kreative Lösungen','Freude an Singen/Tanzen'],
+  emotional:['Benennt eigene Gefühle','Reguliert Emotionen zunehmend','Meistert Trennungssituationen','Zeigt Neugier und Lernfreude','Selbstvertrauen und Eigeninitiative']
 };
 
-let state = {children:[], nextId:1, remindDays:5, apiKey:’’};
-let curChild = null;
-let selMoodVal = ‘’;
-let selTags = [];
-let nkColor = {bg:’#daeeff’, tc:’#0c447c’};
-let curFilter = ‘alle’;
-let sumSelected = new Set();
-let isRec = false;
-let recog = null;
-let wasVoice = false;
-let pendingPhotos = []; // base64 strings
-let curLetterType = ‘elternbrief’;
+// ── STATE ──
+let S={children:[],nextId:1,remindDays:5,apiKey:''};
+let curChild=null, curFilter='alle', curMood='', curTags=[], curPhotos=[], curLetterType='elternbrief', sumSel=new Set(), nkColor={bg:'#daeeff',tc:'#0c447c'}, isRec=false, recog=null, wasVoice=false;
 
-// ═══════════════════════════════════════════
-// STORAGE
-// ═══════════════════════════════════════════
-function save() { try { localStorage.setItem(‘sprosse_state’, JSON.stringify(state)); } catch(e){} }
-function load() {
-try {
-const s = localStorage.getItem(‘sprosse_state’);
-if (s) { state = JSON.parse(s); return true; }
-} catch(e) {}
-return false;
+// ── STORAGE ──
+function save(){try{localStorage.setItem('sprosse',JSON.stringify(S));}catch(e){}}
+function load(){try{const d=localStorage.getItem('sprosse');if(d){S=JSON.parse(d);return true;}}catch(e){}return false;}
+
+function seedDemo(){
+  const d=n=>{ const x=new Date(); x.setDate(x.getDate()-n); return fmt(x); };
+  S.children=[
+    {id:1,name:'Emma',age:'5 Jahre',bg:'#daeeff',tc:'#0c447c',raster:{},obs:[
+      {date:d(3),text:'Emma hat beim Bauen konzentriert gearbeitet und anderen Kindern erklärt, wie man eine stabile Brücke baut.',mood:'😊',tags:['sozial','kognitiv'],voice:false,photos:[]},
+      {date:d(8),text:'Hat beim Morgenkreis ein eigenes Lied vorgestellt.',mood:'😊',tags:['sprache','emotional'],voice:true,photos:[]}
+    ]},
+    {id:2,name:'Liam',age:'4 Jahre',bg:'#d4f0e8',tc:'#065e3f',raster:{},obs:[
+      {date:fmt(new Date()),text:'Liam hat heute zum ersten Mal alleine die Schuhe zugebunden!',mood:'😊',tags:['motorik','emotional'],voice:true,photos:[]}
+    ]},
+    {id:3,name:'Mia',age:'5 Jahre',bg:'#ece8fe',tc:'#3a2ea8',raster:{},obs:[
+      {date:d(13),text:'Mia war ruhiger als sonst, hat lieber alleine gemalt.',mood:'😢',tags:['emotional','kreativ'],voice:false,photos:[]}
+    ]},
+    {id:4,name:'Noah',age:'3 Jahre',bg:'#fef3d0',tc:'#7a4a0a',raster:{},obs:[]},
+    {id:5,name:'Lea',age:'6 Jahre',bg:'#fde8d8',tc:'#a04018',raster:{},obs:[
+      {date:d(1),text:'Lea hat beim Rollenspiel die Regie übernommen.',mood:'😊',tags:['sozial','kreativ','sprache'],voice:false,photos:[]}
+    ]},
+    {id:6,name:'Felix',age:'4 Jahre',bg:'#fde8e8',tc:'#901818',raster:{},obs:[
+      {date:d(18),text:'Felix hatte Schwierigkeiten beim Warten an der Reihe.',mood:'😠',tags:['sozial','emotional'],voice:false,photos:[]}
+    ]},
+  ];
+  S.nextId=7; save();
 }
 
-function seedDemo() {
-state.children = [
-{id:1, name:‘Emma’, age:‘5 Jahre’, bg:’#daeeff’, tc:’#0c447c’, obs:[
-{date:fmt(dAgo(3)), text:‘Emma hat beim Bauen konzentriert gearbeitet und anderen Kindern erklärt, wie man eine stabile Brücke baut. Tolle Führungsqualitäten!’, mood:‘😊’, tags:[‘sozial’,‘kognitiv’], voice:false, photos:[]},
-{date:fmt(dAgo(8)), text:‘Hat beim Morgenkreis aktiv mitgemacht und ein eigenes Lied vorgestellt.’, mood:‘😊’, tags:[‘sprache’,‘emotional’], voice:true, photos:[]}
-], raster:{}},
-{id:2, name:‘Liam’, age:‘4 Jahre’, bg:’#d4f0e8’, tc:’#065e3f’, obs:[
-{date:fmt(new Date()), text:‘Liam hat heute zum ersten Mal alleine die Schuhe zugebunden – sichtlich stolz!’, mood:‘😊’, tags:[‘motorik’,‘emotional’], voice:true, photos:[]}
-], raster:{}},
-{id:3, name:‘Mia’, age:‘5 Jahre’, bg:’#ece8fe’, tc:’#3a2ea8’, obs:[
-{date:fmt(dAgo(13)), text:‘Mia war ruhiger als sonst, hat lieber alleine gemalt. Sehr konzentriert bei der Sache.’, mood:‘😢’, tags:[‘emotional’,‘kreativ’], voice:false, photos:[]}
-], raster:{}},
-{id:4, name:‘Noah’, age:‘3 Jahre’, bg:’#fef3d0’, tc:’#7a4a0a’, obs:[], raster:{}},
-{id:5, name:‘Lea’, age:‘6 Jahre’, bg:’#fde8d8’, tc:’#a04018’, obs:[
-{date:fmt(dAgo(1)), text:‘Lea hat beim Rollenspiel die Regie übernommen und alle Kinder begeistert einbezogen.’, mood:‘😊’, tags:[‘sozial’,‘kreativ’,‘sprache’], voice:false, photos:[]}
-], raster:{}},
-{id:6, name:‘Felix’, age:‘4 Jahre’, bg:’#fde8e8’, tc:’#901818’, obs:[
-{date:fmt(dAgo(18)), text:‘Felix hatte Schwierigkeiten beim Warten an der Reihe.’, mood:‘😠’, tags:[‘sozial’,‘emotional’], voice:false, photos:[]}
-], raster:{}},
-];
-state.nextId = 7;
-save();
+// ── UTILS ──
+function fmt(d){return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();}
+function parseDt(s){const[d,m,y]=s.split('.').map(Number);return new Date(y,m-1,d);}
+function dSince(s){if(!s)return 9999;return Math.floor((new Date()-parseDt(s))/86400000);}
+function lastObs(c){return c.obs.length?c.obs[c.obs.length-1].date:null;}
+function needsAttn(c){return dSince(lastObs(c))>=S.remindDays;}
+function warnKids(){return S.children.filter(needsAttn);}
+function ini(n){return n.slice(0,2).toUpperCase();}
+function today(){return fmt(new Date());}
+function todayHuman(){
+  const W=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const M=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const d=new Date(); return W[d.getDay()]+', '+d.getDate()+'. '+M[d.getMonth()];
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function fmtMd(t){
+  return t.replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^# (.+)$/gm,'<h2>$1</h2>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/^- (.+)$/gm,'• $1')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
 }
 
-// ═══════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════
-function dAgo(n) { const d=new Date(); d.setDate(d.getDate()-n); return d; }
-function fmt(d) {
-const day=String(d.getDate()).padStart(2,‘0’);
-const mo=String(d.getMonth()+1).padStart(2,‘0’);
-return `${day}.${mo}.${d.getFullYear()}`;
+// ── NAVIGATION ──
+function nav(p){
+  curChild=null;
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('on'));
+  document.getElementById('panel-'+p).classList.add('active');
+  const nb=document.querySelector('.nb[data-p="'+p+'"]');
+  if(nb) nb.classList.add('on');
+  document.getElementById('back-btn').classList.remove('show');
+  document.getElementById('hdr-logo').style.display='flex';
+  document.getElementById('hdr-plus').classList.remove('show');
+  const titles={gruppe:'Sprosse',dashboard:'Übersicht',erinnerungen:'Erinnerungen',berichte:'Berichte',mehr:'Einstellungen'};
+  document.getElementById('hdr-title').textContent=titles[p]||p;
+  document.getElementById('hdr-title').style.fontSize='22px';
+  document.getElementById('hdr-title').style.fontWeight='700';
+  document.getElementById('hdr-sub').textContent=todayHuman();
+  if(p==='gruppe'){document.getElementById('hdr-plus').classList.add('show');renderGroup();}
+  else if(p==='dashboard') renderDash();
+  else if(p==='erinnerungen') renderRemind();
+  else if(p==='berichte') renderBerichte();
+  else if(p==='mehr') document.getElementById('api-key').value=S.apiKey||'';
+  window.scrollTo(0,0);
 }
-function parseDt(s) { const [d,m,y]=s.split(’.’).map(Number); return new Date(y,m-1,d); }
-function daysSince(s) { if(!s) return 9999; return Math.floor((new Date()-parseDt(s))/(86400000)); }
-function lastObs(c) { return c.obs.length ? c.obs[c.obs.length-1].date : null; }
-function needsAttn(c) { return daysSince(lastObs(c)) >= state.remindDays; }
-function warnKids() { return state.children.filter(needsAttn); }
-function ini(n) { return n.slice(0,2).toUpperCase(); }
-function todayStr() { return fmt(new Date()); }
-function todayHuman() {
-const days=[‘Sonntag’,‘Montag’,‘Dienstag’,‘Mittwoch’,‘Donnerstag’,‘Freitag’,‘Samstag’];
-const months=[‘Januar’,‘Februar’,‘März’,‘April’,‘Mai’,‘Juni’,‘Juli’,‘August’,‘September’,‘Oktober’,‘November’,‘Dezember’];
-const d=new Date(); return `${days[d.getDay()]}, ${d.getDate()}. ${months[d.getMonth()]}`;
-}
-function toast(m) {
-const t=document.getElementById(‘toast’);
-t.textContent=m; t.classList.add(‘show’);
-setTimeout(()=>t.classList.remove(‘show’), 2400);
-}
-function fmtMd(t) {
-return t
-.replace(/^## (.+)$/gm,’<h2>$1</h2>’)
-.replace(/^### (.+)$/gm,’<h3>$1</h3>’)
-.replace(/^# (.+)$/gm,’<h2>$1</h2>’)
-.replace(/**(.+?)**/g,’<strong>$1</strong>’)
-.replace(/*(.+?)*/g,’<em>$1</em>’)
-.replace(/^- (.+)$/gm,’• $1’)
-.replace(/\n\n/g,’<br><br>’)
-.replace(/\n/g,’<br>’);
-}
-
-// ═══════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════
-function nav(p) {
-curChild = null;
-const logoWrap = document.getElementById(‘hdr-logo-wrap’);
-if(logoWrap) logoWrap.style.display = (p===‘gruppe’)?‘block’:‘none’;
-const tt = document.getElementById(‘top-title’);
-if(p===‘gruppe’) {
-tt.style.fontFamily = “-apple-system,BlinkMacSystemFont,‘Helvetica Neue’,sans-serif”;
-tt.style.fontSize = ‘23px’;
-tt.style.fontWeight = ‘700’;
-tt.style.letterSpacing = ‘-0.04em’;
-} else {
-tt.style.fontFamily = “ui-serif,Georgia,serif”;
-tt.style.fontSize = ‘22px’;
-tt.style.fontWeight = ‘500’;
-tt.style.letterSpacing = ‘-0.01em’;
-}
-document.querySelectorAll(’.panel’).forEach(el=>el.classList.remove(‘active’));
-document.querySelectorAll(’.nbtn’).forEach(el=>el.classList.remove(‘active’));
-document.getElementById(‘panel-’+p).classList.add(‘active’);
-const nb = document.querySelector(`.nbtn[data-p="${p}"]`);
-if(nb) nb.classList.add(‘active’);
-document.getElementById(‘back-btn’).classList.remove(‘show’);
-document.getElementById(‘hdr-act’).style.display=‘none’;
-const titles={gruppe:‘Sprosse’,dashboard:‘Übersicht’,erinnerungen:‘Erinnerungen’,berichte:‘Berichte’,mehr:‘Einstellungen’};
-document.getElementById(‘top-title’).textContent = titles[p]||p;
-document.getElementById(‘top-sub’).textContent = todayHuman();
-if(p===‘gruppe’) { document.getElementById(‘hdr-act’).style.display=‘flex’; renderGroup(); }
-else if(p===‘dashboard’) renderDash();
-else if(p===‘erinnerungen’) renderRemind();
-else if(p===‘berichte’) renderBerichte();
-else if(p===‘mehr’) document.getElementById(‘api-key’).value = state.apiKey||’’;
-window.scrollTo(0,0);
-}
-function handleHdrAct() { openModal(‘modal-kind’); }
-function goBack() { nav(‘gruppe’); }
-
-// ═══════════════════════════════════════════
-// NAV BADGE
-// ═══════════════════════════════════════════
-function updateBadge() {
-const n = warnKids().length;
-const b = document.getElementById(‘nav-badge’);
-if(n) { b.style.display=‘flex’; b.textContent=n; } else b.style.display=‘none’;
+function goBack(){nav('gruppe');}
+function openChild(id){
+  curChild=S.children.find(c=>c.id===id);
+  if(!curChild) return;
+  if(!curChild.raster) curChild.raster={};
+  curMood=''; curTags=[]; curFilter='alle'; curPhotos=[]; wasVoice=false;
+  document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  document.querySelector('.fc').classList.add('on');
+  document.getElementById('obs-ta').value='';
+  document.getElementById('photo-thumbs').innerHTML='';
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('panel-kind').classList.add('active');
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('on'));
+  document.querySelector('.nb[data-p="gruppe"]').classList.add('on');
+  document.getElementById('back-btn').classList.add('show');
+  document.getElementById('hdr-logo').style.display='none';
+  document.getElementById('hdr-plus').classList.remove('show');
+  document.getElementById('hdr-title').textContent=curChild.name;
+  document.getElementById('hdr-title').style.fontSize='20px';
+  document.getElementById('hdr-title').style.fontWeight='600';
+  document.getElementById('hdr-sub').textContent=curChild.age;
+  renderRasterSummary(); renderObsList();
+  window.scrollTo(0,0);
 }
 
-// ═══════════════════════════════════════════
-// GRUPPE
-// ═══════════════════════════════════════════
-function renderGroup() {
-updateBadge();
-const warns = warnKids();
-document.getElementById(‘group-summary’).textContent = `${state.children.length} · ${state.children.reduce((s,c)=>s+c.obs.length,0)} Beob.`;
-const banner = document.getElementById(‘warn-banner’);
-if(warns.length) {
-banner.style.display=‘block’;
-document.getElementById(‘warn-banner-list’).innerHTML = warns.slice(0,3).map(c => {
-const d=daysSince(lastObs(c));
-return `<div class="warn-row"> <div class="warn-child"><div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>${c.name}</div> <span class="warn-info">${d===9999?'Nie':'vor '+d+'d'}</span> <button class="btn btn-sm" onclick="selectChild(${c.id})">Jetzt</button> </div>`;
-}).join(’’);
-} else banner.style.display=‘none’;
-document.getElementById(‘group-grid’).innerHTML = state.children.map(c => ` <div class="ccard ${needsAttn(c)?'warn':''}" onclick="selectChild(${c.id})"> ${needsAttn(c)?`<div class="wbadge">!</div>`:''} <div class="av av-lg" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div> <div class="cname">${c.name}</div> <div class="cage">${c.age}</div> <div class="clast">${c.obs.length ? `${c.obs.length} Beob.<br>${lastObs(c)}`: 'Noch nichts'}</div> </div>`).join(’’) || `<div class="empty" style="grid-column:span 2">Noch keine Kinder.<br>Tippe oben auf + um anzulegen.</div>`;
+// ── BADGE ──
+function updateBadge(){
+  const n=warnKids().length;
+  const b=document.getElementById('nav-badge');
+  if(n){b.textContent=n;b.classList.add('show');}else b.classList.remove('show');
 }
 
-// ═══════════════════════════════════════════
-// KIND DETAIL
-// ═══════════════════════════════════════════
-function selectChild(id) {
-curChild = state.children.find(c=>c.id===id);
-if(!curChild) return;
-if(!curChild.raster) curChild.raster = {};
-selMoodVal=’’; selTags=[]; curFilter=‘alle’; pendingPhotos=[];
-document.querySelectorAll(’.mbtn’).forEach(b=>b.classList.remove(‘sel’));
-document.querySelectorAll(’.tag’).forEach(t=>t.classList.remove(‘sel’));
-document.querySelectorAll(’.fc’).forEach(c=>c.classList.remove(‘active’));
-document.querySelector(’.fc’).classList.add(‘active’);
-document.getElementById(‘obs-ta’).value=’’;
-document.getElementById(‘photo-preview’).innerHTML=’’;
-document.querySelectorAll(’.panel’).forEach(el=>el.classList.remove(‘active’));
-document.getElementById(‘panel-kind’).classList.add(‘active’);
-document.querySelectorAll(’.nbtn’).forEach(el=>el.classList.remove(‘active’));
-document.querySelector(’.nbtn[data-p=“gruppe”]’).classList.add(‘active’);
-document.getElementById(‘top-title’).textContent = curChild.name;
-document.getElementById(‘top-title’).style.fontFamily = “ui-serif,Georgia,serif”;
-document.getElementById(‘top-title’).style.fontSize = ‘22px’;
-document.getElementById(‘top-title’).style.fontWeight = ‘500’;
-document.getElementById(‘top-title’).style.letterSpacing = ‘-0.01em’;
-const logoWrap = document.getElementById(‘hdr-logo-wrap’);
-if(logoWrap) logoWrap.style.display=‘none’;
-document.getElementById(‘top-sub’).textContent = curChild.age;
-document.getElementById(‘back-btn’).classList.add(‘show’);
-document.getElementById(‘hdr-act’).style.display=‘none’;
-renderRasterSummary();
-renderObsList();
-window.scrollTo(0,0);
+// ── GRUPPE ──
+function renderGroup(){
+  updateBadge();
+  const w=warnKids();
+  document.getElementById('group-summary').textContent=S.children.length+' · '+S.children.reduce((s,c)=>s+c.obs.length,0)+' Beob.';
+  const wb=document.getElementById('warn-banner');
+  if(w.length){
+    wb.style.display='block';
+    document.getElementById('warn-banner-list').innerHTML=w.slice(0,3).map(c=>`
+      <div class="warn-row">
+        <div class="warn-child"><div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>${c.name}</div>
+        <span class="warn-info">${dSince(lastObs(c))===9999?'Nie':'vor '+dSince(lastObs(c))+'d'}</span>
+        <button class="btn sm" onclick="openChild(${c.id})">Jetzt</button>
+      </div>`).join('');
+  } else wb.style.display='none';
+  document.getElementById('group-grid').innerHTML=S.children.map(c=>`
+    <div class="ccard ${needsAttn(c)?'warn':''}" onclick="openChild(${c.id})">
+      ${needsAttn(c)?'<div class="warn-badge">!</div>':''}
+      <div class="av av-lg" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
+      <div class="cname">${c.name}</div>
+      <div class="cage">${c.age}</div>
+      <div class="clast">${c.obs.length?c.obs.length+' Beob. · '+lastObs(c):'Noch nichts'}</div>
+    </div>`).join('')||'<div class="empty" style="grid-column:span 2">Noch keine Kinder.<br>Tippe auf + um anzulegen.</div>';
 }
 
-// ═══════════════════════════════════════════
-// FOTOS
-// ═══════════════════════════════════════════
-function handlePhotos(e) {
-const files = Array.from(e.target.files);
-files.forEach(file => {
-const reader = new FileReader();
-reader.onload = (ev) => {
-pendingPhotos.push(ev.target.result);
-renderPhotoPreview();
-};
-reader.readAsDataURL(file);
-});
-e.target.value=’’;
-}
-function renderPhotoPreview() {
-document.getElementById(‘photo-preview’).innerHTML = pendingPhotos.map((p,i) => `<div class="photo-thumb-wrap"> <img class="photo-thumb" src="${p}" alt="Foto ${i+1}"> <button class="photo-del" onclick="removePhoto(${i})">×</button> </div>`).join(’’);
-}
-function removePhoto(i) {
-pendingPhotos.splice(i,1);
-renderPhotoPreview();
-}
-
-// ═══════════════════════════════════════════
-// BEOBACHTUNG SPEICHERN
-// ═══════════════════════════════════════════
-function selMood(el,m) { selMoodVal=m; document.querySelectorAll(’.mbtn’).forEach(b=>b.classList.remove(‘sel’)); el.classList.add(‘sel’); }
-function toggleTag(el,t) {
-if(selTags.includes(t)) { selTags=selTags.filter(x=>x!==t); el.classList.remove(‘sel’); }
-else { selTags.push(t); el.classList.add(‘sel’); }
-}
-function setFilter(el,f) {
-curFilter=f;
-document.querySelectorAll(’.fc’).forEach(c=>c.classList.remove(‘active’));
-el.classList.add(‘active’); renderObsList();
-}
-function saveObs() {
-const text = document.getElementById(‘obs-ta’).value.trim();
-if(!text) { toast(‘Bitte Text eingeben’); return; }
-curChild.obs.push({
-date: todayStr(), text, mood: selMoodVal,
-tags:[…selTags], voice:wasVoice,
-photos:[…pendingPhotos]
-});
-wasVoice=false; pendingPhotos=[];
-save();
-document.getElementById(‘obs-ta’).value=’’;
-document.getElementById(‘photo-preview’).innerHTML=’’;
-selMoodVal=’’; selTags=[];
-document.querySelectorAll(’.mbtn’).forEach(b=>b.classList.remove(‘sel’));
-document.querySelectorAll(’.tag’).forEach(t=>t.classList.remove(‘sel’));
-renderObsList(); updateBadge();
-toast(‘Beobachtung gespeichert ✓’);
-if(navigator.vibrate) navigator.vibrate(30);
-}
-function renderObsList() {
-if(!curChild) return;
-const obs = curChild.obs.filter(o => curFilter===‘alle’ || o.tags.includes(curFilter));
-document.getElementById(‘obs-list-title’).textContent = `${obs.length} Beobachtung${obs.length!==1?'en':''}`;
-document.getElementById(‘obs-list’).innerHTML = […obs].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).map((o,i)=>` <div class="obs-card"> <div class="obs-meta"> ${o.mood?`<span style="font-size:20px">${o.mood}</span>`:''} <span class="obs-date">${o.date}</span> ${o.voice?`<span class="vbadge">🎤</span>`:''} <button class="obs-del" onclick="delObs(${i})"> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg> </button> </div> <div class="obs-tags">${o.tags.map(t=>`<span class="obs-tag ${t}">${BL[t]}</span>`).join('')}</div> <div class="obs-text">${o.text}</div> ${o.photos&&o.photos.length?`<div class="obs-photo" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${o.photos.map(p=>`<img src="${p}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:1.5px solid var(--border)">`).join(’’)}</div>`:''} </div> `).join(’’) || `<div class="empty">Keine Beobachtungen${curFilter!=='alle'?' in diesem Bereich':''}</div>`;
-}
-function delObs(idx) {
-if(!confirm(‘Beobachtung löschen?’)) return;
-const obs = curChild.obs.filter(o=>curFilter===‘alle’||o.tags.includes(curFilter));
-const sorted = […obs].sort((a,b)=>parseDt(b.date)-parseDt(a.date));
-const target = sorted[idx];
-curChild.obs = curChild.obs.filter(o=>o!==target);
-save(); renderObsList(); toast(‘Gelöscht’);
+// ── DASHBOARD ──
+function renderDash(){
+  updateBadge();
+  const all=S.children.flatMap(c=>c.obs.map(o=>({...o,child:c})));
+  document.getElementById('d-kids').textContent=S.children.length;
+  document.getElementById('d-obs').textContent=all.length;
+  document.getElementById('d-today').textContent=all.filter(o=>o.date===today()).length;
+  document.getElementById('d-voice').textContent=all.filter(o=>o.voice).length;
+  const cnt={};BEREICHE.forEach(b=>cnt[b]=0);
+  all.forEach(o=>o.tags.forEach(t=>{if(cnt[t]!==undefined)cnt[t]++;}));
+  const mx=Math.max(...Object.values(cnt),1);
+  document.getElementById('d-bars').innerHTML=BEREICHE.map(b=>`
+    <div class="bar-row">
+      <div class="bar-lbl">${BL[b]}</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(cnt[b]/mx*100)}%;background:${BC[b]}"></div></div>
+      <div class="bar-ct">${cnt[b]}</div>
+    </div>`).join('');
+  const recent=[...all].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).slice(0,5);
+  document.getElementById('d-recent').innerHTML=recent.length?recent.map(o=>`
+    <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap">
+        <div class="av av-sm" style="background:${o.child.bg};color:${o.child.tc}">${ini(o.child.name)}</div>
+        <span style="font-size:13px;font-weight:600">${o.child.name}</span>
+        <span style="font-size:11px;color:var(--text3)">${o.date}</span>
+        ${o.mood?`<span style="font-size:15px">${o.mood}</span>`:''}
+        ${o.voice?'<span class="vbadge">🎤</span>':''}
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">${o.text.slice(0,100)}${o.text.length>100?'…':''}</div>
+    </div>`).join(''):'<div class="empty">Noch keine Beobachtungen</div>';
 }
 
-// ═══════════════════════════════════════════
-// ENTWICKLUNGSRASTER
-// ═══════════════════════════════════════════
-function renderRasterSummary() {
-if(!curChild) return;
-const r = curChild.raster||{};
-let total=0, checked=0;
-BEREICHE.forEach(b => {
-const items = RASTER_DEF[b];
-total += items.length;
-checked += items.filter((*,i) => r[`${b}_${i}`]).length;
-});
-const pct = total>0 ? Math.round(checked/total*100) : 0;
-document.getElementById(‘kind-raster-summary’).innerHTML = `<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px"> <div style="font-family:-apple-system-ui-serif,ui-serif,Georgia,serif;font-size:28px;font-weight:500;color:var(--green-mid)">${pct}%</div> <div> <div style="font-size:13px;font-weight:500;color:var(--text)">${checked} von ${total} Kriterien erreicht</div> <div style="font-size:11px;color:var(--text-3)">Über alle Entwicklungsbereiche</div> </div> </div> <div class="raster-progress"><div class="raster-bar" style="width:${pct}%"></div></div>`;
+// ── ERINNERUNGEN ──
+function renderRemind(){
+  updateBadge();
+  const w=warnKids();
+  const wm=document.getElementById('warn-main');
+  if(w.length){
+    wm.style.display='block';
+    document.getElementById('warn-list').innerHTML=w.map(c=>`
+      <div class="warn-row">
+        <div class="warn-child"><div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>${c.name}</div>
+        <span class="warn-info">${dSince(lastObs(c))===9999?'Nie':dSince(lastObs(c))+' Tage'}</span>
+        <button class="btn amber sm" onclick="openChild(${c.id})">Erfassen</button>
+      </div>`).join('');
+  } else wm.style.display='none';
+  document.getElementById('remind-list').innerHTML=S.children.map(c=>{
+    const d=dSince(lastObs(c)),ok=d<S.remindDays;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)" onclick="openChild(${c.id})">
+      <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
+      <span style="font-size:14px;flex:1;font-weight:600">${c.name}</span>
+      <span style="font-size:12px;color:${ok?'var(--text3)':'var(--amber)'}">${d===9999?'Nie':d===0?'Heute':'vor '+d+'d'}</span>
+      <span style="font-size:10px;padding:3px 9px;border-radius:100px;background:${ok?'var(--green-soft)':'var(--amber-soft)'};color:${ok?'var(--green)':'var(--amber)'};font-weight:700">${ok?'OK':'!'}</span>
+    </div>`;
+  }).join('')||'<div class="empty">Noch keine Kinder</div>';
+  document.getElementById('remind-days').value=S.remindDays;
 }
-function openRaster() {
-if(!curChild) return;
-document.getElementById(‘raster-modal-title’).textContent = `${curChild.name} – Raster`;
-const r = curChild.raster||{};
-document.getElementById(‘raster-modal-content’).innerHTML = BEREICHE.map(b => {
-const items = RASTER_DEF[b];
-const done = items.filter((*,i)=>r[`${b}_${i}`]).length;
-return `<div style="margin-bottom:18px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"> <div style="font-size:13px;font-weight:600;color:var(--text);letter-spacing:0.02em">${BL[b].toUpperCase()}</div> <div style="font-size:11px;color:var(--text-3)">${done}/${items.length}</div> </div> ${items.map((item,i) =>`
-<div class="raster-item" onclick="toggleRasterItem('${b}',${i},this)">
-<div class="raster-cb ${r[`${b}_${i}`]?'checked':''}" id="rcb_${b}_${i}">
-${r[`${b}_${i}`]?`<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:’’}
-</div>
-<div class="raster-lbl">${item}</div>
-</div>
-`).join('')} </div> `;
-}).join(’<div class="divider"></div>’);
-openModal(‘modal-raster’);
-}
-function toggleRasterItem(b, i, row) {
-const key = `${b}_${i}`;
-if(!curChild.raster) curChild.raster={};
-curChild.raster[key] = !curChild.raster[key];
-const cb = document.getElementById(`rcb_${b}_${i}`);
-if(curChild.raster[key]) {
-cb.classList.add(‘checked’);
-cb.innerHTML = `<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`;
-} else {
-cb.classList.remove(‘checked’);
-cb.innerHTML=’’;
-}
-}
-function saveRaster() {
-save(); closeModal(‘modal-raster’); renderRasterSummary();
-toast(‘Raster gespeichert ✓’);
-}
+function setRemind(){S.remindDays=parseInt(document.getElementById('remind-days').value);save();renderRemind();updateBadge();}
 
-// ═══════════════════════════════════════════
-// ERINNERUNGEN
-// ═══════════════════════════════════════════
-function renderRemind() {
-updateBadge();
-const warns = warnKids();
-const wm = document.getElementById(‘warn-main’);
-if(warns.length) {
-wm.style.display=‘block’;
-document.getElementById(‘warn-list’).innerHTML = warns.map(c => {
-const d=daysSince(lastObs(c));
-return `<div class="warn-row"> <div class="warn-child"><div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>${c.name}</div> <span class="warn-info">${d===9999?'Nie':d+' Tage'}</span> <button class="btn btn-amber btn-sm" onclick="selectChild(${c.id})">Erfassen</button> </div>`;
-}).join(’’);
-} else wm.style.display=‘none’;
-document.getElementById(‘remind-all-list’).innerHTML = state.children.map(c => {
-const d=daysSince(lastObs(c)); const ok=d<state.remindDays;
-return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)" onclick="selectChild(${c.id})"> <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div> <span style="font-size:14px;flex:1;font-weight:500">${c.name}</span> <span style="font-size:12px;color:${ok?'var(--text-3)':'var(--amber)'}">${d===9999?'Nie':d===0?'Heute':'vor '+d+'d'}</span> <span style="font-size:10px;padding:3px 9px;border-radius:100px;background:${ok?'#e6f2ec':'var(--amber-soft)'};color:${ok?'var(--green-mid)':'var(--amber)'};font-weight:600">${ok?'OK':'!'}</span> </div>`;
-}).join(’’) || `<div class="empty">Noch keine Kinder</div>`;
-document.getElementById(‘remind-days’).value = state.remindDays;
+// ── KIND DETAIL ──
+function pickMood(el,m){curMood=m;document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function pickTag(el,t){
+  if(curTags.includes(t)){curTags=curTags.filter(x=>x!==t);el.classList.remove('on');}
+  else{curTags.push(t);el.classList.add('on');}
 }
-function updateRemindDays() {
-state.remindDays = parseInt(document.getElementById(‘remind-days’).value);
-save(); renderRemind(); updateBadge();
+function setFilter(el,f){
+  curFilter=f;
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); renderObsList();
 }
-
-// ═══════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════
-function renderDash() {
-updateBadge();
-const all = state.children.flatMap(c=>c.obs.map(o=>({…o,child:c})));
-document.getElementById(‘d-kinder’).textContent = state.children.length;
-document.getElementById(‘d-total’).textContent = all.length;
-document.getElementById(‘d-heute’).textContent = all.filter(o=>o.date===todayStr()).length;
-document.getElementById(‘d-voice’).textContent = all.filter(o=>o.voice).length;
-const cnt={}; BEREICHE.forEach(b=>cnt[b]=0);
-all.forEach(o=>o.tags.forEach(t=>{if(cnt[t]!==undefined)cnt[t]++}));
-const mx = Math.max(…Object.values(cnt),1);
-document.getElementById(‘d-bars’).innerHTML = BEREICHE.map(b=>`<div class="bar-row"> <div class="bar-lbl">${BL[b]}</div> <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(cnt[b]/mx*100)}%;background:${BC[b]}"></div></div> <div class="bar-ct">${cnt[b]}</div> </div>`).join(’’);
-const recent = […all].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).slice(0,5);
-document.getElementById(‘d-recent’).innerHTML = recent.length ? recent.map(o=>` <div style="padding:10px 0;border-bottom:1px solid var(--border)"> <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap"> <div class="av av-sm" style="background:${o.child.bg};color:${o.child.tc}">${ini(o.child.name)}</div> <span style="font-size:13px;font-weight:500">${o.child.name}</span> <span style="font-size:11px;color:var(--text-3)">${o.date}</span> ${o.mood?`<span style="font-size:15px">${o.mood}</span>`:''} ${o.voice?`<span class="vbadge">🎤</span>`:''} </div> <div style="font-size:12px;color:var(--text-2);line-height:1.55">${o.text.slice(0,100)}${o.text.length>100?'…':''}</div> </div> `).join(’’) : `<div class="empty">Noch keine Beobachtungen</div>`;
+function addPhotos(e){
+  Array.from(e.target.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{curPhotos.push(ev.target.result);renderThumbs();};
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+function renderThumbs(){
+  document.getElementById('photo-thumbs').innerHTML=curPhotos.map((p,i)=>`
+    <div class="thumb-wrap">
+      <img src="${p}">
+      <button class="thumb-del" onclick="curPhotos.splice(${i},1);renderThumbs()">×</button>
+    </div>`).join('');
+}
+function saveObs(){
+  const text=document.getElementById('obs-ta').value.trim();
+  if(!text){toast('Bitte Text eingeben');return;}
+  curChild.obs.push({date:today(),text,mood:curMood,tags:[...curTags],voice:wasVoice,photos:[...curPhotos]});
+  wasVoice=false; curPhotos=[];
+  save();
+  document.getElementById('obs-ta').value='';
+  document.getElementById('photo-thumbs').innerHTML='';
+  curMood=''; curTags=[];
+  document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
+  renderObsList(); updateBadge(); toast('Gespeichert ✓');
+  if(navigator.vibrate) navigator.vibrate(30);
+}
+function renderObsList(){
+  if(!curChild) return;
+  const obs=curChild.obs.filter(o=>curFilter==='alle'||o.tags.includes(curFilter));
+  document.getElementById('obs-count').textContent=obs.length+' Beobachtung'+(obs.length!==1?'en':'');
+  document.getElementById('obs-list').innerHTML=[...obs].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).map((o,i)=>`
+    <div class="obs-card">
+      <div class="obs-meta">
+        ${o.mood?`<span style="font-size:19px">${o.mood}</span>`:''}
+        <span class="obs-date">${o.date}</span>
+        ${o.voice?'<span class="vbadge">🎤</span>':''}
+        <button class="del-btn" onclick="delObs(${i})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+      </div>
+      <div class="obs-otags">${o.tags.map(t=>`<span class="otag ${t}">${BL[t]}</span>`).join('')}</div>
+      <div class="obs-text">${o.text}</div>
+      ${o.photos&&o.photos.length?`<div class="obs-photos">${o.photos.map(p=>`<img class="obs-photo" src="${p}">`).join('')}</div>`:''}
+    </div>`).join('')||`<div class="empty">Keine Beobachtungen${curFilter!=='alle'?' in diesem Bereich':''}</div>`;
+}
+function delObs(i){
+  if(!confirm('Löschen?')) return;
+  const obs=curChild.obs.filter(o=>curFilter==='alle'||o.tags.includes(curFilter));
+  const sorted=[...obs].sort((a,b)=>parseDt(b.date)-parseDt(a.date));
+  curChild.obs=curChild.obs.filter(o=>o!==sorted[i]);
+  save(); renderObsList(); toast('Gelöscht');
 }
 
-// ═══════════════════════════════════════════
-// BERICHTE
-// ═══════════════════════════════════════════
-function renderBerichte() {
-updateBadge();
-// fill child selector
-const sel = document.getElementById(‘letter-child-sel’);
-sel.innerHTML = state.children.map(c=>`<option value="${c.id}">${c.name} (${c.age})</option>`).join(’’);
-// fill summary list
-document.getElementById(‘sum-child-list’).innerHTML = state.children.map(c=>` <div class="sum-child-row ${sumSelected.has(c.id)?'sel':''}" onclick="toggleSum(${c.id})"> <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div> <div style="flex:1"> <div style="font-size:14px;font-weight:500">${c.name}</div> <div style="font-size:11px;color:var(--text-3)">${c.obs.length} Beob.</div> </div> <div class="chkbox"> ${sumSelected.has(c.id)?`<svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:''} </div> </div> `).join(’’) || `<div class="empty">Noch keine Kinder</div>`;
-// api notice
-const notice = document.getElementById(‘api-notice-area’);
-if(!state.apiKey) {
-notice.innerHTML=`<div class="api-notice">ℹ️ Ohne API-Key wird der Prompt kopiert – in <a href="#" onclick="nav('mehr');return false">ChatGPT oder Claude</a> einfügen. Oder API-Key unter Einstellungen hinterlegen.</div>`;
-} else notice.innerHTML=’’;
-document.getElementById(‘letter-btn’).textContent = state.apiKey ? ‘Bericht erstellen’ : ‘Prompt kopieren’;
-document.getElementById(‘sum-btn’).textContent = state.apiKey ? ‘Zusammenfassung erstellen’ : ‘Prompt kopieren’;
+// ── RASTER ──
+function rasterPct(c){
+  const r=c.raster||{};let tot=0,chk=0;
+  BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if(r[b+'_'+i])chk++;});});
+  return tot>0?Math.round(chk/tot*100):0;
 }
-function selLetterType(el,type) {
-curLetterType=type;
-document.querySelectorAll(’.ltype’).forEach(l=>l.classList.remove(‘sel’));
-el.classList.add(‘sel’);
+function renderRasterSummary(){
+  if(!curChild) return;
+  const pct=rasterPct(curChild);
+  let chk=0,tot=0;
+  BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if((curChild.raster||{})[b+'_'+i])chk++;});});
+  document.getElementById('raster-summary').innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <div style="font-size:28px;font-weight:700;color:var(--green);letter-spacing:-0.03em">${pct}%</div>
+      <div><div style="font-size:13px;font-weight:600">${chk} von ${tot} Kriterien</div><div style="font-size:11px;color:var(--text3)">Über alle Bereiche</div></div>
+    </div>
+    <div class="rprog"><div class="rprog-fill" style="width:${pct}%"></div></div>`;
 }
-function toggleSum(id) {
-if(sumSelected.has(id)) sumSelected.delete(id); else sumSelected.add(id);
-renderBerichte();
+function openRaster(){
+  if(!curChild) return;
+  document.getElementById('raster-title').textContent=curChild.name+' – Raster';
+  const r=curChild.raster||{};
+  document.getElementById('raster-content').innerHTML=BEREICHE.map(b=>`
+    <div class="raster-section">${BL[b]}</div>
+    ${RASTER[b].map((item,i)=>`
+      <div class="raster-item" onclick="toggleRasterItem('${b}',${i},this)">
+        <div class="rcb ${r[b+'_'+i]?'on':''}" id="rcb_${b}_${i}">
+          ${r[b+'_'+i]?`<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:''}
+        </div>
+        <div class="rlbl">${item}</div>
+      </div>`).join('')}`).join('');
+  openModal('modal-raster');
 }
-function selectAllSum() {
-if(sumSelected.size===state.children.length) sumSelected.clear();
-else state.children.forEach(c=>sumSelected.add(c.id));
-renderBerichte();
+function toggleRasterItem(b,i,row){
+  if(!curChild.raster) curChild.raster={};
+  const key=b+'_'+i;
+  curChild.raster[key]=!curChild.raster[key];
+  const cb=document.getElementById('rcb_'+b+'_'+i);
+  if(curChild.raster[key]){cb.classList.add('on');cb.innerHTML=`<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`;}
+  else{cb.classList.remove('on');cb.innerHTML='';}
 }
+function saveRaster(){save();closeModal('modal-raster');renderRasterSummary();toast('Raster gespeichert ✓');}
 
-function buildLetterPrompt(child, type, period, extra) {
-let filtObs = child.obs;
-const now = new Date();
-if(period===‘monat’) filtObs = child.obs.filter(o=>{ const d=parseDt(o.date); return (now-d)<=30*86400000; });
-else if(period===‘quartal’) filtObs = child.obs.filter(o=>{ const d=parseDt(o.date); return (now-d)<=90*86400000; });
-else if(period===‘halbjahr’) filtObs = child.obs.filter(o=>{ const d=parseDt(o.date); return (now-d)<=180*86400000; });
+// ── BERICHTE ──
+function renderBerichte(){
+  updateBadge();
+  document.getElementById('letter-child').innerHTML=S.children.map(c=>`<option value="${c.id}">${c.name} (${c.age})</option>`).join('');
+  document.getElementById('sum-list').innerHTML=S.children.map(c=>`
+    <div class="sum-row ${sumSel.has(c.id)?'on':''}" onclick="toggleSum(${c.id})">
+      <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--text3)">${c.obs.length} Beob.</div></div>
+      <div class="chk">${sumSel.has(c.id)?`<svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:''}</div>
+    </div>`).join('')||'<div class="empty">Noch keine Kinder</div>';
+  const noKey=!S.apiKey;
+  document.getElementById('api-notice').innerHTML=noKey?`<div class="notice">ℹ️ Ohne API-Key wird der Prompt kopiert – in <a href="#" onclick="nav('mehr');return false">ChatGPT oder Claude</a> einfügen.</div>`:'';
+  document.getElementById('letter-btn').textContent=S.apiKey?'Bericht erstellen':'Prompt kopieren';
+  document.getElementById('sum-btn').textContent=S.apiKey?'Zusammenfassung erstellen':'Prompt kopieren';
+}
+function pickLetter(el,t){
+  curLetterType=t;
+  document.querySelectorAll('.ltype').forEach(l=>l.classList.remove('on'));
+  el.classList.add('on');
+}
+function toggleSum(id){if(sumSel.has(id))sumSel.delete(id);else sumSel.add(id);renderBerichte();}
+function toggleAllSum(){if(sumSel.size===S.children.length)sumSel.clear();else S.children.forEach(c=>sumSel.add(c.id));renderBerichte();}
 
-const rasterPct = getRasterPct(child);
-const obsText = filtObs.map(o=>`- [${o.date}] ${BL[o.tags[0]]||''}: "${o.text}" (Stimmung: ${o.mood||'k.A.'})`).join(’\n’) || ‘(keine Beobachtungen vorhanden)’;
-
-const prompts = {
-elternbrief: `Du bist Kindergartenpädagoge/in. Schreibe einen einfühlsamen, persönlichen Elternbrief auf Deutsch für ${child.name} (${child.age}).
-Der Brief soll:
-
-- Herzlich und persönlich klingen
-- 3-4 Absätze haben
-- Positive Entwicklungen hervorheben
-- Konkrete Beobachtungen einbauen
-- Mit einem ermutigenden Ausblick enden
-  ${extra ? `\nZusätzliche Hinweise: ${extra}` : ‘’}
-
-Beobachtungen:
-${obsText}
-Entwicklungsraster-Stand: ${rasterPct}% der Kriterien erfüllt`,
-
-```
-entwicklung: `Du bist Kindergartenpädagoge/in. Erstelle einen professionellen Entwicklungsbericht auf Deutsch für ${child.name} (${child.age}).
-```
-
-Gliedere nach:
-
-## Soziale und emotionale Entwicklung
-
-## Kognitive und sprachliche Entwicklung
-
-## Motorische Entwicklung und Kreativität
-
-## Stärken und besondere Fähigkeiten
-
-## Empfehlungen für die weitere Förderung
-
-${extra ? `\nHinweise: ${extra}` : ‘’}
-
-Beobachtungen:
-${obsText}
-Entwicklungsraster: ${rasterPct}%`,
-
-```
-gespraech: `Du bist Kindergartenpädagoge/in. Erstelle eine strukturierte Gesprächsvorbereitung für ein Elterngespräch über ${child.name} (${child.age}).
-```
-
-Formatiere als:
-
-## Gesprächspunkte
-
-## Positive Beobachtungen (konkret)
-
-## Entwicklungsthemen (einfühlsam formuliert)
-
-## Gemeinsame Ziele für zu Hause und Kita
-
-## Offene Fragen an die Eltern
-
-${extra ? `\nHinweise: ${extra}` : ‘’}
-
-Beobachtungen:
-${obsText}`,
-
-```
-zusammenfassung: `Erstelle eine kurze, übersichtliche Zusammenfassung (max. 150 Wörter) der Entwicklung von ${child.name} (${child.age}) auf Deutsch. Warm und positiv formuliert.
-```
-
-${extra ? `\nHinweise: ${extra}` : ‘’}
-
-Beobachtungen:
-${obsText}`
-};
-return prompts[type]||prompts.elternbrief;
+function buildLetterPrompt(c,type,period,extra){
+  let obs=c.obs;
+  const now=new Date();
+  const days={monat:30,quartal:90,halbjahr:180};
+  if(days[period]) obs=obs.filter(o=>(now-parseDt(o.date))<=days[period]*86400000);
+  const pct=rasterPct(c);
+  const obsText=obs.map(o=>`- [${o.date}] ${o.tags.map(t=>BL[t]).join(', ')}: "${o.text}" (${o.mood||'k.A.'})`).join('\n')||'(keine Beobachtungen)';
+  const prompts={
+    elternbrief:`Schreibe einen herzlichen, persönlichen Elternbrief auf Deutsch für ${c.name} (${c.age}). 3-4 Absätze, konkrete Beobachtungen einbauen, positiv und ermutigend. Unterschrift: Das Kita-Team.${extra?'\nHinweise: '+extra:''}\n\nBeobachtungen:\n${obsText}\nRaster: ${pct}%`,
+    entwicklung:`Erstelle einen professionellen Entwicklungsbericht für ${c.name} (${c.age}) auf Deutsch.\n## Soziale & emotionale Entwicklung\n## Kognitive & sprachliche Entwicklung\n## Motorik & Kreativität\n## Stärken\n## Empfehlungen${extra?'\nHinweise: '+extra:''}\n\nBeobachtungen:\n${obsText}`,
+    gespraech:`Erstelle eine Gesprächsvorbereitung für ein Elterngespräch über ${c.name} (${c.age}) auf Deutsch.\n## Positive Beobachtungen\n## Entwicklungsthemen\n## Gemeinsame Ziele\n## Fragen an die Eltern${extra?'\nHinweise: '+extra:''}\n\nBeobachtungen:\n${obsText}`,
+    zusammenfassung:`Kurze Zusammenfassung (max. 150 Wörter) der Entwicklung von ${c.name} (${c.age}). Warm und positiv.${extra?'\nHinweise: '+extra:''}\n\nBeobachtungen:\n${obsText}`
+  };
+  return prompts[type]||prompts.elternbrief;
+}
+function buildSumPrompt(sel){
+  return`Professionelle Entwicklungszusammenfassung für folgende Kinder auf Deutsch. Für jedes Kind: ## Name, dann Stärken, Entwicklungsthemen, Empfehlungen (je 2-3 Sätze).\n\n${sel.map(c=>`## ${c.name} (${c.age})\n${c.obs.map(o=>`- [${o.date}] ${o.tags.map(t=>BL[t]).join(', ')}: "${o.text}"`).join('\n')||'(keine Beobachtungen)'}`).join('\n\n---\n')}`;
 }
 
-function buildSumPrompt(sel) {
-return `Du bist Kindergartenpädagoge/in. Erstelle eine professionelle Entwicklungszusammenfassung für folgende Kinder auf Deutsch. Für jedes Kind: Name als ## Überschrift, dann Stärken, Entwicklungsthemen, Empfehlungen (je 2-3 Sätze).
+async function genLetter(){
+  const id=parseInt(document.getElementById('letter-child').value);
+  const c=S.children.find(x=>x.id===id);
+  if(!c){toast('Kind nicht gefunden');return;}
+  const period=document.getElementById('letter-period').value;
+  const extra=document.getElementById('letter-extra').value.trim();
+  const types={elternbrief:'Elternbrief',entwicklung:'Entwicklungsbericht',gespraech:'Gesprächsvorbereitung',zusammenfassung:'Zusammenfassung'};
+  document.getElementById('report-title').textContent=types[curLetterType]+': '+c.name;
+  await runAI(buildLetterPrompt(c,curLetterType,period,extra));
+}
+async function genSummary(){
+  const sel=S.children.filter(c=>sumSel.has(c.id)&&c.obs.length>0);
+  if(!sel.length){toast('Kinder mit Beobachtungen auswählen');return;}
+  document.getElementById('report-title').textContent='Gruppen-Zusammenfassung';
+  await runAI(buildSumPrompt(sel));
+}
+async function runAI(prompt){
+  if(!S.apiKey){
+    try{await navigator.clipboard.writeText(prompt);toast('Prompt kopiert! In ChatGPT/Claude einfügen.');}
+    catch(e){document.getElementById('report-out').style.display='block';document.getElementById('report-result').textContent=prompt;toast('Bitte manuell kopieren');}
+    return;
+  }
+  document.getElementById('report-out').style.display='block';
+  document.getElementById('report-loading').classList.add('show');
+  document.getElementById('report-result').innerHTML='';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':S.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    document.getElementById('report-loading').classList.remove('show');
+    if(data.error){document.getElementById('report-result').textContent='Fehler: '+data.error.message;return;}
+    const text=data.content?.map(b=>b.text||'').join('')||'Keine Antwort.';
+    document.getElementById('report-result').innerHTML=fmtMd(text);
+    document.getElementById('report-result').dataset.raw=text;
+    document.getElementById('report-out').scrollIntoView({behavior:'smooth'});
+  }catch(e){
+    document.getElementById('report-loading').classList.remove('show');
+    document.getElementById('report-result').textContent='Fehler: '+e.message;
+  }
+}
+function copyReport(){const el=document.getElementById('report-result');const t=el.dataset.raw||el.textContent;if(!t){toast('Kein Bericht');return;}navigator.clipboard.writeText(t).then(()=>toast('Kopiert!')).catch(()=>toast('Fehler'));}
+async function shareReport(){const el=document.getElementById('report-result');const t=el.dataset.raw||el.textContent;if(!t){toast('Kein Bericht');return;}if(navigator.share){try{await navigator.share({title:'Sprosse Bericht',text:t});}catch(e){if(e.name!=='AbortError')copyReport();}}else copyReport();}
+function dlReport(){const el=document.getElementById('report-result');const t=el.dataset.raw||el.textContent;if(!t){toast('Kein Bericht');return;}const b=new Blob([t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='Sprosse_'+today().replace(/\./g,'-')+'.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);toast('Gespeichert');}
+function printReport(){const el=document.getElementById('report-result');const title=document.getElementById('report-title').textContent;const w=window.open('','_blank');if(!w){toast('Popup-Blocker');return;}w.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:20px;line-height:1.7}h2{font-size:18px;border-bottom:1px solid #ddd;padding-bottom:4px;margin:1.3em 0 0.4em}h3{font-size:15px;margin:0.9em 0 0.2em;color:#2d5f4a}</style></head><body><h1>Sprosse – ${title}</h1><p style="color:#888;margin-bottom:20px">${todayHuman()}</p>${el.innerHTML}</body></html>`);w.document.close();setTimeout(()=>w.print(),400);}
 
-${sel.map(c=>`## ${c.name} (${c.age}) ${c.obs.map(o=>`- [${o.date}] ${o.tags.map(t=>BL[t]).join(’, ‘)}: “${o.text}”`).join('\n')||'(keine Beobachtungen)'}`).join(’\n\n—\n’)}`;
-}
-
-function getRasterPct(c) {
-const r=c.raster||{}; let total=0,checked=0;
-BEREICHE.forEach(b=>{ const items=RASTER_DEF[b]; total+=items.length; checked+=items.filter((_,i)=>r[`${b}_${i}`]).length; });
-return total>0?Math.round(checked/total*100):0;
-}
-
-async function generateLetter() {
-const childId = parseInt(document.getElementById(‘letter-child-sel’).value);
-const child = state.children.find(c=>c.id===childId);
-if(!child) { toast(‘Kind nicht gefunden’); return; }
-const period = document.getElementById(‘letter-period’).value;
-const extra = document.getElementById(‘letter-extra’).value.trim();
-const prompt = buildLetterPrompt(child, curLetterType, period, extra);
-const typeLabels={elternbrief:‘Elternbrief’,entwicklung:‘Entwicklungsbericht’,gespraech:‘Gesprächsvorbereitung’,zusammenfassung:‘Zusammenfassung’};
-document.getElementById(‘report-out-title’).textContent = `${typeLabels[curLetterType]}: ${child.name}`;
-await runAI(prompt);
-}
-
-async function generateSummary() {
-const sel = state.children.filter(c=>sumSelected.has(c.id)&&c.obs.length>0);
-if(!sel.length) { toast(‘Kinder mit Beobachtungen auswählen’); return; }
-document.getElementById(‘report-out-title’).textContent = ‘Gruppen-Zusammenfassung’;
-await runAI(buildSumPrompt(sel));
-}
-
-async function runAI(prompt) {
-if(!state.apiKey) {
-try { await navigator.clipboard.writeText(prompt); toast(‘Prompt kopiert! In ChatGPT/Claude einfügen.’); }
-catch(e) {
-document.getElementById(‘report-output’).style.display=‘block’;
-document.getElementById(‘report-result’).textContent = prompt;
-toast(‘Text angezeigt – bitte manuell kopieren’);
-}
-return;
-}
-document.getElementById(‘report-output’).style.display=‘block’;
-document.getElementById(‘report-loading’).style.display=‘flex’;
-document.getElementById(‘report-result’).innerHTML=’’;
-try {
-const res = await fetch(‘https://api.anthropic.com/v1/messages’,{
-method:‘POST’,
-headers:{‘Content-Type’:‘application/json’,‘x-api-key’:state.apiKey,‘anthropic-version’:‘2023-06-01’,‘anthropic-dangerous-direct-browser-access’:‘true’},
-body:JSON.stringify({model:‘claude-sonnet-4-20250514’,max_tokens:2000,messages:[{role:‘user’,content:prompt}]})
-});
-const data = await res.json();
-document.getElementById(‘report-loading’).style.display=‘none’;
-if(data.error) { document.getElementById(‘report-result’).textContent=‘Fehler: ‘+data.error.message; return; }
-const text = data.content?.map(b=>b.text||’’).join(’’)||‘Keine Antwort.’;
-document.getElementById(‘report-result’).innerHTML = fmtMd(text);
-document.getElementById(‘report-result’).dataset.raw = text;
-document.getElementById(‘report-output’).scrollIntoView({behavior:‘smooth’});
-} catch(e) {
-document.getElementById(‘report-loading’).style.display=‘none’;
-document.getElementById(‘report-result’).textContent=’Fehler: ’+e.message;
-}
-}
-
-function copyReport() {
-const el=document.getElementById(‘report-result’);
-const text=el.dataset.raw||el.textContent;
-if(!text){toast(‘Kein Bericht vorhanden’);return;}
-navigator.clipboard.writeText(text).then(()=>toast(‘Kopiert!’)).catch(()=>toast(‘Fehler’));
-}
-async function shareReport() {
-const el=document.getElementById(‘report-result’);
-const text=el.dataset.raw||el.textContent;
-if(!text){toast(‘Kein Bericht’);return;}
-if(navigator.share){try{await navigator.share({title:‘Sprosse Bericht’,text});}catch(e){if(e.name!==‘AbortError’)copyReport();}}
-else copyReport();
-}
-function downloadReport() {
-const el=document.getElementById(‘report-result’);
-const text=el.dataset.raw||el.textContent;
-if(!text){toast(‘Kein Bericht’);return;}
-const title=document.getElementById(‘report-out-title’).textContent;
-const blob=new Blob([text],{type:‘text/plain;charset=utf-8’});
-const url=URL.createObjectURL(blob);
-const a=document.createElement(‘a’);
-a.href=url;a.download=`Sprosse_${title.replace(/[^a-zA-Z0-9äöüÄÖÜ]/g,'_')}_${todayStr().replace(/\./g,'-')}.txt`;
-document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast(‘Gespeichert’);
-}
-function printReport() {
-const el=document.getElementById(‘report-result’);
-const title=document.getElementById(‘report-out-title’).textContent;
-const win=window.open(’’,’_blank’);
-if(!win){toast(‘Popup-Blocker aktiv’);return;}
-win.document.write(`<!DOCTYPE html><html><head><title>${title}</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;padding:20px;line-height:1.75;color:#222}h1,h2,h3{font-weight:500}h2{border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:1.5em}strong{font-weight:600}.meta{color:#666;font-size:13px;margin-bottom:24px}</style></head><body><h1>Sprosse</h1><h2>${title}</h2><div class="meta">Erstellt am ${todayHuman()}</div><hr style="margin:16px 0 24px">${el.innerHTML}</body></html>`);
-win.document.close();setTimeout(()=>win.print(),400);
-}
-
-// ═══════════════════════════════════════════
-// KIND ANLEGEN
-// ═══════════════════════════════════════════
-function addChild() {
+// ── KIND ANLEGEN ──
+function addChild(){
 const n=document.getElementById(‘nk-name’).value.trim();
 const a=document.getElementById(‘nk-age’).value;
 if(!n){toast(‘Bitte Namen eingeben’);return;}
-state.children.push({id:state.nextId++,name:n,age:a,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
-save();
-document.getElementById(‘nk-name’).value=’’;
+S.children.push({id:S.nextId++,name:n,age:a,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
+save(); document.getElementById(‘nk-name’).value=’’;
 closeModal(‘modal-kind’); toast(n+’ angelegt ✓’); renderGroup();
 }
-function pickColor(el,bg,tc) {
+function pickColor(el,bg,tc){
 nkColor={bg,tc};
-document.querySelectorAll(’#color-pick .copt’).forEach(d=>d.classList.remove(‘sel’));
-el.classList.add(‘sel’);
+document.querySelectorAll(’#cpick .copt’).forEach(d=>d.classList.remove(‘on’));
+el.classList.add(‘on’);
 }
 
-// ═══════════════════════════════════════════
-// MODAL
-// ═══════════════════════════════════════════
+// ── MODAL ──
 function openModal(id){document.getElementById(id).classList.add(‘show’);document.body.style.overflow=‘hidden’;}
 function closeModal(id){document.getElementById(id).classList.remove(‘show’);document.body.style.overflow=’’;}
 
-// ═══════════════════════════════════════════
-// VOICE
-// ═══════════════════════════════════════════
-function toggleRec() {
+// ── VOICE ──
+function toggleRec(){
 if(isRec){stopRec();return;}
-if(!(‘webkitSpeechRecognition’ in window||‘SpeechRecognition’ in window)){
-toast(‘Spracherkennung benötigt Chrome oder Safari’);return;
-}
+if(!(‘webkitSpeechRecognition’ in window||‘SpeechRecognition’ in window)){toast(‘Benötigt Chrome oder Safari’);return;}
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 recog=new SR(); recog.lang=‘de-DE’; recog.continuous=true; recog.interimResults=true;
-recog.onstart=()=>{
-isRec=true;
-document.getElementById(‘mic-btn’).classList.add(‘rec’);
-document.getElementById(‘vlbl’).textContent=‘Ich höre zu…’;
-document.getElementById(‘vhint’).textContent=‘Nochmal tippen zum Beenden’;
-document.getElementById(‘vbars’).style.display=‘flex’;
-if(navigator.vibrate) navigator.vibrate(40);
-};
-recog.onresult=(e)=>{
-let final=’’;
-for(let i=e.resultIndex;i<e.results.length;i++){
-if(e.results[i].isFinal) final+=e.results[i][0].transcript;
-}
-if(final){
-const ta=document.getElementById(‘obs-ta’);
-ta.value=(ta.value+’ ’+final).trim();
-wasVoice=true;
-}
-};
-recog.onerror=(e)=>{
-if(e.error===‘not-allowed’) toast(‘Mikrofon-Zugriff verweigert’);
-else if(e.error!==‘no-speech’) toast(’Fehler: ’+e.error);
-stopRec();
-};
+recog.onstart=()=>{isRec=true;document.getElementById(‘mic-btn’).classList.add(‘rec’);document.getElementById(‘vlbl’).textContent=‘Ich höre zu…’;document.getElementById(‘vhint’).textContent=‘Nochmal tippen zum Beenden’;document.getElementById(‘vbars’).classList.add(‘show’);if(navigator.vibrate)navigator.vibrate(40);};
+recog.onresult=e=>{let f=’’;for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;}if(f){const ta=document.getElementById(‘obs-ta’);ta.value=(ta.value+’ ’+f).trim();wasVoice=true;}};
+recog.onerror=e=>{if(e.error===‘not-allowed’)toast(‘Mikrofon verweigert’);else if(e.error!==‘no-speech’)toast(’Fehler: ’+e.error);stopRec();};
 recog.onend=()=>{if(isRec)stopRec();};
 try{recog.start();}catch(e){toast(‘Mikrofon-Start fehlgeschlagen’);}
 }
-function stopRec() {
-isRec=false;
-if(recog)try{recog.stop();}catch(e){}
-document.getElementById(‘mic-btn’).classList.remove(‘rec’);
-document.getElementById(‘vlbl’).textContent=‘Zum Sprechen tippen’;
-document.getElementById(‘vhint’).textContent=‘Text kann noch angepasst werden’;
-document.getElementById(‘vbars’).style.display=‘none’;
-}
+function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById(‘mic-btn’).classList.remove(‘rec’);document.getElementById(‘vlbl’).textContent=‘Zum Sprechen tippen’;document.getElementById(‘vhint’).textContent=‘Text kann noch angepasst werden’;document.getElementById(‘vbars’).classList.remove(‘show’);}
 
-// ═══════════════════════════════════════════
-// EINSTELLUNGEN
-// ═══════════════════════════════════════════
-function saveApiKey(){state.apiKey=document.getElementById(‘api-key’).value.trim();save();toast(‘Gespeichert ✓’);}
-function exportData(){
-const blob=new Blob([JSON.stringify(state,null,2)],{type:‘application/json’});
-const url=URL.createObjectURL(blob);
-const a=document.createElement(‘a’);
-a.href=url;a.download=`Sprosse_Backup_${todayStr().replace(/\./g,'-')}.json`;
-document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast(‘Exportiert’);
-}
-function importData(e){
-const file=e.target.files[0];if(!file)return;
-const r=new FileReader();
-r.onload=(ev)=>{
-try{
-const d=JSON.parse(ev.target.result);
-if(!d.children)throw new Error(‘Ungültiges Format’);
-if(confirm(‘Alle bestehenden Daten ersetzen?’)){state=d;save();nav(‘gruppe’);toast(‘Importiert ✓’);}
-}catch(err){toast(‘Fehler: ‘+err.message);}
-};
-r.readAsText(file);e.target.value=’’;
-}
-function resetDemo(){
-if(!confirm(‘Alle Daten durch Demo ersetzen?’))return;
-seedDemo();nav(‘gruppe’);toast(‘Demo geladen’);
-}
-function deleteAll(){
-if(!confirm(‘WIRKLICH alles löschen?’))return;
-if(!confirm(‘Endgültig – kann nicht rückgängig gemacht werden!’))return;
-state={children:[],nextId:1,remindDays:5,apiKey:’’};save();nav(‘gruppe’);toast(‘Alles gelöscht’);
-}
+// ── EINSTELLUNGEN ──
+function saveKey(){S.apiKey=document.getElementById(‘api-key’).value.trim();save();toast(‘Gespeichert ✓’);}
+function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:‘application/json’});const u=URL.createObjectURL(b);const a=document.createElement(‘a’);a.href=u;a.download=‘Sprosse_’+today().replace(/./g,’-’)+’.json’;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);toast(‘Exportiert’);}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.children)throw new Error(‘Ungültiges Format’);if(confirm(‘Alle bestehenden Daten ersetzen?’)){S=d;save();nav(‘gruppe’);toast(‘Importiert ✓’);}}catch(err){toast(‘Fehler: ‘+err.message);}};r.readAsText(f);e.target.value=’’;}
+function resetDemo(){if(!confirm(‘Demo-Daten laden?’))return;seedDemo();nav(‘gruppe’);toast(‘Demo geladen’);}
+function deleteAll(){if(!confirm(‘WIRKLICH alles löschen?’))return;if(!confirm(‘Endgültig?’))return;S={children:[],nextId:1,remindDays:5,apiKey:’’};save();nav(‘gruppe’);toast(‘Alles gelöscht’);}
 
-// ═══════════════════════════════════════════
-// INSTALL PROMPT
-// ═══════════════════════════════════════════
+// ── INSTALL ──
 function maybeShowInstall(){
 const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
 const isStandalone=window.navigator.standalone||window.matchMedia(’(display-mode:standalone)’).matches;
-const dismissed=localStorage.getItem(‘sprosse_install_dismissed’);
-if(isIOS&&!isStandalone&&!dismissed){
+if(isIOS&&!isStandalone&&!localStorage.getItem(‘sprosse_install_dismissed’)){
 setTimeout(()=>document.getElementById(‘ibanner’).classList.add(‘show’),4000);
 }
 }
-function dismissInstall(){
-document.getElementById(‘ibanner’).classList.remove(‘show’);
-localStorage.setItem(‘sprosse_install_dismissed’,‘1’);
-}
+function dismissInstall(){document.getElementById(‘ibanner’).classList.remove(‘show’);localStorage.setItem(‘sprosse_install_dismissed’,‘1’);}
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-if(!load()||!state.children.length) seedDemo();
-// Hide splash immediately - no waiting for fonts
-const _s=document.getElementById(‘splash’);
-if(_s) _s.style.display=‘none’;
-document.getElementById(‘top-sub’).textContent = todayHuman();
-document.getElementById(‘remind-days’).value = state.remindDays;
+// ── INIT ──
+if(!load()||!S.children.length) seedDemo();
+document.getElementById(‘hdr-sub’).textContent=todayHuman();
+document.getElementById(‘remind-days’).value=S.remindDays;
 renderGroup();
-setInterval(save, 30000);
+updateBadge();
+setInterval(save,30000);
 maybeShowInstall();
+// Hide splash
+setTimeout(()=>{const s=document.getElementById(‘splash’);if(s){s.classList.add(‘hide’);setTimeout(()=>s.style.display=‘none’,400);}},1200);
 </script>
 
 </body>
