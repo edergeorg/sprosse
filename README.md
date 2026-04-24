@@ -103,8 +103,8 @@ Sprosse speichert alle Daten ausschließlich lokal im Browser (`localStorage`). 
 
 ## 👤 Autor
 
-**Georg Eder**  
-Kindergartenpädagoge & Entwickler von Sprosse  
+**Denise & Georg Eder**  
+Kindergartenpädagogin & Entwickler von Sprosse  
 📧 [hallo@ederge.org](mailto:hallo@ederge.org)
 
 ---
