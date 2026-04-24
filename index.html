@@ -36,7 +36,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;background:#f6f3ee;color:#1c1a16;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-body{padding-bottom:calc(90px + env(safe-area-inset-bottom, 0px));overflow-x:hidden}
+body{padding-bottom:calc(110px + env(safe-area-inset-bottom, 0px));overflow-x:hidden}
 
 /* SPLASH */
 /* splash handled inline */
@@ -66,7 +66,7 @@ min-height:56px;
 #hdr-plus:active{background:#1a3a2a}
 
 /* CONTENT */
-#content{padding:16px;min-height:100px}
+#content{padding:16px 16px 32px 16px;min-height:100px}
 .panel{display:none}
 .panel.active{display:block}
 
@@ -412,7 +412,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:#2d5f4a;backgr
     <div class="card">
       <div class="card-title">Entwicklungsraster</div>
       <div id="raster-summary"></div>
-      <button class="btn" onclick="openModal('modal-raster')" style="margin-top:8px">Raster bearbeiten</button>
+      <button class="btn" onclick="openRaster()" style="margin-top:8px;background:#f6f3ee;color:#1c1a16;border-color:#ddd8ce">Raster bearbeiten</button>
     </div>
     <div class="shdr" style="margin-top:4px">
       <div class="stitle" id="obs-count">Beobachtungen</div>
@@ -801,15 +801,15 @@ function renderDash(){
     </div>`).join('');
   const recent=[...all].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).slice(0,5);
   document.getElementById('d-recent').innerHTML=recent.length?recent.map(o=>`
-    <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+    <div style="padding:10px 0;border-bottom:1px solid #ddd8ce">
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap">
         <div class="av av-sm" style="background:${o.child.bg};color:${o.child.tc}">${ini(o.child.name)}</div>
         <span style="font-size:13px;font-weight:600">${o.child.name}</span>
-        <span style="font-size:11px;color:var(--text3)">${o.date}</span>
+        <span style="font-size:11px;color:#9c9790">${o.date}</span>
         ${o.mood?`<span style="font-size:15px">${o.mood}</span>`:''}
         ${o.voice?'<span class="vbadge">🎤</span>':''}
       </div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.5">${o.text.slice(0,100)}${o.text.length>100?'…':''}</div>
+      <div style="font-size:12px;color:#5c574e;line-height:1.5">${o.text.slice(0,100)}${o.text.length>100?'…':''}</div>
     </div>`).join(''):'<div class="empty">Noch keine Beobachtungen</div>';
 }
 
@@ -829,11 +829,11 @@ function renderRemind(){
   } else wm.style.display='none';
   document.getElementById('remind-list').innerHTML=S.children.map(c=>{
     const d=dSince(lastObs(c)),ok=d<S.remindDays;
-    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)" onclick="openChild(${c.id})">
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #ddd8ce" onclick="openChild(${c.id})">
       <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
       <span style="font-size:14px;flex:1;font-weight:600">${c.name}</span>
-      <span style="font-size:12px;color:${ok?'var(--text3)':'var(--amber)'}">${d===9999?'Nie':d===0?'Heute':'vor '+d+'d'}</span>
-      <span style="font-size:10px;padding:3px 9px;border-radius:100px;background:${ok?'var(--green-soft)':'var(--amber-soft)'};color:${ok?'var(--green)':'var(--amber)'};font-weight:700">${ok?'OK':'!'}</span>
+      <span style="font-size:12px;color:${ok?'#9c9790':'#c87820'}">${d===9999?'Nie':d===0?'Heute':'vor '+d+'d'}</span>
+      <span style="font-size:10px;padding:3px 9px;border-radius:100px;background:${ok?'#e6f2ec':'#fef4e4'};color:${ok?'#2d5f4a':'#c87820'};font-weight:700">${ok?'OK':'!'}</span>
     </div>`;
   }).join('')||'<div class="empty">Noch keine Kinder</div>';
   document.getElementById('remind-days').value=S.remindDays;
@@ -918,24 +918,30 @@ function renderRasterSummary(){
   BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if((curChild.raster||{})[b+'_'+i])chk++;});});
   document.getElementById('raster-summary').innerHTML=`
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-      <div style="font-size:28px;font-weight:700;color:var(--green);letter-spacing:-0.03em">${pct}%</div>
-      <div><div style="font-size:13px;font-weight:600">${chk} von ${tot} Kriterien</div><div style="font-size:11px;color:var(--text3)">Über alle Bereiche</div></div>
+      <div style="font-size:28px;font-weight:700;color:#2d5f4a;letter-spacing:-0.03em">${pct}%</div>
+      <div><div style="font-size:13px;font-weight:600">${chk} von ${tot} Kriterien</div><div style="font-size:11px;color:#9c9790">Über alle Bereiche</div></div>
     </div>
     <div class="rprog"><div class="rprog-fill" style="width:${pct}%"></div></div>`;
 }
 function openRaster(){
   if(!curChild) return;
   document.getElementById('raster-title').textContent=curChild.name+' – Raster';
-  const r=curChild.raster||{};
-  document.getElementById('raster-content').innerHTML=BEREICHE.map(b=>`
-    <div class="raster-section">${BL[b]}</div>
-    ${RASTER[b].map((item,i)=>`
-      <div class="raster-item" onclick="toggleRasterItem('${b}',${i},this)">
-        <div class="rcb ${r[b+'_'+i]?'on':''}" id="rcb_${b}_${i}">
-          ${r[b+'_'+i]?`<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:''}
-        </div>
-        <div class="rlbl">${item}</div>
-      </div>`).join('')}`).join('');
+  var r=curChild.raster||{};
+  var out='';
+  BEREICHE.forEach(function(b){
+    out+='<div class="raster-section">'+BL[b]+'</div>';
+    RASTER[b].forEach(function(item,i){
+      var key=b+'_'+i;
+      var checked=r[key]?true:false;
+      var cbClass=checked?'rcb on':'rcb';
+      var checkIcon=checked?'<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>':'';
+      out+='<div class="raster-item" onclick="toggleRasterItem(\'' + b + '\','+ i +',this)">';
+      out+='<div class="'+cbClass+'" id="rcb_'+b+'_'+i+'">'+checkIcon+'</div>';
+      out+='<div class="rlbl">'+item+'</div>';
+      out+='</div>';
+    });
+  });
+  document.getElementById('raster-content').innerHTML=out;
   openModal('modal-raster');
 }
 function toggleRasterItem(b,i,row){
@@ -943,7 +949,7 @@ function toggleRasterItem(b,i,row){
   const key=b+'_'+i;
   curChild.raster[key]=!curChild.raster[key];
   const cb=document.getElementById('rcb_'+b+'_'+i);
-  if(curChild.raster[key]){cb.classList.add('on');cb.innerHTML=`<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`;}
+  if(curChild.raster[key]){cb.classList.add('on');cb.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';}
   else{cb.classList.remove('on');cb.innerHTML='';}
 }
 function saveRaster(){save();closeModal('modal-raster');renderRasterSummary();toast('Raster gespeichert ✓');}
@@ -955,7 +961,7 @@ function renderBerichte(){
   document.getElementById('sum-list').innerHTML=S.children.map(c=>`
     <div class="sum-row ${sumSel.has(c.id)?'on':''}" onclick="toggleSum(${c.id})">
       <div class="av av-sm" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
-      <div style="flex:1"><div style="font-size:14px;font-weight:600">${c.name}</div><div style="font-size:11px;color:var(--text3)">${c.obs.length} Beob.</div></div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:600">${c.name}</div><div style="font-size:11px;color:#9c9790">${c.obs.length} Beob.</div></div>
       <div class="chk">${sumSel.has(c.id)?`<svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>`:''}</div>
     </div>`).join('')||'<div class="empty">Noch keine Kinder</div>';
   const noKey=!S.apiKey;
