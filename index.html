@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -223,16 +222,68 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .shdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 
 @media(min-width:600px){
-.cgrid { grid-template-columns:repeat(3,1fr); }
-.sgrid { grid-template-columns:repeat(4,1fr); }
+  .cgrid { grid-template-columns:repeat(3,1fr); }
+  .sgrid { grid-template-columns:repeat(4,1fr); }
 }
-</style>
 
+/* PIN SCREEN */
+#pin-screen { position:fixed; inset:0; z-index:8000; background:#2d5f4a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:32px; }
+#pin-screen.hide { display:none; }
+.pin-logo { animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.pin-title { font-size:28px; font-weight:700; color:#fff; letter-spacing:-0.02em; }
+.pin-sub { font-size:14px; color:rgba(255,255,255,0.65); text-align:center; margin-top:-12px; }
+.pin-dots { display:flex; gap:14px; }
+.pin-dot { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.3); transition:background 0.15s; }
+.pin-dot.filled { background:#ffffff; }
+.pin-error { font-size:13px; color:#ffaaaa; min-height:18px; text-align:center; }
+.pin-pad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; max-width:280px; }
+.pin-btn { height:64px; border-radius:16px; border:none; background:rgba(255,255,255,0.12); color:#fff; font-size:22px; font-weight:600; cursor:pointer; -webkit-appearance:none; transition:background 0.1s; display:flex; align-items:center; justify-content:center; }
+.pin-btn:active { background:rgba(255,255,255,0.28); }
+.pin-btn.del { font-size:18px; }
+.pin-btn.empty { background:transparent; pointer-events:none; }
+.pin-setup-wrap { background:rgba(255,255,255,0.1); border-radius:18px; padding:20px; width:100%; max-width:280px; text-align:center; }
+.pin-setup-label { font-size:13px; color:rgba(255,255,255,0.75); margin-bottom:12px; }
+
+</style>
 </head>
 <body>
 
-<!-- SPLASH -->
 
+<!-- PIN SCREEN -->
+<div id="pin-screen" class="hide">
+  <svg class="pin-logo" width="72" height="72" viewBox="0 0 80 80">
+    <rect width="80" height="80" rx="20" fill="rgba(255,255,255,0.15)"/>
+    <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="5" stroke-linecap="round"/>
+    <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
+    <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
+    <ellipse cx="40" cy="62" rx="13" ry="3" fill="#1a3a2a" opacity="0.4"/>
+  </svg>
+  <div class="pin-title">Sprosse</div>
+  <div class="pin-sub" id="pin-sub">PIN eingeben</div>
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot" id="pd0"></div>
+    <div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div>
+    <div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinInput('1')">1</button>
+    <button class="pin-btn" onclick="pinInput('2')">2</button>
+    <button class="pin-btn" onclick="pinInput('3')">3</button>
+    <button class="pin-btn" onclick="pinInput('4')">4</button>
+    <button class="pin-btn" onclick="pinInput('5')">5</button>
+    <button class="pin-btn" onclick="pinInput('6')">6</button>
+    <button class="pin-btn" onclick="pinInput('7')">7</button>
+    <button class="pin-btn" onclick="pinInput('8')">8</button>
+    <button class="pin-btn" onclick="pinInput('9')">9</button>
+    <button class="pin-btn empty"></button>
+    <button class="pin-btn" onclick="pinInput('0')">0</button>
+    <button class="pin-btn del" onclick="pinDelete()">⌫</button>
+  </div>
+</div>
+
+<!-- SPLASH -->
 <div id="splash">
   <svg class="splash-logo" width="96" height="96" viewBox="0 0 80 80">
     <rect width="80" height="80" rx="22" fill="rgba(255,255,255,0.15)"/>
@@ -249,7 +300,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- HEADER -->
-
 <div id="hdr">
   <button id="back-btn" onclick="goBack()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -275,7 +325,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- CONTENT -->
-
 <div id="content">
   <!-- GRUPPE -->
   <div class="panel active" id="panel-gruppe">
@@ -291,7 +340,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- KIND -->
-
   <div class="panel" id="panel-kind">
     <div class="voice-zone">
       <button class="mic" id="mic-btn" onclick="toggleRec()">
@@ -355,7 +403,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- ERINNERUNGEN -->
-
   <div class="panel" id="panel-erinnerungen">
     <div class="warn-card" id="warn-main" style="display:none">
       <div class="warn-title">⚠️ Brauchen Aufmerksamkeit</div>
@@ -373,7 +420,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- DASHBOARD -->
-
   <div class="panel" id="panel-dashboard">
     <div class="sgrid">
       <div class="scard"><div class="snum" id="d-kids">0</div><div class="slbl">Kinder</div></div>
@@ -386,7 +432,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- BERICHTE -->
-
   <div class="panel" id="panel-berichte">
     <div class="card">
       <div class="card-title">Bericht erstellen</div>
@@ -431,9 +476,13 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- MEHR -->
-
   <div class="panel" id="panel-mehr">
     <div class="card"><div class="card-title">Kind anlegen</div><button class="btn primary" onclick="openModal('modal-kind')">+ Neues Kind anlegen</button></div>
+    <div class="card" id="pin-card">
+      <div class="card-title">🔒 PIN-Schutz</div>
+      <p style="font-size:13px;color:#5c574e;margin-bottom:12px;line-height:1.55">Schütze die App mit einem 4-stelligen PIN. Wird beim Öffnen abgefragt.</p>
+      <div id="pin-status"></div>
+    </div>
     <div class="card">
       <div class="card-title">KI / API Key</div>
       <p style="font-size:13px;color:#5c574e;margin-bottom:12px;line-height:1.55">Für automatische Berichte. Ohne Key: Prompt wird kopiert für ChatGPT/Claude.</p>
@@ -470,7 +519,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- BOTTOM NAV -->
-
 <nav id="bnav">
   <button class="nb on" data-p="gruppe" onclick="nav('gruppe')">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
@@ -496,7 +544,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </nav>
 
 <!-- MODAL: Kind -->
-
 <div class="modal-bg" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -523,7 +570,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- MODAL: Raster -->
-
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -534,7 +580,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- Install Banner -->
-
 <div id="ibanner">
   <div style="font-size:28px;flex-shrink:0">📲</div>
   <div style="flex:1">
@@ -545,6 +590,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <div class="toast" id="toast"></div>
+
 
 <script>
 
@@ -919,15 +965,19 @@ async function genLetter(){
   const extra=document.getElementById('letter-extra').value.trim();
   const types={elternbrief:'Elternbrief',entwicklung:'Entwicklungsbericht',gespraech:'Gesprächsvorbereitung',zusammenfassung:'Zusammenfassung'};
   document.getElementById('report-title').textContent=types[curLetterType]+': '+c.name;
-  await runAI(buildLetterPrompt(c,curLetterType,period,extra));
+  // Anonymize: replace name before sending to AI, restore after
+  var prompt = buildLetterPrompt(c,curLetterType,period,extra);
+  prompt = anonymize(prompt, [c]);
+  await runAI(prompt, function(result){ return deanonymize(result, [c]); });
 }
 async function genSummary(){
   const sel=S.children.filter(c=>sumSel.has(c.id)&&c.obs.length>0);
   if(!sel.length){toast('Kinder mit Beobachtungen auswählen');return;}
   document.getElementById('report-title').textContent='Gruppen-Zusammenfassung';
-  await runAI(buildSumPrompt(sel));
+  var prompt = anonymize(buildSumPrompt(sel), sel);
+  await runAI(prompt, function(result){ return deanonymize(result, sel); });
 }
-async function runAI(prompt){
+async function runAI(prompt, postProcess){
   if(!S.apiKey){
     try{await navigator.clipboard.writeText(prompt);toast('Prompt kopiert! In ChatGPT/Claude einfügen.');}
     catch(e){document.getElementById('report-out').style.display='block';document.getElementById('report-result').textContent=prompt;toast('Bitte manuell kopieren');}
@@ -941,7 +991,8 @@ async function runAI(prompt){
     const data=await res.json();
     document.getElementById('report-loading').classList.remove('show');
     if(data.error){document.getElementById('report-result').textContent='Fehler: '+data.error.message;return;}
-    const text=data.content?.map(b=>b.text||'').join('')||'Keine Antwort.';
+    var text=data.content?.map(b=>b.text||'').join('')||'Keine Antwort.';
+    if(postProcess) text=postProcess(text);
     document.getElementById('report-result').innerHTML=fmtMd(text);
     document.getElementById('report-result').dataset.raw=text;
     document.getElementById('report-out').scrollIntoView({behavior:'smooth'});
@@ -1003,6 +1054,16 @@ function resetDemo(){if(!confirm('Demo-Daten laden?'))return;seedDemo();nav('gru
 function deleteAll(){if(!confirm('WIRKLICH alles löschen?'))return;if(!confirm('Endgültig?'))return;S={children:[],nextId:1,remindDays:5,apiKey:''};save();nav('gruppe');toast('Alles gelöscht');}
 
 // ── INSTALL ──
+function renderMehr(){
+  var pinStatus = document.getElementById('pin-status');
+  if(!pinStatus) return;
+  if(S.pinEnabled){
+    pinStatus.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:13px;color:#2d5f4a;font-weight:600">✓ PIN aktiv</span></div><button class="btn danger" onclick="disablePin()" style="margin-bottom:0">PIN deaktivieren</button>';
+  } else {
+    pinStatus.innerHTML = '<button class="btn primary" onclick="enablePin()" style="margin-bottom:0">PIN einrichten</button>';
+  }
+}
+
 function maybeShowInstall(){
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
   const isStandalone=window.navigator.standalone||window.matchMedia('(display-mode:standalone)').matches;
@@ -1014,6 +1075,7 @@ function dismissInstall(){document.getElementById('ibanner').classList.remove('s
 
 // ── INIT ──
 if(!load()||!S.children.length) seedDemo();
+if(!S.pinEnabled) S.pinEnabled = false;
 // Dynamically set content top based on actual header height
 function fixContentTop(){
   var hdr = document.getElementById('hdr');
@@ -1024,6 +1086,8 @@ function fixContentTop(){
 }
 fixContentTop();
 window.addEventListener('resize', fixContentTop);
+renderMehr();
+checkPinOnLoad();
 document.getElementById('hdr-sub').textContent=todayHuman();
 document.getElementById('remind-days').value=S.remindDays;
 // Show + button on gruppe panel
@@ -1079,7 +1143,99 @@ maybeShowInstall();
   } catch(e) {}
 })();
 
-</script>
 
+// ── PIN-SCHUTZ ──
+var pinEntry = '';
+var pinMode = 'unlock';
+var pinTemp = '';
+
+function hashPin(p){
+  var h = 0;
+  for(var i=0;i<p.length;i++) h = (Math.imul(31,h) + p.charCodeAt(i)) | 0;
+  return h.toString(36);
+}
+function showPinScreen(mode, subtitle){
+  pinEntry = ''; pinMode = mode;
+  document.getElementById('pin-screen').classList.remove('hide');
+  document.getElementById('pin-sub').textContent = subtitle || 'PIN eingeben';
+  document.getElementById('pin-error').textContent = '';
+  updatePinDots();
+}
+function hidePinScreen(){
+  document.getElementById('pin-screen').classList.add('hide');
+  pinEntry = '';
+}
+function updatePinDots(){
+  for(var i=0;i<4;i++){
+    document.getElementById('pd'+i).classList.toggle('filled', i < pinEntry.length);
+  }
+}
+function pinInput(n){
+  if(pinEntry.length >= 4) return;
+  pinEntry += n; updatePinDots();
+  if(pinEntry.length === 4) setTimeout(pinSubmit, 120);
+}
+function pinDelete(){ pinEntry = pinEntry.slice(0,-1); updatePinDots(); }
+function pinSubmit(){
+  if(pinMode === 'unlock'){
+    if(hashPin(pinEntry) === localStorage.getItem('sprosse_pin')){
+      hidePinScreen();
+    } else {
+      document.getElementById('pin-error').textContent = 'Falscher PIN';
+      pinEntry = ''; updatePinDots();
+      var dots = document.getElementById('pin-dots');
+      dots.style.transform='translateX(8px)';
+      setTimeout(function(){dots.style.transform='translateX(-8px)';},80);
+      setTimeout(function(){dots.style.transform='';},160);
+    }
+  } else if(pinMode === 'setup-new'){
+    pinTemp = pinEntry; pinEntry = ''; pinMode = 'setup-confirm';
+    document.getElementById('pin-sub').textContent = 'PIN wiederholen';
+    document.getElementById('pin-error').textContent = '';
+    updatePinDots();
+  } else if(pinMode === 'setup-confirm'){
+    if(pinEntry === pinTemp){
+      localStorage.setItem('sprosse_pin', hashPin(pinEntry));
+      S.pinEnabled = true; save(); hidePinScreen();
+      toast('PIN gesetzt ✓'); renderMehr();
+    } else {
+      document.getElementById('pin-error').textContent = 'PINs stimmen nicht überein';
+      pinEntry = ''; pinMode = 'setup-new'; pinTemp = '';
+      document.getElementById('pin-sub').textContent = 'Neuen PIN (4 Ziffern)';
+      updatePinDots();
+    }
+  }
+}
+function enablePin(){ showPinScreen('setup-new', 'Neuen PIN wählen (4 Ziffern)'); }
+function disablePin(){
+  if(!confirm('PIN-Schutz wirklich deaktivieren?')) return;
+  localStorage.removeItem('sprosse_pin');
+  S.pinEnabled = false; save(); toast('PIN deaktiviert'); renderMehr();
+}
+function checkPinOnLoad(){
+  if(S.pinEnabled && localStorage.getItem('sprosse_pin')){
+    showPinScreen('unlock', 'PIN eingeben');
+  }
+}
+
+// ── ANONYMISIERUNG ──
+function anonymize(text, children){
+  var result = text;
+  children.forEach(function(c, i){
+    var code = 'Kind_' + String.fromCharCode(65 + i);
+    var re = new RegExp('\\b' + c.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b', 'gi');
+    result = result.replace(re, code);
+  });
+  return result;
+}
+function deanonymize(text, children){
+  var result = text;
+  children.forEach(function(c, i){
+    var code = 'Kind_' + String.fromCharCode(65 + i);
+    result = result.replace(new RegExp(code, 'g'), c.name);
+  });
+  return result;
+}
+</script>
 </body>
 </html>
