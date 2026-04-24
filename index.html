@@ -10,33 +10,50 @@
 <meta name="theme-color" content="#2d5f4a">
 <title>Sprosse</title>
 <style>
+html{
+  min-height:100%;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  min-height:100%;
+  background:#f6f3ee;
+  color:#1c1a16;
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:calc(120px + env(safe-area-inset-bottom,0px));
+}
+
 :root{
-  --bg:#f6f3ee;
-  --surface:#fff;
-  --surface2:#ede9e0;
-  --border:#ddd8ce;
-  --border2:#ccc6ba;
-  --text:#1c1a16;
-  --text2:#5c574e;
-  --text3:#9c9790;
-  --green:#2d5f4a;
-  --green-dark:#1a3a2a;
-  --green-soft:#e6f2ec;
-  --green-accent:#4caf7d;
-  --amber:#c87820;
-  --amber-soft:#fef4e4;
-  --amber-border:#e8c080;
-  --red:#c03030;
-  --r:12px;
-  --rlg:18px;
-  --sh:0 2px 12px rgba(0,0,0,0.06);
-  --safe-top:env(safe-area-inset-top,0px);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
-  --nav-h:62px;
+–bg:#f6f3ee;
+–surface:#fff;
+–surface2:#ede9e0;
+–border:#ddd8ce;
+–border2:#ccc6ba;
+–text:#1c1a16;
+–text2:#5c574e;
+–text3:#9c9790;
+–green:#2d5f4a;
+–green-dark:#1a3a2a;
+–green-soft:#e6f2ec;
+–green-accent:#4caf7d;
+–amber:#c87820;
+–amber-soft:#fef4e4;
+–amber-border:#e8c080;
+–red:#c03030;
+–r:12px;
+–rlg:18px;
+–sh:0 2px 12px rgba(0,0,0,0.06);
+–safe-top:env(safe-area-inset-top,0px);
+–safe-bottom:env(safe-area-inset-bottom,0px);
+–nav-h:62px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#f6f3ee;color:#1c1a16;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-body{padding-bottom:calc(110px + env(safe-area-inset-bottom, 0px));overflow-x:hidden}
+html,
 
 /* SPLASH */
 /* splash handled inline */
