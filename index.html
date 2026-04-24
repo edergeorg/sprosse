@@ -33,7 +33,7 @@ body { font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-
 #hdr-plus.show { display:flex; }
 
 /* CONTENT - scrollable area between header and nav */
-#content { position:fixed; left:0; right:0; top:calc(56px + env(safe-area-inset-top,0px)); bottom:calc(56px + env(safe-area-inset-bottom,0px)); overflow-y:scroll; -webkit-overflow-scrolling:touch; overscroll-behavior-y:none; padding:16px; box-sizing:border-box; }
+#content { position:fixed; left:0; right:0; top:calc(56px + env(safe-area-inset-top,0px)); bottom:calc(56px + env(safe-area-inset-bottom,0px)); overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; scroll-behavior:smooth; padding:16px; box-sizing:border-box; will-change:scroll-position; }
 .panel { display:none; }
 .panel.active { display:block; }
 
