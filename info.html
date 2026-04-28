@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprosse – Kinderentwicklung begleiten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+–green: #1e4535;
+–green-mid: #2d6348;
+–green-light: #4a9268;
+–green-soft: #e8f4ee;
+–green-pale: #f2f8f4;
+–cream: #faf6ef;
+–cream-dark: #f0ead8;
+–brown: #8a6f50;
+–text: #1a1a18;
+–text-2: #4a4a45;
+–text-3: #888880;
+–amber: #c4821a;
+–amber-soft: #fdf3e0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–cream);
+color: var(–text);
+font-size: 16px;
+line-height: 1.6;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ── HERO ── */
+.hero {
+min-height: 100vh;
+background: var(–green);
+display: grid;
+grid-template-columns: 1fr 1fr;
+overflow: hidden;
+position: relative;
+}
+.hero::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 70% 50%, rgba(74,146,104,0.25) 0%, transparent 60%);
+pointer-events: none;
+}
+.hero-left {
+padding: 64px 56px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+position: relative;
+z-index: 1;
+}
+.hero-badge {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+background: rgba(255,255,255,0.1);
+border: 1px solid rgba(255,255,255,0.2);
+border-radius: 100px;
+padding: 6px 14px;
+font-size: 12px;
+color: rgba(255,255,255,0.8);
+letter-spacing: 0.08em;
+text-transform: uppercase;
+width: fit-content;
+margin-bottom: 32px;
+}
+.hero-tag { width: 6px; height: 6px; border-radius: 50%; background: #86c9a0; }
+.hero-title {
+font-family: ‘Lora’, serif;
+font-size: clamp(42px, 5vw, 68px);
+font-weight: 500;
+color: #ffffff;
+line-height: 1.08;
+letter-spacing: -0.02em;
+margin-bottom: 8px;
+}
+.hero-title em {
+font-style: italic;
+color: #86c9a0;
+}
+.hero-subtitle {
+font-size: 18px;
+color: rgba(255,255,255,0.65);
+margin-bottom: 40px;
+line-height: 1.5;
+max-width: 420px;
+}
+.hero-ctas {
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+margin-bottom: 56px;
+}
+.btn-hero {
+padding: 14px 28px;
+border-radius: 100px;
+font-size: 15px;
+font-weight: 500;
+text-decoration: none;
+font-family: ‘DM Sans’, sans-serif;
+cursor: pointer;
+border: none;
+transition: all 0.2s;
+}
+.btn-hero.primary {
+background: #ffffff;
+color: var(–green);
+}
+.btn-hero.primary:hover { background: #e8f4ee; transform: translateY(-1px); }
+.btn-hero.outline {
+background: transparent;
+color: #ffffff;
+border: 1.5px solid rgba(255,255,255,0.35);
+}
+.btn-hero.outline:hover { border-color: rgba(255,255,255,0.7); }
+.hero-stats {
+display: flex;
+gap: 32px;
+}
+.stat { }
+.stat-num {
+font-family: ‘Lora’, serif;
+font-size: 28px;
+font-weight: 500;
+color: #ffffff;
+letter-spacing: -0.02em;
+}
+.stat-label { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+.hero-right {
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 48px;
+position: relative;
+}
+.phone-mock {
+width: 260px;
+background: #0d1f17;
+border-radius: 40px;
+padding: 16px;
+box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+position: relative;
+animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+0%,100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
+}
+.phone-screen {
+background: #f2f8f4;
+border-radius: 28px;
+overflow: hidden;
+height: 500px;
+position: relative;
+}
+.phone-hdr {
+background: rgba(242,248,244,0.95);
+padding: 14px 16px 10px;
+display: flex;
+align-items: center;
+gap: 8px;
+border-bottom: 1px solid #dde8e2;
+}
+.phone-logo-sm {
+width: 26px;
+height: 26px;
+background: #2d6348;
+border-radius: 7px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.phone-title { font-size: 15px; font-weight: 700; color: #1e4535; letter-spacing: -0.02em; }
+.phone-content { padding: 12px; }
+.phone-card {
+background: #ffffff;
+border-radius: 14px;
+padding: 12px;
+margin-bottom: 8px;
+box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.phone-card-title { font-size: 11px; font-weight: 600; color: #1e4535; margin-bottom: 8px; }
+.phone-child-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.phone-child {
+background: #f2f8f4;
+border-radius: 10px;
+padding: 8px;
+}
+.phone-av {
+width: 28px; height: 28px; border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 10px; font-weight: 700;
+margin-bottom: 5px;
+}
+.phone-cname { font-size: 11px; font-weight: 600; color: #1a1a18; }
+.phone-cage { font-size: 9px; color: #888880; }
+.phone-obs-card {
+background: #ffffff;
+border-radius: 14px;
+padding: 12px;
+box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+}
+.phone-obs-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.phone-obs-date { font-size: 9px; color: #888880; }
+.phone-obs-tag { font-size: 9px; font-weight: 600; background: #d4f0e8; color: #065e3f; padding: 2px 6px; border-radius: 100px; }
+.phone-obs-text { font-size: 10px; color: #4a4a45; line-height: 1.4; }
+.phone-nav {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+background: rgba(255,255,255,0.97);
+border-top: 1px solid #dde8e2;
+padding: 8px 0 12px;
+display: flex;
+justify-content: space-around;
+}
+.phone-nb { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.phone-nb svg { width: 16px; height: 16px; stroke: #888880; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.phone-nb.active svg { stroke: #2d6348; }
+.phone-nb span { font-size: 7px; color: #888880; font-weight: 500; }
+.phone-nb.active span { color: #2d6348; }
+
+/* ── SECTIONS ── */
+section { padding: 96px 0; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+.container-sm { max-width: 760px; margin: 0 auto; padding: 0 48px; }
+
+.section-tag {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 11px;
+font-weight: 600;
+color: var(–green-mid);
+letter-spacing: 0.1em;
+text-transform: uppercase;
+margin-bottom: 16px;
+}
+.section-tag::before {
+content: ‘’;
+width: 20px; height: 1.5px;
+background: var(–green-light);
+}
+.section-title {
+font-family: ‘Lora’, serif;
+font-size: clamp(30px, 4vw, 46px);
+font-weight: 500;
+line-height: 1.12;
+letter-spacing: -0.02em;
+color: var(–text);
+margin-bottom: 16px;
+}
+.section-title em { font-style: italic; color: var(–green-mid); }
+.section-lead {
+font-size: 17px;
+color: var(–text-2);
+line-height: 1.65;
+max-width: 560px;
+}
+
+/* ── FEATURES ── */
+.features-bg { background: var(–cream); }
+.features-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 24px;
+margin-top: 56px;
+}
+.feature-card {
+background: var(–cream-dark);
+border-radius: 24px;
+padding: 32px 28px;
+position: relative;
+overflow: hidden;
+transition: transform 0.2s;
+}
+.feature-card:hover { transform: translateY(-3px); }
+.feature-card::after {
+content: ‘’;
+position: absolute;
+bottom: -20px; right: -20px;
+width: 80px; height: 80px;
+border-radius: 50%;
+background: rgba(45,99,72,0.06);
+}
+.feature-icon {
+font-size: 36px;
+margin-bottom: 18px;
+display: block;
+}
+.feature-title {
+font-family: ‘Lora’, serif;
+font-size: 19px;
+font-weight: 500;
+color: var(–text);
+margin-bottom: 10px;
+letter-spacing: -0.01em;
+}
+.feature-desc { font-size: 14px; color: var(–text-2); line-height: 1.6; }
+.feature-card.accent {
+background: var(–green);
+color: white;
+}
+.feature-card.accent .feature-title { color: white; }
+.feature-card.accent .feature-desc { color: rgba(255,255,255,0.7); }
+.feature-card.accent::after { background: rgba(255,255,255,0.06); }
+
+/* ── DATENSCHUTZ ── */
+.privacy-bg { background: var(–green-pale); }
+.privacy-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 48px;
+align-items: center;
+margin-top: 0;
+}
+.privacy-visual {
+background: var(–green);
+border-radius: 28px;
+padding: 40px;
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+.privacy-visual::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at 30% 70%, rgba(74,146,104,0.3), transparent 60%);
+}
+.privacy-icon { font-size: 64px; margin-bottom: 16px; position: relative; z-index: 1; }
+.privacy-visual-title {
+font-family: ‘Lora’, serif;
+font-size: 22px;
+font-weight: 500;
+color: white;
+margin-bottom: 8px;
+position: relative; z-index: 1;
+}
+.privacy-visual-sub { font-size: 14px; color: rgba(255,255,255,0.65); position: relative; z-index: 1; }
+.privacy-items { display: flex; flex-direction: column; gap: 20px; }
+.privacy-item { display: flex; gap: 16px; }
+.privacy-check {
+width: 28px; height: 28px; border-radius: 8px;
+background: var(–green-soft);
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; margin-top: 2px;
+font-size: 13px;
+}
+.privacy-item-title { font-size: 15px; font-weight: 500; color: var(–text); margin-bottom: 4px; }
+.privacy-item-desc { font-size: 13px; color: var(–text-2); line-height: 1.55; }
+
+/* ── INSTALLATION ── */
+.install-bg { background: var(–cream); }
+.install-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 32px;
+margin-top: 48px;
+}
+.install-platform {
+background: white;
+border-radius: 24px;
+padding: 36px 32px;
+border: 1.5px solid var(–cream-dark);
+}
+.install-platform-header {
+display: flex;
+align-items: center;
+gap: 14px;
+margin-bottom: 28px;
+}
+.install-platform-icon {
+width: 48px; height: 48px;
+border-radius: 14px;
+display: flex; align-items: center; justify-content: center;
+font-size: 24px;
+}
+.install-platform-icon.ios { background: #f0f0f5; }
+.install-platform-icon.android { background: #e8f5e9; }
+.install-platform-name {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+font-weight: 500;
+letter-spacing: -0.01em;
+}
+.install-platform-sub { font-size: 12px; color: var(–text-3); margin-top: 2px; }
+.install-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.install-step { display: flex; gap: 14px; align-items: flex-start; }
+.step-num {
+width: 26px; height: 26px; border-radius: 50%;
+background: var(–green);
+color: white;
+font-size: 12px;
+font-weight: 600;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
+.step-text { font-size: 14px; color: var(–text-2); line-height: 1.5; padding-top: 3px; }
+.step-text strong { color: var(–text); font-weight: 500; }
+
+.install-url {
+margin-top: 48px;
+background: var(–green);
+border-radius: 20px;
+padding: 28px 36px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 24px;
+}
+.install-url-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+.install-url-value {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+color: white;
+font-weight: 500;
+letter-spacing: -0.01em;
+}
+.install-url-btn {
+background: white;
+color: var(–green);
+padding: 10px 20px;
+border-radius: 100px;
+font-size: 13px;
+font-weight: 500;
+text-decoration: none;
+white-space: nowrap;
+font-family: ‘DM Sans’, sans-serif;
+transition: transform 0.15s;
+display: inline-block;
+}
+.install-url-btn:hover { transform: scale(1.03); }
+
+/* ── KI SECTION ── */
+.ki-bg { background: var(–cream-dark); }
+.ki-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 40px;
+align-items: start;
+margin-top: 48px;
+}
+.ki-types { display: flex; flex-direction: column; gap: 12px; }
+.ki-type {
+background: white;
+border-radius: 16px;
+padding: 18px 20px;
+display: flex;
+gap: 14px;
+align-items: flex-start;
+border: 1.5px solid transparent;
+transition: border-color 0.15s;
+}
+.ki-type:hover { border-color: #c8dfd3; }
+.ki-type-icon { font-size: 24px; flex-shrink: 0; }
+.ki-type-title { font-size: 14px; font-weight: 600; color: var(–text); margin-bottom: 3px; }
+.ki-type-desc { font-size: 13px; color: var(–text-2); line-height: 1.45; }
+.ki-note {
+background: var(–amber-soft);
+border-radius: 16px;
+padding: 20px;
+border-left: 3px solid var(–amber);
+margin-top: 12px;
+}
+.ki-note-title { font-size: 13px; font-weight: 600; color: var(–amber); margin-bottom: 6px; }
+.ki-note-text { font-size: 13px; color: var(–text-2); line-height: 1.5; }
+.ki-anon {
+background: white;
+border-radius: 20px;
+padding: 28px;
+border: 1.5px solid #c8dfd3;
+}
+.ki-anon-title {
+font-family: ‘Lora’, serif;
+font-size: 20px;
+font-weight: 500;
+color: var(–green);
+margin-bottom: 16px;
+letter-spacing: -0.01em;
+}
+.anon-flow {
+display: flex;
+flex-direction: column;
+gap: 0;
+}
+.anon-step {
+display: flex;
+gap: 12px;
+padding: 10px 0;
+position: relative;
+}
+.anon-step:not(:last-child)::after {
+content: ‘’;
+position: absolute;
+left: 11px; top: 36px;
+width: 2px; bottom: 0;
+background: #dde8e2;
+}
+.anon-dot {
+width: 24px; height: 24px;
+border-radius: 50%;
+background: var(–green-soft);
+border: 2px solid var(–green-light);
+flex-shrink: 0;
+position: relative; z-index: 1;
+}
+.anon-text { font-size: 13px; color: var(–text-2); line-height: 1.5; padding-top: 2px; }
+.anon-text strong { color: var(–text); }
+.anon-code {
+font-family: monospace;
+background: var(–green-soft);
+color: var(–green-mid);
+padding: 1px 6px;
+border-radius: 4px;
+font-size: 12px;
+}
+
+/* ── CONTACT ── */
+.contact-bg { background: var(–green); }
+.contact-inner {
+text-align: center;
+padding: 80px 48px;
+}
+.contact-title {
+font-family: ‘Lora’, serif;
+font-size: clamp(28px, 4vw, 44px);
+font-weight: 500;
+color: white;
+letter-spacing: -0.02em;
+margin-bottom: 16px;
+}
+.contact-title em { font-style: italic; color: #86c9a0; }
+.contact-sub { font-size: 16px; color: rgba(255,255,255,0.65); margin-bottom: 40px; line-height: 1.5; }
+.contact-card {
+display: inline-flex;
+align-items: center;
+gap: 14px;
+background: rgba(255,255,255,0.1);
+border: 1px solid rgba(255,255,255,0.2);
+border-radius: 100px;
+padding: 14px 28px;
+text-decoration: none;
+transition: all 0.2s;
+}
+.contact-card:hover { background: rgba(255,255,255,0.18); transform: translateY(-1px); }
+.contact-name { font-size: 15px; font-weight: 500; color: white; }
+.contact-email { font-size: 13px; color: rgba(255,255,255,0.6); }
+.contact-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.2); }
+
+/* ── FOOTER ── */
+footer {
+background: #0d1f17;
+padding: 32px 48px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+flex-wrap: wrap;
+}
+.footer-brand { display: flex; align-items: center; gap: 10px; }
+.footer-logo {
+width: 28px; height: 28px;
+background: var(–green-mid);
+border-radius: 8px;
+display: flex; align-items: center; justify-content: center;
+}
+.footer-name {
+font-family: ‘Lora’, serif;
+font-size: 16px;
+font-weight: 500;
+color: white;
+}
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.4); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+.hero { grid-template-columns: 1fr; min-height: auto; }
+.hero-left { padding: 48px 24px 32px; }
+.hero-right { display: none; }
+.hero-stats { flex-wrap: wrap; gap: 20px; }
+.container, .container-sm { padding: 0 24px; }
+section { padding: 64px 0; }
+.features-grid { grid-template-columns: 1fr; }
+.privacy-grid, .ki-grid, .install-grid { grid-template-columns: 1fr; }
+.install-url { flex-direction: column; gap: 16px; text-align: center; }
+footer { justify-content: center; text-align: center; }
+}
+
+/* ── PRINT ── */
+@media print {
+.hero { min-height: auto; page-break-after: always; }
+section { padding: 48px 0; }
+.phone-mock { display: none; }
+.hero-right { display: none; }
+.hero { grid-template-columns: 1fr; }
+}
+
+/* ── ANIMATIONS ── */
+.fade-in {
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: none; }
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge"><div class="hero-tag"></div>Für Kindergartenpädagog:innen</div>
+    <h1 class="hero-title">Beobachtungen,<br><em>die wirken.</em></h1>
+    <p class="hero-subtitle">Sprosse wurde von Grund auf mit einem klaren Ziel entwickelt: <strong style="color:#86c9a0">Kinderdaten gehören nicht in die Cloud.</strong> Alle Beobachtungen bleiben lokal auf deinem Gerät – und trotzdem bekommst du Spracheingabe, KI-Berichte und ein vollständiges Entwicklungsraster. Direkt am Handy, ohne Installation, ohne Kompromisse beim Datenschutz.</p>
+    <div class="hero-ctas">
+      <a href="https://edergeorg.github.io/sprosse" class="btn-hero primary">App öffnen →</a>
+      <a href="#installation" class="btn-hero outline">Installationsanleitung</a>
+    </div>
+    </div>
+
+```
+<div class="hero-stats">
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Lokal & offline</div></div>
+  <div class="stat"><div class="stat-num">0</div><div class="stat-label">Cloud-Daten</div></div>
+  <div class="stat"><div class="stat-num">🔒</div><div class="stat-label">DSGVO-konform</div></div>
+</div>
+```
+
+  </div>
+  <div class="hero-right">
+    <div class="phone-mock">
+      <div class="phone-screen">
+        <div class="phone-hdr">
+          <div class="phone-logo-sm">
+            <svg width="14" height="14" viewBox="0 0 80 80" fill="none">
+              <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="7" stroke-linecap="round"/>
+              <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
+              <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
+            </svg>
+          </div>
+          <span class="phone-title">Sprosse</span>
+        </div>
+        <div class="phone-content">
+          <div class="phone-card">
+            <div class="phone-card-title">MEINE GRUPPE</div>
+            <div class="phone-child-grid">
+              <div class="phone-child">
+                <div class="phone-av" style="background:#daeeff;color:#0c447c">Em</div>
+                <div class="phone-cname">Emma</div>
+                <div class="phone-cage">5 Jahre</div>
+              </div>
+              <div class="phone-child">
+                <div class="phone-av" style="background:#d4f0e8;color:#065e3f">Li</div>
+                <div class="phone-cname">Liam</div>
+                <div class="phone-cage">4 Jahre</div>
+              </div>
+              <div class="phone-child">
+                <div class="phone-av" style="background:#ece8fe;color:#3a2ea8">Mi</div>
+                <div class="phone-cname">Mia</div>
+                <div class="phone-cage">5 Jahre</div>
+              </div>
+              <div class="phone-child" style="background:#fff3e0;border:1.5px solid #e8c080">
+                <div class="phone-av" style="background:#fef3d0;color:#7a4a0a">No</div>
+                <div class="phone-cname">Noah</div>
+                <div class="phone-cage" style="color:#c87820">Ausstehend</div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-obs-card">
+            <div class="phone-obs-meta">
+              <span style="font-size:13px">😊</span>
+              <span class="phone-obs-date">Heute</span>
+              <span class="phone-obs-tag">Motorik</span>
+            </div>
+            <div class="phone-obs-text">Liam hat heute zum ersten Mal alleine die Schuhe zugebunden – sichtlich stolz!</div>
+          </div>
+        </div>
+        <div class="phone-nav">
+          <div class="phone-nb active">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span>Gruppe</span>
+          </div>
+          <div class="phone-nb">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+            <span>Warnungen</span>
+          </div>
+          <div class="phone-nb">
+            <svg viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <span>Übersicht</span>
+          </div>
+          <div class="phone-nb">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span>Berichte</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+
+<section class="features-bg">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Features</div>
+      <h2 class="section-title">Alles was du brauchst,<br><em>nichts was du nicht brauchst.</em></h2>
+      <p class="section-lead">Sprosse ist so gestaltet dass das Dokumentieren so wenig Zeit wie möglich kostet – damit mehr Zeit für die Kinder bleibt.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🎤</span>
+        <div class="feature-title">Spracheingabe</div>
+        <div class="feature-desc">Beobachtungen einfach diktieren – der Text wird automatisch erkannt. Kein Tippen nötig, auch mit beschäftigten Händen.</div>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">📸</span>
+        <div class="feature-title">Fotoanhänge</div>
+        <div class="feature-desc">Bilder direkt zur Beobachtung hinzufügen. Alle Fotos bleiben lokal auf dem Gerät – kein Upload in die Cloud.</div>
+      </div>
+      <div class="feature-card accent fade-in">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-title">KI-Berichte</div>
+        <div class="feature-desc">Elternbriefe, Entwicklungsberichte, Gesprächsvorbereitung – in Sekunden erstellt, auf Basis deiner eigenen Beobachtungen.</div>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">📊</span>
+        <div class="feature-title">Entwicklungsraster</div>
+        <div class="feature-desc">30 pädagogische Kriterien über 6 Entwicklungsbereiche. Fortschrittsanzeige pro Kind auf einen Blick.</div>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">🔔</span>
+        <div class="feature-title">Erinnerungssystem</div>
+        <div class="feature-desc">Automatische Warnung wenn ein Kind zu lange nicht beobachtet wurde. Intervall frei einstellbar.</div>
+      </div>
+      <div class="feature-card fade-in">
+        <span class="feature-icon">📱</span>
+        <div class="feature-title">Wie eine echte App</div>
+        <div class="feature-desc">Am Homescreen installierbar. Funktioniert offline. Kein App Store, keine Updates, keine Abo-Kosten.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATENSCHUTZ -->
+
+<section class="privacy-bg">
+  <div class="container">
+    <div class="privacy-grid">
+      <div class="fade-in">
+        <div class="privacy-visual">
+          <div class="privacy-icon">🔒</div>
+          <div class="privacy-visual-title">Kinderdaten gehören<br>nicht in die Cloud.</div>
+          <div class="privacy-visual-sub">Lokal gespeichert · Anonym übertragen · Sicher gesperrt</div>
+        </div>
+      </div>
+      <div class="fade-in">
+        <div class="section-tag">🔒 Das wichtigste Feature</div>
+        <h2 class="section-title">DSGVO-freundlich<br><em>von Grund auf.</em></h2>
+        <div class="privacy-items" style="margin-top:28px">
+          <div class="privacy-item">
+            <div class="privacy-check">🏠</div>
+            <div>
+              <div class="privacy-item-title">Alles bleibt lokal</div>
+              <div class="privacy-item-desc">Alle Beobachtungen, Fotos und Daten werden ausschließlich auf deinem Gerät gespeichert. Kein Server, keine Cloud, kein Dritter.</div>
+            </div>
+          </div>
+          <div class="privacy-item">
+            <div class="privacy-check">🕵️</div>
+            <div>
+              <div class="privacy-item-title">Automatische Anonymisierung</div>
+              <div class="privacy-item-desc">Bei KI-Berichten werden Kindernamen vor dem Absenden automatisch durch Codes ersetzt. Anthropic sieht niemals echte Namen.</div>
+            </div>
+          </div>
+          <div class="privacy-item">
+            <div class="privacy-check">🔐</div>
+            <div>
+              <div class="privacy-item-title">Optionaler PIN-Schutz</div>
+              <div class="privacy-item-desc">4-stelliger PIN sperrt die App beim Öffnen. Ideal wenn das Handy auch von anderen genutzt wird.</div>
+            </div>
+          </div>
+          <div class="privacy-item">
+            <div class="privacy-check">💾</div>
+            <div>
+              <div class="privacy-item-title">Export & Backup</div>
+              <div class="privacy-item-desc">Alle Daten jederzeit als JSON-Datei exportieren. Import auf einem anderen Gerät möglich.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALLATION -->
+
+<section class="install-bg" id="installation">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Installation</div>
+      <h2 class="section-title">In 3 Schritten<br><em>am Homescreen.</em></h2>
+      <p class="section-lead">Keine App-Store-Genehmigung, kein Download, kein Warten. Sprosse funktioniert direkt im Browser und lässt sich als vollwertige App installieren.</p>
+    </div>
+    <div class="install-grid fade-in" style="margin-top:48px">
+      <div class="install-platform">
+        <div class="install-platform-header">
+          <div class="install-platform-icon ios">🍎</div>
+          <div>
+            <div class="install-platform-name">iPhone & iPad</div>
+            <div class="install-platform-sub">Safari Browser</div>
+          </div>
+        </div>
+        <ol class="install-steps">
+          <li class="install-step">
+            <div class="step-num">1</div>
+            <div class="step-text">Öffne <strong>Safari</strong> und gehe zu:<br><code style="font-size:12px;background:#f5f5f5;padding:2px 6px;border-radius:4px">edergeorg.github.io/sprosse</code></div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">2</div>
+            <div class="step-text">Tippe unten in der Leiste auf das <strong>Teilen-Symbol</strong> <span style="font-size:16px">⬆️</span></div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">3</div>
+            <div class="step-text">Wähle <strong>„Zum Home-Bildschirm"</strong> → Tippe oben rechts auf <strong>„Hinzufügen"</strong></div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">✓</div>
+            <div class="step-text" style="color:#2d6348;font-weight:500">Sprosse erscheint als App-Icon auf deinem Homescreen!</div>
+          </li>
+        </ol>
+      </div>
+      <div class="install-platform">
+        <div class="install-platform-header">
+          <div class="install-platform-icon android">🤖</div>
+          <div>
+            <div class="install-platform-name">Android</div>
+            <div class="install-platform-sub">Chrome Browser</div>
+          </div>
+        </div>
+        <ol class="install-steps">
+          <li class="install-step">
+            <div class="step-num">1</div>
+            <div class="step-text">Öffne <strong>Chrome</strong> und gehe zu:<br><code style="font-size:12px;background:#f5f5f5;padding:2px 6px;border-radius:4px">edergeorg.github.io/sprosse</code></div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">2</div>
+            <div class="step-text">Tippe oben rechts auf das <strong>Menü ⋮</strong></div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">3</div>
+            <div class="step-text">Wähle <strong>„Zum Startbildschirm hinzufügen"</strong> → Bestätigen</div>
+          </li>
+          <li class="install-step">
+            <div class="step-num">✓</div>
+            <div class="step-text" style="color:#2d6348;font-weight:500">Sprosse ist installiert und bereit!</div>
+          </li>
+        </ol>
+      </div>
+    </div>
+        <div class="install-url fade-in">
+      <div>
+        <div class="install-url-label">App-URL</div>
+        <div class="install-url-value">edergeorg.github.io/sprosse</div>
+      </div>
+      <a href="https://edergeorg.github.io/sprosse" class="install-url-btn">Jetzt öffnen →</a>
+    </div>
+  </div>
+</section>
+
+<!-- KI -->
+
+<section class="ki-bg">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">KI-Berichte</div>
+      <h2 class="section-title">Elternbriefe schreiben<br><em>in Sekunden.</em></h2>
+      <p class="section-lead">Sprosse kann auf Basis deiner Beobachtungen professionelle Berichte erstellen – optional, datenschutzkonform und ohne Vorkenntnisse nutzbar.</p>
+    </div>
+    <div class="ki-grid">
+      <div class="fade-in">
+        <div class="ki-types">
+          <div class="ki-type">
+            <div class="ki-type-icon">📝</div>
+            <div>
+              <div class="ki-type-title">Elternbrief</div>
+              <div class="ki-type-desc">Herzlicher, persönlicher Brief mit konkreten Beobachtungen und positivem Ausblick.</div>
+            </div>
+          </div>
+          <div class="ki-type">
+            <div class="ki-type-icon">📈</div>
+            <div>
+              <div class="ki-type-title">Entwicklungsbericht</div>
+              <div class="ki-type-desc">Strukturierter pädagogischer Bericht nach Entwicklungsbereichen gegliedert.</div>
+            </div>
+          </div>
+          <div class="ki-type">
+            <div class="ki-type-icon">💬</div>
+            <div>
+              <div class="ki-type-title">Gesprächsvorbereitung</div>
+              <div class="ki-type-desc">Stichpunkte und Gesprächsleitfaden für Elterngespräche – mit offenen Fragen.</div>
+            </div>
+          </div>
+          <div class="ki-type">
+            <div class="ki-type-icon">📋</div>
+            <div>
+              <div class="ki-type-title">Kurzzusammenfassung</div>
+              <div class="ki-type-desc">Kompakter Überblick in 150 Wörtern – für schnelle Einschätzungen.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ki-note">
+          <div class="ki-note-title">💡 Ohne API-Key nutzbar</div>
+          <div class="ki-note-text">Sprosse kopiert den fertigen Prompt in die Zwischenablage – einfach in Claude.ai oder ChatGPT einfügen. Kein Account bei Anthropic nötig.</div>
+        </div>
+      </div>
+      <div class="fade-in">
+        <div class="ki-anon">
+          <div class="ki-anon-title">🕵️ So funktioniert die Anonymisierung</div>
+          <div class="anon-flow">
+            <div class="anon-step">
+              <div class="anon-dot"></div>
+              <div class="anon-text"><strong>Du wählst ein Kind</strong> und tippst auf „Bericht erstellen"</div>
+            </div>
+            <div class="anon-step">
+              <div class="anon-dot"></div>
+              <div class="anon-text">Sprosse ersetzt automatisch <strong>„Emma"</strong> durch <span class="anon-code">Kind_A</span> – bevor etwas gesendet wird</div>
+            </div>
+            <div class="anon-step">
+              <div class="anon-dot"></div>
+              <div class="anon-text">Die KI schreibt den Bericht mit <span class="anon-code">Kind_A</span> – <strong>kein echter Name verlässt dein Gerät</strong></div>
+            </div>
+            <div class="anon-step">
+              <div class="anon-dot"></div>
+              <div class="anon-text">Sprosse setzt <span class="anon-code">Kind_A</span> zurück auf <strong>„Emma"</strong> – du siehst einen vollständigen Bericht</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+
+<section class="contact-bg">
+  <div class="container">
+    <div class="contact-inner fade-in">
+      <h2 class="contact-title">Fragen? Feedback?<br><em>Meld dich gerne.</em></h2>
+      <p class="contact-sub">Sprosse wird laufend weiterentwickelt. Ideen, Wünsche und Fehlerberichte sind herzlich willkommen.</p>
+            <a href="mailto:hallo@ederge.org" class="contact-card">
+        <div>
+          <div class="contact-name">Georg Eder</div>
+          <div class="contact-email">hallo@ederge.org</div>
+        </div>
+        <div class="contact-divider"></div>
+        <div style="font-size:20px">✉️</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo">
+      <svg width="14" height="14" viewBox="0 0 80 80" fill="none">
+        <path d="M40 62 C40 62 40 38 40 30" stroke="#86c9a0" stroke-width="7" stroke-linecap="round"/>
+        <path d="M40 44 C40 44 28 40 26 32 C34 32 40 38 40 44Z" fill="#4caf7d"/>
+        <path d="M40 36 C40 36 52 32 54 24 C46 24 40 30 40 36Z" fill="#86c9a0"/>
+      </svg>
+    </div>
+    <span class="footer-name">Sprosse</span>
+  </div>
+  <div class="footer-copy">© 2025 Georg Eder · hallo@ederge.org · Alle Rechte vorbehalten</div>
+</footer>
+
+<script>
+(function() {
+  // Fade-in on scroll
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry, i) {
+        if (entry.isIntersecting) {
+          setTimeout(function() {
+            entry.target.classList.add('visible');
+          }, i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade-in').forEach(function(el) {
+      observer.observe(el);
+    });
+  } else {
+    // Fallback: show everything immediately
+    document.querySelectorAll('.fade-in').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+  
+  // Also show elements that are already in viewport on load
+  setTimeout(function() {
+    document.querySelectorAll('.fade-in').forEach(function(el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) {
+        el.classList.add('visible');
+      }
+    });
+  }, 100);
+})();
+</script>
+
+</body>
+</html>
