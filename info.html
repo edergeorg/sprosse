@@ -31,8 +31,8 @@ html { scroll-behavior: smooth; }
 
 body {
 font-family: ‘DM Sans’, sans-serif;
-background: var(–cream);
-color: var(–text);
+background: #faf6ef;
+color: #1a1a18;
 font-size: 16px;
 line-height: 1.6;
 -webkit-font-smoothing: antialiased;
@@ -41,7 +41,7 @@ line-height: 1.6;
 /* ── HERO ── */
 .hero {
 min-height: 100vh;
-background: var(–green);
+background: #1e4535;
 display: grid;
 grid-template-columns: 1fr 1fr;
 overflow: hidden;
@@ -117,7 +117,7 @@ transition: all 0.2s;
 }
 .btn-hero.primary {
 background: #ffffff;
-color: var(–green);
+color: #1e4535;
 }
 .btn-hero.primary:hover { background: #e8f4ee; transform: translateY(-1px); }
 .btn-hero.outline {
@@ -244,7 +244,7 @@ align-items: center;
 gap: 6px;
 font-size: 11px;
 font-weight: 600;
-color: var(–green-mid);
+color: #2d6348;
 letter-spacing: 0.1em;
 text-transform: uppercase;
 margin-bottom: 16px;
@@ -252,7 +252,7 @@ margin-bottom: 16px;
 .section-tag::before {
 content: ‘’;
 width: 20px; height: 1.5px;
-background: var(–green-light);
+background: #4a9268;
 }
 .section-title {
 font-family: ‘Lora’, serif;
@@ -260,19 +260,19 @@ font-size: clamp(30px, 4vw, 46px);
 font-weight: 500;
 line-height: 1.12;
 letter-spacing: -0.02em;
-color: var(–text);
+color: #1a1a18;
 margin-bottom: 16px;
 }
-.section-title em { font-style: italic; color: var(–green-mid); }
+.section-title em { font-style: italic; color: #2d6348; }
 .section-lead {
 font-size: 17px;
-color: var(–text-2);
+color: #4a4a45;
 line-height: 1.65;
 max-width: 560px;
 }
 
 /* ── FEATURES ── */
-.features-bg { background: var(–cream); }
+.features-bg { background: #faf6ef; }
 .features-grid {
 display: grid;
 grid-template-columns: repeat(3, 1fr);
@@ -280,7 +280,7 @@ gap: 24px;
 margin-top: 56px;
 }
 .feature-card {
-background: var(–cream-dark);
+background: #f0ead8;
 border-radius: 24px;
 padding: 32px 28px;
 position: relative;
@@ -305,13 +305,13 @@ display: block;
 font-family: ‘Lora’, serif;
 font-size: 19px;
 font-weight: 500;
-color: var(–text);
+color: #1a1a18;
 margin-bottom: 10px;
 letter-spacing: -0.01em;
 }
-.feature-desc { font-size: 14px; color: var(–text-2); line-height: 1.6; }
+.feature-desc { font-size: 14px; color: #4a4a45; line-height: 1.6; }
 .feature-card.accent {
-background: var(–green);
+background: #1e4535;
 color: white;
 }
 .feature-card.accent .feature-title { color: white; }
@@ -319,7 +319,7 @@ color: white;
 .feature-card.accent::after { background: rgba(255,255,255,0.06); }
 
 /* ── DATENSCHUTZ ── */
-.privacy-bg { background: var(–green-pale); }
+.privacy-bg { background: #f2f8f4; }
 .privacy-grid {
 display: grid;
 grid-template-columns: 1fr 1fr;
@@ -328,7 +328,7 @@ align-items: center;
 margin-top: 0;
 }
 .privacy-visual {
-background: var(–green);
+background: #1e4535;
 border-radius: 28px;
 padding: 40px;
 text-align: center;
@@ -355,16 +355,16 @@ position: relative; z-index: 1;
 .privacy-item { display: flex; gap: 16px; }
 .privacy-check {
 width: 28px; height: 28px; border-radius: 8px;
-background: var(–green-soft);
+background: #e8f4ee;
 display: flex; align-items: center; justify-content: center;
 flex-shrink: 0; margin-top: 2px;
 font-size: 13px;
 }
-.privacy-item-title { font-size: 15px; font-weight: 500; color: var(–text); margin-bottom: 4px; }
-.privacy-item-desc { font-size: 13px; color: var(–text-2); line-height: 1.55; }
+.privacy-item-title { font-size: 15px; font-weight: 500; color: #1a1a18; margin-bottom: 4px; }
+.privacy-item-desc { font-size: 13px; color: #4a4a45; line-height: 1.55; }
 
 /* ── INSTALLATION ── */
-.install-bg { background: var(–cream); }
+.install-bg { background: #faf6ef; }
 .install-grid {
 display: grid;
 grid-template-columns: 1fr 1fr;
@@ -375,7 +375,7 @@ margin-top: 48px;
 background: white;
 border-radius: 24px;
 padding: 36px 32px;
-border: 1.5px solid var(–cream-dark);
+border: 1.5px solid #f0ead8;
 }
 .install-platform-header {
 display: flex;
@@ -397,24 +397,24 @@ font-size: 20px;
 font-weight: 500;
 letter-spacing: -0.01em;
 }
-.install-platform-sub { font-size: 12px; color: var(–text-3); margin-top: 2px; }
+.install-platform-sub { font-size: 12px; color: #888880; margin-top: 2px; }
 .install-steps { list-style: none; display: flex; flex-direction: column; gap: 14px; }
 .install-step { display: flex; gap: 14px; align-items: flex-start; }
 .step-num {
 width: 26px; height: 26px; border-radius: 50%;
-background: var(–green);
+background: #1e4535;
 color: white;
 font-size: 12px;
 font-weight: 600;
 display: flex; align-items: center; justify-content: center;
 flex-shrink: 0;
 }
-.step-text { font-size: 14px; color: var(–text-2); line-height: 1.5; padding-top: 3px; }
-.step-text strong { color: var(–text); font-weight: 500; }
+.step-text { font-size: 14px; color: #4a4a45; line-height: 1.5; padding-top: 3px; }
+.step-text strong { color: #1a1a18; font-weight: 500; }
 
 .install-url {
 margin-top: 48px;
-background: var(–green);
+background: #1e4535;
 border-radius: 20px;
 padding: 28px 36px;
 display: flex;
@@ -432,7 +432,7 @@ letter-spacing: -0.01em;
 }
 .install-url-btn {
 background: white;
-color: var(–green);
+color: #1e4535;
 padding: 10px 20px;
 border-radius: 100px;
 font-size: 13px;
@@ -446,7 +446,7 @@ display: inline-block;
 .install-url-btn:hover { transform: scale(1.03); }
 
 /* ── KI SECTION ── */
-.ki-bg { background: var(–cream-dark); }
+.ki-bg { background: #f0ead8; }
 .ki-grid {
 display: grid;
 grid-template-columns: 1fr 1fr;
@@ -467,17 +467,17 @@ transition: border-color 0.15s;
 }
 .ki-type:hover { border-color: #c8dfd3; }
 .ki-type-icon { font-size: 24px; flex-shrink: 0; }
-.ki-type-title { font-size: 14px; font-weight: 600; color: var(–text); margin-bottom: 3px; }
-.ki-type-desc { font-size: 13px; color: var(–text-2); line-height: 1.45; }
+.ki-type-title { font-size: 14px; font-weight: 600; color: #1a1a18; margin-bottom: 3px; }
+.ki-type-desc { font-size: 13px; color: #4a4a45; line-height: 1.45; }
 .ki-note {
-background: var(–amber-soft);
+background: #fdf3e0;
 border-radius: 16px;
 padding: 20px;
-border-left: 3px solid var(–amber);
+border-left: 3px solid #c4821a;
 margin-top: 12px;
 }
-.ki-note-title { font-size: 13px; font-weight: 600; color: var(–amber); margin-bottom: 6px; }
-.ki-note-text { font-size: 13px; color: var(–text-2); line-height: 1.5; }
+.ki-note-title { font-size: 13px; font-weight: 600; color: #c4821a; margin-bottom: 6px; }
+.ki-note-text { font-size: 13px; color: #4a4a45; line-height: 1.5; }
 .ki-anon {
 background: white;
 border-radius: 20px;
@@ -488,7 +488,7 @@ border: 1.5px solid #c8dfd3;
 font-family: ‘Lora’, serif;
 font-size: 20px;
 font-weight: 500;
-color: var(–green);
+color: #1e4535;
 margin-bottom: 16px;
 letter-spacing: -0.01em;
 }
@@ -513,24 +513,24 @@ background: #dde8e2;
 .anon-dot {
 width: 24px; height: 24px;
 border-radius: 50%;
-background: var(–green-soft);
-border: 2px solid var(–green-light);
+background: #e8f4ee;
+border: 2px solid #4a9268;
 flex-shrink: 0;
 position: relative; z-index: 1;
 }
-.anon-text { font-size: 13px; color: var(–text-2); line-height: 1.5; padding-top: 2px; }
-.anon-text strong { color: var(–text); }
+.anon-text { font-size: 13px; color: #4a4a45; line-height: 1.5; padding-top: 2px; }
+.anon-text strong { color: #1a1a18; }
 .anon-code {
 font-family: monospace;
-background: var(–green-soft);
-color: var(–green-mid);
+background: #e8f4ee;
+color: #2d6348;
 padding: 1px 6px;
 border-radius: 4px;
 font-size: 12px;
 }
 
 /* ── CONTACT ── */
-.contact-bg { background: var(–green); }
+.contact-bg { background: #1e4535; }
 .contact-inner {
 text-align: center;
 padding: 80px 48px;
@@ -574,7 +574,7 @@ flex-wrap: wrap;
 .footer-brand { display: flex; align-items: center; gap: 10px; }
 .footer-logo {
 width: 28px; height: 28px;
-background: var(–green-mid);
+background: #2d6348;
 border-radius: 8px;
 display: flex; align-items: center; justify-content: center;
 }
