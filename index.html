@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -222,8 +223,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .shdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 
 @media(min-width:600px){
-  .cgrid { grid-template-columns:repeat(3,1fr); }
-  .sgrid { grid-template-columns:repeat(4,1fr); }
+.cgrid { grid-template-columns:repeat(3,1fr); }
+.sgrid { grid-template-columns:repeat(4,1fr); }
 }
 
 /* PIN SCREEN */
@@ -248,8 +249,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </head>
 <body>
 
-
 <!-- PIN SCREEN -->
+
 <div id="pin-screen" class="hide">
   <svg class="pin-logo" width="72" height="72" viewBox="0 0 80 80">
     <rect width="80" height="80" rx="20" fill="rgba(255,255,255,0.15)"/>
@@ -284,6 +285,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- SPLASH -->
+
 <div id="splash">
   <svg class="splash-logo" width="96" height="96" viewBox="0 0 80 80">
     <rect width="80" height="80" rx="22" fill="rgba(255,255,255,0.15)"/>
@@ -300,6 +302,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- HEADER -->
+
 <div id="hdr">
   <button id="back-btn" onclick="goBack()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -325,6 +328,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- CONTENT -->
+
 <div id="content">
   <!-- GRUPPE -->
   <div class="panel active" id="panel-gruppe">
@@ -340,6 +344,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- KIND -->
+
   <div class="panel" id="panel-kind">
     <div class="voice-zone">
       <button class="mic" id="mic-btn" onclick="toggleRec()">
@@ -403,6 +408,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- ERINNERUNGEN -->
+
   <div class="panel" id="panel-erinnerungen">
     <div class="warn-card" id="warn-main" style="display:none">
       <div class="warn-title">⚠️ Brauchen Aufmerksamkeit</div>
@@ -420,6 +426,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- DASHBOARD -->
+
   <div class="panel" id="panel-dashboard">
     <div class="sgrid">
       <div class="scard"><div class="snum" id="d-kids">0</div><div class="slbl">Kinder</div></div>
@@ -432,6 +439,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- BERICHTE -->
+
   <div class="panel" id="panel-berichte">
     <div class="card">
       <div class="card-title">Bericht erstellen</div>
@@ -476,6 +484,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- MEHR -->
+
   <div class="panel" id="panel-mehr">
     <div class="card"><div class="card-title">Kind anlegen</div><button class="btn primary" onclick="openModal('modal-kind')">+ Neues Kind anlegen</button></div>
     <div class="card" id="pin-card">
@@ -519,6 +528,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- BOTTOM NAV -->
+
 <nav id="bnav">
   <button class="nb on" data-p="gruppe" onclick="nav('gruppe')">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
@@ -544,6 +554,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </nav>
 
 <!-- MODAL: Kind -->
+
 <div class="modal-bg" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -570,6 +581,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- MODAL: Raster -->
+
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -580,6 +592,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- Install Banner -->
+
 <div id="ibanner">
   <div style="font-size:28px;flex-shrink:0">📲</div>
   <div style="flex:1">
@@ -590,7 +603,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <div class="toast" id="toast"></div>
-
 
 <script>
 
@@ -1074,7 +1086,11 @@ function maybeShowInstall(){
 function dismissInstall(){document.getElementById('ibanner').classList.remove('show');localStorage.setItem('sprosse_install_dismissed','1');}
 
 // ── INIT ──
-if(!load()||!S.children.length) seedDemo();
+if(!load()||!S.children.length) {
+  seedDemo();
+  // Mark as first launch
+  localStorage.setItem('sprosse_first_launch', '1');
+}
 if(!S.pinEnabled) S.pinEnabled = false;
 // Dynamically set content top based on actual header height
 function fixContentTop(){
@@ -1237,5 +1253,56 @@ function deanonymize(text, children){
   return result;
 }
 </script>
+
+<!-- FIRST LAUNCH NOTICE -->
+
+<div id="first-launch-banner" style="
+  display:none;
+  position:fixed;
+  bottom:calc(60px + env(safe-area-inset-bottom,0px) + 12px);
+  left:12px;right:12px;z-index:300;
+  background:#1a3a2a;color:#fff;
+  border-radius:16px;padding:16px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  border:1px solid #2d5f4a;
+  animation:slideUp 0.4s cubic-bezier(0.32,0.72,0,1);
+">
+  <div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:24px;flex-shrink:0">🌱</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">Willkommen bei Sprosse!</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5">Es wurden Demo-Daten geladen damit du die App gleich ausprobieren kannst. Du kannst diese jederzeit unter <strong style="color:#86c9a0">Mehr → Alles löschen</strong> entfernen.</div>
+    </div>
+    <button onclick="dismissFirstLaunch()" style="
+      background:rgba(255,255,255,0.15);border:none;color:#fff;
+      width:28px;height:28px;border-radius:8px;cursor:pointer;
+      font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+      -webkit-appearance:none;
+    ">✕</button>
+  </div>
+</div>
+
+<!-- FIRST LAUNCH NOTICE -->
+
+<div id="first-launch-banner" style="
+  display:none;
+  position:fixed;
+  bottom:calc(60px + env(safe-area-inset-bottom,0px) + 12px);
+  left:12px;right:12px;z-index:300;
+  background:#1a3a2a;color:#fff;
+  border-radius:16px;padding:16px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  border:1px solid #2d5f4a;
+  animation:slideUp 0.4s cubic-bezier(0.32,0.72,0,1);
+">
+  <div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:24px;flex-shrink:0">🌱</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">Willkommen bei Sprosse!</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5">Es wurden Demo-Daten geladen damit du die App gleich ausprobieren kannst. Du kannst diese jederzeit unter <strong style="color:#86c9a0">Mehr &rarr; Alles l&ouml;schen</strong> entfernen.</div>
+    </div>
+    <button onclick="dismissFirstLaunch()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;">&#x2715;</button>
+  </div>
+</div>
 </body>
 </html>
