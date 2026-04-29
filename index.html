@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Sprosse">
 <meta name="theme-color" content="#2d5f4a">
-<title>Sprosse</title>
+<title>Sprosse Beta</title>
 <link rel="apple-touch-icon" id="touch-icon" href="">
 <style>
 html, body { height:100%; overflow:hidden; background:#f6f3ee; position:relative; }
@@ -223,8 +222,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .shdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 
 @media(min-width:600px){
-.cgrid { grid-template-columns:repeat(3,1fr); }
-.sgrid { grid-template-columns:repeat(4,1fr); }
+  .cgrid { grid-template-columns:repeat(3,1fr); }
+  .sgrid { grid-template-columns:repeat(4,1fr); }
 }
 
 /* PIN SCREEN */
@@ -249,8 +248,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </head>
 <body>
 
-<!-- PIN SCREEN -->
 
+<!-- PIN SCREEN -->
 <div id="pin-screen" class="hide">
   <svg class="pin-logo" width="72" height="72" viewBox="0 0 80 80">
     <rect width="80" height="80" rx="20" fill="rgba(255,255,255,0.15)"/>
@@ -285,7 +284,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- SPLASH -->
-
 <div id="splash">
   <svg class="splash-logo" width="96" height="96" viewBox="0 0 80 80">
     <rect width="80" height="80" rx="22" fill="rgba(255,255,255,0.15)"/>
@@ -299,10 +297,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </svg>
   <div class="splash-name">Sprosse</div>
   <div class="splash-sub">Kinderentwicklung begleiten</div>
+  <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;padding:4px 14px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:0.1em">BETA</div>
 </div>
 
 <!-- HEADER -->
-
 <div id="hdr">
   <button id="back-btn" onclick="goBack()">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -320,15 +318,24 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
   <div style="flex:1;min-width:0">
     <div id="hdr-title">Sprosse</div>
-    <div id="hdr-sub"></div>
+    <div id="hdr-sub" style="display:flex;align-items:center;gap:6px"><span id="hdr-sub-text"></span><span style="background:#c87820;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px;letter-spacing:0.06em">BETA</span></div>
   </div>
-  <button id="hdr-plus" onclick="openModal('modal-kind')">
+  <button id="hdr-delete-child" style="
+  width:38px;height:38px;border-radius:12px;
+  border:1.5px solid rgba(192,48,48,0.3);
+  background:rgba(192,48,48,0.08);color:#c03030;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;-webkit-appearance:none;
+  margin-right:6px;
+">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+</button>
+<button id="hdr-plus" onclick="openModal('modal-kind')">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 </div>
 
 <!-- CONTENT -->
-
 <div id="content">
   <!-- GRUPPE -->
   <div class="panel active" id="panel-gruppe">
@@ -344,7 +351,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- KIND -->
-
   <div class="panel" id="panel-kind">
     <div class="voice-zone">
       <button class="mic" id="mic-btn" onclick="toggleRec()">
@@ -408,7 +414,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- ERINNERUNGEN -->
-
   <div class="panel" id="panel-erinnerungen">
     <div class="warn-card" id="warn-main" style="display:none">
       <div class="warn-title">⚠️ Brauchen Aufmerksamkeit</div>
@@ -426,7 +431,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- DASHBOARD -->
-
   <div class="panel" id="panel-dashboard">
     <div class="sgrid">
       <div class="scard"><div class="snum" id="d-kids">0</div><div class="slbl">Kinder</div></div>
@@ -439,7 +443,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- BERICHTE -->
-
   <div class="panel" id="panel-berichte">
     <div class="card">
       <div class="card-title">Bericht erstellen</div>
@@ -484,7 +487,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 
   <!-- MEHR -->
-
   <div class="panel" id="panel-mehr">
     <div class="card"><div class="card-title">Kind anlegen</div><button class="btn primary" onclick="openModal('modal-kind')">+ Neues Kind anlegen</button></div>
     <div class="card" id="pin-card">
@@ -521,14 +523,19 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
         <path d="M40 62 C44 62 48 66 50 68" stroke="#86c9a0" stroke-width="3" stroke-linecap="round" fill="none"/>
         <ellipse cx="40" cy="62" rx="13" ry="3" fill="#1a3a2a" opacity="0.4"/>
       </svg>
-      <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px">Sprosse</div>
-      <div style="font-size:12px;color:#9c9790">Kinderentwicklung liebevoll begleiten</div>
+      <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
+        <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
+      </div>
+      <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
+      <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left">
+        🚧 Diese App befindet sich in der Beta-Phase. Funktionen können sich noch ändern. Feedback und Fehlerberichte bitte an <span style="color:#2d5f4a;font-weight:500">hallo@ederge.org</span>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
-
 <nav id="bnav">
   <button class="nb on" data-p="gruppe" onclick="nav('gruppe')">
     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
@@ -554,7 +561,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </nav>
 
 <!-- MODAL: Kind -->
-
 <div class="modal-bg" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -581,7 +587,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- MODAL: Raster -->
-
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -592,7 +597,6 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <!-- Install Banner -->
-
 <div id="ibanner">
   <div style="font-size:28px;flex-shrink:0">📲</div>
   <div style="flex:1">
@@ -603,6 +607,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 </div>
 
 <div class="toast" id="toast"></div>
+
 
 <script>
 
@@ -684,11 +689,13 @@ function nav(p){
   document.getElementById('back-btn').classList.remove('show');
   document.getElementById('hdr-logo').style.display='flex';
   document.getElementById('hdr-plus').classList.remove('show');
+  var delBtn = document.getElementById('hdr-delete-child');
+  if(delBtn) delBtn.style.display='none';
   const titles={gruppe:'Sprosse',dashboard:'Übersicht',erinnerungen:'Erinnerungen',berichte:'Berichte',mehr:'Einstellungen'};
   document.getElementById('hdr-title').textContent=titles[p]||p;
   document.getElementById('hdr-title').style.fontSize='22px';
   document.getElementById('hdr-title').style.fontWeight='700';
-  document.getElementById('hdr-sub').textContent=todayHuman();
+  document.getElementById('hdr-sub-text').textContent=todayHuman();
   if(p==='gruppe'){document.getElementById('hdr-plus').classList.add('show');renderGroup();}
   else if(p==='dashboard') renderDash();
   else if(p==='erinnerungen') renderRemind();
@@ -718,7 +725,10 @@ function openChild(id){
   document.getElementById('hdr-title').textContent=curChild.name;
   document.getElementById('hdr-title').style.fontSize='20px';
   document.getElementById('hdr-title').style.fontWeight='600';
-  document.getElementById('hdr-sub').textContent=curChild.age;
+  document.getElementById('hdr-sub-text').textContent=curChild.age;
+  // Show delete button for this child
+  var delBtn = document.getElementById('hdr-delete-child');
+  if(delBtn) { delBtn.style.display='flex'; delBtn.onclick=function(){ deleteChild(curChild.id); }; }
   renderRasterSummary(); renderObsList();
   window.scrollTo(0,0);
 }
@@ -1060,7 +1070,8 @@ function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.get
 
 // ── EINSTELLUNGEN ──
 function saveKey(){S.apiKey=document.getElementById('api-key').value.trim();save();toast('Gespeichert ✓');}
-function exportData(){const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='Sprosse_'+today().replace(/\./g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);toast('Exportiert');}
+function exportData(){
+  localStorage.setItem('sprosse_last_export', Date.now().toString());const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='Sprosse_'+today().replace(/\./g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);toast('Exportiert');}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.children)throw new Error('Ungültiges Format');if(confirm('Alle bestehenden Daten ersetzen?')){S=d;save();nav('gruppe');toast('Importiert ✓');}}catch(err){toast('Fehler: '+err.message);}};r.readAsText(f);e.target.value='';}
 function resetDemo(){if(!confirm('Demo-Daten laden?'))return;seedDemo();nav('gruppe');toast('Demo geladen');}
 function deleteAll(){if(!confirm('WIRKLICH alles löschen?'))return;if(!confirm('Endgültig?'))return;S={children:[],nextId:1,remindDays:5,apiKey:''};save();nav('gruppe');toast('Alles gelöscht');}
@@ -1104,7 +1115,7 @@ fixContentTop();
 window.addEventListener('resize', fixContentTop);
 renderMehr();
 checkPinOnLoad();
-document.getElementById('hdr-sub').textContent=todayHuman();
+document.getElementById('hdr-sub-text').textContent=todayHuman();
 document.getElementById('remind-days').value=S.remindDays;
 // Show + button on gruppe panel
 var hdrPlus = document.getElementById('hdr-plus');
@@ -1113,6 +1124,7 @@ renderGroup();
 updateBadge();
 setInterval(save,30000);
 maybeShowInstall();
+checkBackupReminder();
 // Hide splash
 (function(){
   var s=document.getElementById('splash');
@@ -1252,10 +1264,54 @@ function deanonymize(text, children){
   });
   return result;
 }
+
+// ── BACKUP ERINNERUNG ──
+function checkBackupReminder(){
+  var lastExport=localStorage.getItem('sprosse_last_export');
+  var lastReminder=localStorage.getItem('sprosse_backup_reminder');
+  var now=Date.now();
+  var WEEK=7*24*60*60*1000;
+  if(!S.children.length||!S.children.some(function(c){return c.obs.length>0;})) return;
+  if(lastExport&&(now-parseInt(lastExport))<WEEK) return;
+  if(lastReminder&&(now-parseInt(lastReminder))<WEEK) return;
+  localStorage.setItem('sprosse_backup_reminder',now.toString());
+  setTimeout(showBackupReminder,3000);
+}
+function showBackupReminder(){
+  var b=document.getElementById('backup-reminder');
+  if(b) b.style.display='flex';
+}
+function dismissBackupReminder(){
+  var b=document.getElementById('backup-reminder');
+  if(b) b.style.display='none';
+}
+function exportAndDismiss(){
+  exportData();
+  localStorage.setItem('sprosse_last_export',Date.now().toString());
+  dismissBackupReminder();
+}
+
+// ── FIRST LAUNCH ──
+function dismissFirstLaunch(){
+  var b=document.getElementById('first-launch-banner');
+  if(b) b.style.display='none';
+  localStorage.setItem('sprosse_first_launch_seen','1');
+}
+
+// ── KIND LÖSCHEN ──
+function deleteChild(id){
+  var c = S.children.find(function(x){ return x.id===id; });
+  if(!c) return;
+  if(!confirm(c.name+' wirklich löschen? Alle Beobachtungen gehen verloren.')) return;
+  S.children = S.children.filter(function(x){ return x.id!==id; });
+  save();
+  toast(c.name+' gelöscht');
+  if(navigator.vibrate) navigator.vibrate(30);
+  nav('gruppe');
+}
 </script>
 
 <!-- FIRST LAUNCH NOTICE -->
-
 <div id="first-launch-banner" style="
   display:none;
   position:fixed;
@@ -1282,8 +1338,8 @@ function deanonymize(text, children){
   </div>
 </div>
 
-<!-- FIRST LAUNCH NOTICE -->
 
+<!-- FIRST LAUNCH NOTICE -->
 <div id="first-launch-banner" style="
   display:none;
   position:fixed;
@@ -1302,6 +1358,41 @@ function deanonymize(text, children){
       <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5">Es wurden Demo-Daten geladen damit du die App gleich ausprobieren kannst. Du kannst diese jederzeit unter <strong style="color:#86c9a0">Mehr &rarr; Alles l&ouml;schen</strong> entfernen.</div>
     </div>
     <button onclick="dismissFirstLaunch()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;">&#x2715;</button>
+  </div>
+</div>
+
+<!-- BACKUP REMINDER -->
+<div id="backup-reminder" style="
+  display:none;
+  position:fixed;
+  bottom:calc(60px + env(safe-area-inset-bottom,0px) + 12px);
+  left:12px;right:12px;z-index:300;
+  background:#1a3a2a;color:#fff;
+  border-radius:16px;padding:16px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  border:1px solid #2d5f4a;
+  animation:slideUp 0.4s cubic-bezier(0.32,0.72,0,1);
+">
+  <div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:24px;flex-shrink:0">💾</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">Wöchentliches Backup</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:12px">Es ist eine Woche seit deinem letzten Export vergangen. Sichere jetzt deine Beobachtungen damit keine Daten verloren gehen.</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="exportAndDismiss()" style="
+          background:#2d5f4a;border:none;color:#fff;
+          padding:9px 16px;border-radius:10px;
+          font-size:13px;font-weight:600;cursor:pointer;
+          font-family:inherit;-webkit-appearance:none;flex:1;
+        ">💾 Jetzt exportieren</button>
+        <button onclick="dismissBackupReminder()" style="
+          background:rgba(255,255,255,0.12);border:none;color:#fff;
+          padding:9px 14px;border-radius:10px;
+          font-size:13px;cursor:pointer;
+          font-family:inherit;-webkit-appearance:none;
+        ">Später</button>
+      </div>
+    </div>
   </div>
 </div>
 </body>
