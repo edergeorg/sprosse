@@ -1,19 +1,10 @@
-// Sprosse Service Worker
+// Sprosse Service Worker v0.9.3
 const CACHE = 'sprosse-v0.9.3';
-const FILES = [
-  '/',
-  '/sprosse/',
-  '/sprosse/index.html'
-];
 
 self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open(CACHE).then(function(cache) {
-      return cache.addAll(FILES);
-    }).then(function() {
-      return self.skipWaiting();
-    })
-  );
+  // Kein pre-caching - vermeidet Request-Fehler bei verschiedenen Deployment-Pfaden
+  // Dateien werden beim ersten Aufruf gecacht (Network-first)
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', function(e) {
@@ -30,14 +21,21 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // Nur GET-Requests cachen
+  if (e.request.method !== 'GET') return;
+  
   e.respondWith(
     fetch(e.request).then(function(response) {
-      var clone = response.clone();
-      caches.open(CACHE).then(function(cache) {
-        cache.put(e.request, clone);
-      });
+      // Nur erfolgreiche Responses cachen
+      if (response && response.status === 200) {
+        var clone = response.clone();
+        caches.open(CACHE).then(function(cache) {
+          cache.put(e.request, clone);
+        });
+      }
       return response;
     }).catch(function() {
+      // Offline: aus Cache laden
       return caches.match(e.request);
     })
   );
