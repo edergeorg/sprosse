@@ -115,7 +115,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .obs-photos { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
 .obs-photo { width:76px; height:76px; object-fit:cover; border-radius:10px; border:1.5px solid #ddd8ce; }
 .vbadge { font-size:11px; color:#1a6fbd; background:#daeeff; padding:2px 7px; border-radius:100px; font-weight:600; }
-.del-btn { margin-left:auto; padding:6px; border:none; background:transparent; cursor:pointer; color:#9c9790; border-radius:8px; display:flex; align-items:center; -webkit-appearance:none; }
+.del-btn { padding:5px; border:none; background:transparent; cursor:pointer; color:#9c9790; border-radius:8px; display:flex; align-items:center; -webkit-appearance:none; }
+.obs-actions { margin-left:auto; display:flex; align-items:center; gap:2px; }
 
 /* PHOTO UPLOAD */
 .photo-zone { border:2px dashed #ccc6ba; border-radius:12px; padding:18px; text-align:center; cursor:pointer; background:#ede9e0; margin-top:4px; }
@@ -550,12 +551,15 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.2</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.3</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
-      <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left">
+      <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
         🚧 Diese App befindet sich in der Beta-Phase. Funktionen können sich noch ändern. Feedback und Fehlerberichte bitte an <span style="color:#2d5f4a;font-weight:500">hallo@ederge.org</span>
       </div>
+      <button onclick="checkForUpdate()" id="update-check-btn" class="btn" style="background:#f6f3ee;width:100%;margin-bottom:0">
+        🔄 Auf Updates prüfen
+      </button>
     </div>
   </div>
 </div>
@@ -590,10 +594,9 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Neues Kind anlegen</div>
+    <div class="frow"><label>Nachname</label><input type="text" id="nk-lastname" placeholder="z.B. Huber"></div>
     <div class="frow"><label>Vorname</label><input type="text" id="nk-name" placeholder="z.B. Emma"></div>
-    <div class="frow"><label>Alter</label>
-      <select id="nk-age"><option>3 Jahre</option><option>4 Jahre</option><option selected>5 Jahre</option><option>6 Jahre</option></select>
-    </div>
+    <div class="frow"><label>Geburtsdatum</label><input type="date" id="nk-bday" max="" style="color:#1c1a16"></div>
     <div class="frow"><label>Farbe</label>
       <div class="cpick" id="cpick">
         <div class="copt on" style="background:#daeeff" onclick="pickColor(this,'#daeeff','#0c447c')"></div>
@@ -607,6 +610,31 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
       <button class="btn" onclick="closeModal('modal-kind')" style="background:#f3efe8;color:#1c1a16;border-color:#ddd8ce">Abbrechen</button>
       <button class="btn primary" onclick="addChild()">Anlegen</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Kind bearbeiten -->
+<div class="modal-bg" id="modal-edit-kind" onclick="if(event.target===this)closeModal('modal-edit-kind')">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Kind bearbeiten</div>
+    <div class="frow"><label>Nachname</label><input type="text" id="ek-lastname" placeholder="z.B. Huber"></div>
+    <div class="frow"><label>Vorname</label><input type="text" id="ek-name" placeholder="z.B. Emma"></div>
+    <div class="frow"><label>Geburtsdatum</label><input type="date" id="ek-bday" style="color:#1c1a16"></div>
+    <div class="frow"><label>Farbe</label>
+      <div class="cpick" id="cpick-edit">
+        <div class="copt" style="background:#daeeff" onclick="pickEditColor(this,'#daeeff','#0c447c')"></div>
+        <div class="copt" style="background:#d4f0e8" onclick="pickEditColor(this,'#d4f0e8','#065e3f')"></div>
+        <div class="copt" style="background:#ece8fe" onclick="pickEditColor(this,'#ece8fe','#3a2ea8')"></div>
+        <div class="copt" style="background:#fef3d0" onclick="pickEditColor(this,'#fef3d0','#7a4a0a')"></div>
+        <div class="copt" style="background:#fde8d8" onclick="pickEditColor(this,'#fde8d8','#a04018')"></div>
+        <div class="copt" style="background:#fde8e8" onclick="pickEditColor(this,'#fde8e8','#901818')"></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+      <button class="btn" onclick="closeModal('modal-edit-kind')" style="background:#f3efe8;color:#1c1a16;border-color:#ddd8ce">Abbrechen</button>
+      <button class="btn primary" onclick="saveEditChild()">Speichern</button>
     </div>
   </div>
 </div>
@@ -637,7 +665,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.9.2';
+const APP_VERSION = '0.9.3';
 
 // ── KONSTANTEN ──
 const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
@@ -735,9 +763,12 @@ const RASTER_ALT = {  // 5–6 Jahre (Vorschulkinder)
 };
 
 // Raster je nach Alter des Kindes auswählen
+function getAgeNum(child){
+  if(child.bday) return parseInt(calcAge(child.bday))||4;
+  return parseInt((child.age||'').replace(/[^0-9]/g,''))||4;
+}
 function getRaster(child) {
-  var age = parseInt((child.age||'').replace(/[^0-9]/g,'')) || 4;
-  return age <= 4 ? RASTER_JUNG : RASTER_ALT;
+  return getAgeNum(child) <= 4 ? RASTER_JUNG : RASTER_ALT;
 }
 
 // Kompatibilität: altes RASTER als Fallback
@@ -808,6 +839,8 @@ function nav(p){
   document.getElementById('back-btn').classList.remove('show');
   document.getElementById('hdr-logo').style.display='flex';
   document.getElementById('hdr-plus').classList.remove('show');
+  var editBtn = document.getElementById('hdr-edit-child');
+  if(editBtn) editBtn.style.display='none';
   var delBtn = document.getElementById('hdr-delete-child');
   if(delBtn) delBtn.style.display='none';
   const titles={gruppe:'Sprosse',dashboard:'Übersicht',erinnerungen:'Erinnerungen',berichte:'Berichte',mehr:'Einstellungen'};
@@ -841,11 +874,13 @@ function openChild(id){
   document.getElementById('back-btn').classList.add('show');
   document.getElementById('hdr-logo').style.display='none';
   document.getElementById('hdr-plus').classList.remove('show');
-  document.getElementById('hdr-title').textContent=curChild.name;
+  document.getElementById('hdr-title').textContent=fullName(curChild);
   document.getElementById('hdr-title').style.fontSize='20px';
   document.getElementById('hdr-title').style.fontWeight='600';
-  document.getElementById('hdr-sub-text').textContent=curChild.age;
+  document.getElementById('hdr-sub-text').textContent=curChild.bday?calcAge(curChild.bday):(curChild.age||'');
   // Show delete button for this child
+  var editBtn = document.getElementById('hdr-edit-child');
+  if(editBtn) { editBtn.style.display='flex'; editBtn.onclick=openEditChild; }
   var delBtn = document.getElementById('hdr-delete-child');
   if(delBtn) { delBtn.style.display='flex'; delBtn.onclick=function(){ deleteChild(curChild.id); }; }
   renderRasterSummary(); renderObsList();
@@ -878,8 +913,8 @@ function renderGroup(){
     <div class="ccard ${needsAttn(c)?'warn':''}" onclick="openChild(${c.id})">
       ${needsAttn(c)?'<div class="warn-badge">!</div>':''}
       <div class="av av-lg" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
-      <div class="cname">${c.name}</div>
-      <div class="cage">${c.age}</div>
+      <div class="cname">${fullName(c)}</div>
+      <div class="cage">${c.bday?calcAge(c.bday):c.age}</div>
       <div class="clast">${c.obs.length?c.obs.length+' Beob. · '+lastObs(c):'Noch nichts'}</div>
     </div>`).join('')||'<div class="empty" style="grid-column:span 2">Noch keine Kinder.<br>Tippe auf + um anzulegen.</div>';
 }
@@ -972,6 +1007,14 @@ function setFilter(el,f){
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
   el.classList.add('on'); renderObsList();
 }
+function renderPhotoThumbs(){
+  var container=document.getElementById('photo-thumbs');
+  if(!container) return;
+  container.innerHTML=curPhotos.map(function(p,i){
+    return '<div class="thumb-wrap"><img src="'+p+'" /><button class="thumb-del" onclick="removePhoto('+i+')">×</button></div>';
+  }).join('');
+}
+
 function addPhotos(e){
   Array.from(e.target.files).forEach(f=>{
     const r=new FileReader();
@@ -1022,7 +1065,7 @@ function renderObsList(){
 }</span>`:''}
         <span class="obs-date">${o.date}</span>
         ${o.voice?'<span class="vbadge">🎤</span>':''}
-        <button class="del-btn" onclick="delObs(${i})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+        <div class="obs-actions"><button class="del-btn" onclick="editObs(${i})" style="color:#2d5f4a" title="Bearbeiten"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="del-btn" onclick="delObs(${i})" title="Löschen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div>
       </div>
       <div class="obs-otags">${o.tags.map(t=>`<span class="otag ${t}">${BL[t]}</span>`).join('')}</div>
       <div class="obs-text">${o.text}</div>
@@ -1207,12 +1250,43 @@ function printReport(){const el=document.getElementById('report-result');const t
 
 // ── KIND ANLEGEN ──
 function addChild(){
-  const n=document.getElementById('nk-name').value.trim();
-  const a=document.getElementById('nk-age').value;
-  if(!n){toast('Bitte Namen eingeben');return;}
-  S.children.push({id:S.nextId++,name:n,age:a,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
-  save(); document.getElementById('nk-name').value='';
-  closeModal('modal-kind'); toast(n+' angelegt ✓'); renderGroup();
+  var fn=document.getElementById('nk-name').value.trim();
+  var ln=document.getElementById('nk-lastname').value.trim();
+  var bday=document.getElementById('nk-bday').value;
+  if(!fn){toast('Bitte Vornamen eingeben');return;}
+  if(!ln){toast('Bitte Nachnamen eingeben');return;}
+  if(!bday){toast('Bitte Geburtsdatum eingeben');return;}
+  var age=calcAge(bday);
+  var displayName=ln+' '+fn;
+  S.children.push({id:S.nextId++,name:fn,lastname:ln,bday:bday,age:age,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
+  save();
+  document.getElementById('nk-name').value='';
+  document.getElementById('nk-lastname').value='';
+  document.getElementById('nk-bday').value='';
+  closeModal('modal-kind');
+  toast(displayName+' angelegt ✓');
+  renderGroup();
+}
+
+function calcAge(bday){
+  if(!bday) return '';
+  var b=new Date(bday);
+  var now=new Date();
+  var years=now.getFullYear()-b.getFullYear();
+  var m=now.getMonth()-b.getMonth();
+  if(m<0||(m===0&&now.getDate()<b.getDate())) years--;
+  return years+' Jahre';
+}
+
+function fullName(c){
+  if(c.lastname) return c.lastname+' '+c.name;
+  return c.name;
+}
+
+function initModal(){
+  // Max-Datum auf heute setzen
+  var bday=document.getElementById('nk-bday');
+  if(bday) bday.max=new Date().toISOString().split('T')[0];
 }
 function pickColor(el,bg,tc){
   nkColor={bg,tc};
@@ -1311,7 +1385,7 @@ if(!load()||!S.children.length) {
   // Mark as first launch
   localStorage.setItem('sprosse_first_launch', '1');
 } else {
-  // Migrate old raster data if needed
+  migrateChildData();
   migrateRasterData();
 }
 if(!S.pinEnabled) S.pinEnabled = false;
@@ -1523,6 +1597,19 @@ function deleteChild(id){
 }
 
 // ── RASTER MIGRATION ──
+function migrateChildData() {
+  // Migration: age neu aus bday berechnen wenn vorhanden
+  var changed=false;
+  S.children.forEach(function(c){
+    if(c.bday && c.age){
+      c.age=calcAge(c.bday); // immer aktuell halten
+      changed=true;
+    }
+    if(!c.lastname) c.lastname=''; // Fallback für alte Daten
+  });
+  if(changed) save();
+}
+
 function migrateRasterData() {
   var migrated = false;
   S.children.forEach(function(c) {
@@ -1554,7 +1641,7 @@ function migrateRasterData() {
 // ── RASTER SPEICHERN MIT VERSION ──
 
 // ── SERVICE WORKER & AUTO-UPDATE ──
-const CACHE_VERSION = 'sprosse-v0.9.2';
+const CACHE_VERSION = 'sprosse-v0.9.3';
 
 (function() {
   if (!('serviceWorker' in navigator)) return;
@@ -1648,6 +1735,120 @@ function showUpdateBanner(newWorker) {
     banner.style.display = 'none';
     newWorker.postMessage('skipWaiting');
   };
+}
+
+// ── BEOBACHTUNG BEARBEITEN ──
+var editObsIdx = -1;
+
+function editObs(i){
+  var o=curChild.obs[i];
+  if(!o) return;
+  editObsIdx=i;
+  // Formular befüllen
+  document.getElementById('obs-ta').value=o.text||'';
+  document.getElementById('obs-steps').value=o.steps||'';
+  // Mood setzen
+  curMood=o.mood||'';
+  document.querySelectorAll('.mood-assess').forEach(function(b){
+    b.classList.toggle('on', b.dataset.val===curMood);
+  });
+  // Tags setzen
+  curTags=o.tags?[...o.tags]:[];
+  document.querySelectorAll('.tag').forEach(function(t){
+    t.classList.toggle('on', curTags.includes(t.dataset&&t.dataset.tag||t.textContent.toLowerCase().trim()));
+  });
+  // Fotos
+  curPhotos=o.photos?[...o.photos]:[];
+  renderPhotoThumbs();
+  // Speichern-Button anpassen
+  var btn=document.querySelector('.btn.primary[onclick="saveObs()"]');
+  if(btn){ btn.textContent='Änderungen speichern'; btn.style.background='#c87820'; btn.style.borderColor='#c87820'; }
+  // Zum Formular scrollen
+  document.getElementById('obs-ta').scrollIntoView({behavior:'smooth',block:'center'});
+  document.getElementById('obs-ta').focus();
+  toast('Beobachtung wird bearbeitet');
+}
+
+function cancelEdit(){
+  editObsIdx=-1;
+  var btn=document.querySelector('.btn.primary[onclick="saveObs()"]');
+  if(btn){ btn.textContent='Speichern'; btn.style.background=''; btn.style.borderColor=''; }
+}
+
+// ── KIND BEARBEITEN ──
+var editColor = null;
+
+function pickEditColor(el, bg, tc) {
+  editColor = {bg:bg, tc:tc};
+  document.querySelectorAll('#cpick-edit .copt').forEach(function(o){ o.classList.remove('on'); });
+  el.classList.add('on');
+}
+
+function openEditChild() {
+  if(!curChild) return;
+  document.getElementById('ek-name').value = curChild.name || '';
+  document.getElementById('ek-lastname').value = curChild.lastname || '';
+  document.getElementById('ek-bday').value = curChild.bday || '';
+  document.getElementById('ek-bday').max = new Date().toISOString().split('T')[0];
+  // Farbe vorauswählen
+  editColor = {bg: curChild.bg, tc: curChild.tc};
+  document.querySelectorAll('#cpick-edit .copt').forEach(function(o){
+    o.classList.toggle('on', o.style.background === curChild.bg);
+  });
+  openModal('modal-edit-kind');
+}
+
+function saveEditChild() {
+  if(!curChild) return;
+  var fn = document.getElementById('ek-name').value.trim();
+  var ln = document.getElementById('ek-lastname').value.trim();
+  var bday = document.getElementById('ek-bday').value;
+  if(!fn){ toast('Bitte Vornamen eingeben'); return; }
+  if(!ln){ toast('Bitte Nachnamen eingeben'); return; }
+  if(!bday){ toast('Bitte Geburtsdatum eingeben'); return; }
+  curChild.name = fn;
+  curChild.lastname = ln;
+  curChild.bday = bday;
+  curChild.age = calcAge(bday);
+  if(editColor){ curChild.bg = editColor.bg; curChild.tc = editColor.tc; }
+  save();
+  // Header aktualisieren
+  document.getElementById('hdr-title').textContent = fullName(curChild);
+  document.getElementById('hdr-sub-text').textContent = calcAge(bday);
+  closeModal('modal-edit-kind');
+  renderGroup();
+  toast(fullName(curChild) + ' gespeichert ✓');
+}
+
+// ── MANUELL AUF UPDATES PRÜFEN ──
+function checkForUpdate(){
+  var btn = document.getElementById('update-check-btn');
+  if(btn){ btn.textContent = '⏳ Prüfe…'; btn.disabled = true; }
+
+  navigator.serviceWorker.getRegistration().then(function(reg){
+    if(!reg){
+      if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
+      toast('Kein Service Worker aktiv');
+      return;
+    }
+    reg.update().then(function(){
+      // Kurz warten ob ein neuer Worker gefunden wird
+      setTimeout(function(){
+        if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
+        // Wenn update-banner sichtbar ist wurde ein Update gefunden
+        var banner = document.getElementById('update-banner');
+        if(!banner || banner.style.display === 'none'){
+          toast('✓ Sprosse ist aktuell (v' + APP_VERSION + ')');
+        }
+      }, 2000);
+    }).catch(function(){
+      if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
+      toast('Keine Verbindung – bitte online gehen');
+    });
+  }).catch(function(){
+    if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
+    toast('Update-Prüfung fehlgeschlagen');
+  });
 }
 </script>
 
