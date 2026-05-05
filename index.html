@@ -100,6 +100,11 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .mood { font-size:26px; padding:7px 9px; border-radius:12px; border:2px solid transparent; cursor:pointer; background:#ede9e0; min-width:50px; min-height:50px; display:flex; align-items:center; justify-content:center; transition:transform 0.08s; -webkit-appearance:none; }
 .mood:active { transform:scale(0.9); }
 .mood.on { border-color:#2d5f4a; background:#e6f2ec; }
+.mood-assess { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:14px; border:1.5px solid #ddd8ce; background:#ffffff; cursor:pointer; font-family:inherit; text-align:left; width:100%; transition:all 0.12s; -webkit-appearance:none; }
+.mood-assess:active { transform:scale(0.98); }
+.mood-assess.on[data-val="sorge"] { border-color:#c03030; background:#fff0f0; }
+.mood-assess.on[data-val="kann-schon"] { border-color:#2d5f4a; background:#e6f2ec; }
+.mood-assess.on[data-val="lerne-noch"] { border-color:#c87820; background:#fef4e4; }
 
 /* OBS CARDS */
 .obs-card { background:#ffffff; border:1px solid #ddd8ce; border-radius:18px; padding:14px; margin-bottom:10px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
@@ -371,14 +376,29 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
         <input type="file" id="photo-in" accept="image/*" multiple style="display:none" onchange="addPhotos(event)">
         <div class="photo-thumbs" id="photo-thumbs"></div>
       </div>
-      <div class="frow"><label>Stimmung</label>
-        <div class="moods">
-          <button class="mood" onclick="pickMood(this,'😊')">😊</button>
-          <button class="mood" onclick="pickMood(this,'😐')">😐</button>
-          <button class="mood" onclick="pickMood(this,'😢')">😢</button>
-          <button class="mood" onclick="pickMood(this,'😠')">😠</button>
-          <button class="mood" onclick="pickMood(this,'😴')">😴</button>
-          <button class="mood" onclick="pickMood(this,'🤔')">🤔</button>
+      <div class="frow"><label>Einschätzung</label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <button class="mood-assess" onclick="pickMood(this,'sorge')" data-val="sorge">
+            <span style="font-size:16px">⚠️</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#c03030">Sorge</div>
+              <div style="font-size:11px;color:#888">Bedarf besonderer Aufmerksamkeit</div>
+            </div>
+          </button>
+          <button class="mood-assess" onclick="pickMood(this,'kann-schon')" data-val="kann-schon">
+            <span style="font-size:16px">✅</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#2d5f4a">Kann ich schon</div>
+              <div style="font-size:11px;color:#888">Kompetenz gefestigt</div>
+            </div>
+          </button>
+          <button class="mood-assess" onclick="pickMood(this,'lerne-noch')" data-val="lerne-noch">
+            <span style="font-size:16px">🌱</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#c87820">Lerne ich noch</div>
+              <div style="font-size:11px;color:#888">Im Entwicklungsprozess</div>
+            </div>
+          </button>
         </div>
       </div>
       <div class="frow"><label>Entwicklungsbereiche</label>
@@ -390,6 +410,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
           <span class="tag kreativ" onclick="pickTag(this,'kreativ')">Kreativ</span>
           <span class="tag emotional" onclick="pickTag(this,'emotional')">Emotional</span>
         </div>
+      </div>
+      <div class="frow">
+        <label>Nächste pädagogische Schritte <span style="color:#9c9790;font-weight:400">(optional)</span></label>
+        <textarea id="obs-steps" placeholder="z.B. Gezielt Kooperationsspiele anbieten, Elterngespräch vorbereiten, Entwicklungsraster aktualisieren…" style="min-height:70px"></textarea>
       </div>
       <button class="btn primary" onclick="saveObs()">Speichern</button>
     </div>
@@ -526,7 +550,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.1</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.2</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left">
@@ -613,7 +637,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.9.1';
+const APP_VERSION = '0.9.2';
 
 // ── KONSTANTEN ──
 const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
@@ -884,7 +908,17 @@ function renderDash(){
         <div class="av av-sm" style="background:${o.child.bg};color:${o.child.tc}">${ini(o.child.name)}</div>
         <span style="font-size:13px;font-weight:600">${o.child.name}</span>
         <span style="font-size:11px;color:#9c9790">${o.date}</span>
-        ${o.mood?`<span style="font-size:15px">${o.mood}</span>`:''}
+        ${o.mood?`<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;${
+  o.mood==='sorge'?'background:#fff0f0;color:#c03030':
+  o.mood==='kann-schon'?'background:#e6f2ec;color:#2d5f4a':
+  o.mood==='lerne-noch'?'background:#fef4e4;color:#c87820':
+  'background:#ede9e0;color:#888'
+}">${
+  o.mood==='sorge'?'⚠️ Sorge':
+  o.mood==='kann-schon'?'✅ Kann':
+  o.mood==='lerne-noch'?'🌱 Lernend':
+  o.mood
+}</span>`:''}
         ${o.voice?'<span class="vbadge">🎤</span>':''}
       </div>
       <div style="font-size:12px;color:#5c574e;line-height:1.5">${o.text.slice(0,100)}${o.text.length>100?'…':''}</div>
@@ -919,7 +953,16 @@ function renderRemind(){
 function setRemind(){S.remindDays=parseInt(document.getElementById('remind-days').value);save();renderRemind();updateBadge();}
 
 // ── KIND DETAIL ──
-function pickMood(el,m){curMood=m;document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function pickMood(el,m){
+  var alreadyOn = el.classList.contains('on');
+  document.querySelectorAll('.mood-assess').forEach(function(b){b.classList.remove('on');});
+  if(alreadyOn){
+    curMood='';
+  } else {
+    curMood=m;
+    el.classList.add('on');
+  }
+}
 function pickTag(el,t){
   if(curTags.includes(t)){curTags=curTags.filter(x=>x!==t);el.classList.remove('on');}
   else{curTags.push(t);el.classList.add('on');}
@@ -951,6 +994,7 @@ function saveObs(){
   wasVoice=false; curPhotos=[];
   save();
   document.getElementById('obs-ta').value='';
+  document.getElementById('obs-steps').value='';
   document.getElementById('photo-thumbs').innerHTML='';
   curMood=''; curTags=[];
   document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));
@@ -965,13 +1009,27 @@ function renderObsList(){
   document.getElementById('obs-list').innerHTML=[...obs].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).map((o,i)=>`
     <div class="obs-card">
       <div class="obs-meta">
-        ${o.mood?`<span style="font-size:19px">${o.mood}</span>`:''}
+        ${o.mood?`<span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;${
+  o.mood==='sorge'?'background:#fff0f0;color:#c03030':
+  o.mood==='kann-schon'?'background:#e6f2ec;color:#2d5f4a':
+  o.mood==='lerne-noch'?'background:#fef4e4;color:#c87820':
+  'background:#ede9e0;color:#888'
+}">${
+  o.mood==='sorge'?'⚠️ Sorge':
+  o.mood==='kann-schon'?'✅ Kann ich schon':
+  o.mood==='lerne-noch'?'🌱 Lerne ich noch':
+  o.mood
+}</span>`:''}
         <span class="obs-date">${o.date}</span>
         ${o.voice?'<span class="vbadge">🎤</span>':''}
         <button class="del-btn" onclick="delObs(${i})"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
       </div>
       <div class="obs-otags">${o.tags.map(t=>`<span class="otag ${t}">${BL[t]}</span>`).join('')}</div>
       <div class="obs-text">${o.text}</div>
+      ${o.steps?`<div style="margin-top:8px;padding:8px 10px;background:#f2f8f4;border-radius:9px;border-left:3px solid #2d5f4a">
+        <div style="font-size:10px;font-weight:700;color:#2d5f4a;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px">Päd. Schritte</div>
+        <div style="font-size:12px;color:#4a4a45;line-height:1.5">${o.steps}</div>
+      </div>`:''}
       ${o.photos&&o.photos.length?`<div class="obs-photos">${o.photos.map(p=>`<img class="obs-photo" src="${p}">`).join('')}</div>`:''}
     </div>`).join('')||`<div class="empty">Keine Beobachtungen${curFilter!=='alle'?' in diesem Bereich':''}</div>`;
 }
@@ -1172,101 +1230,75 @@ function toggleRec(){
   if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
     toast('Benötigt Safari oder Chrome');return;
   }
+  isRec=true;
+  // UI sofort setzen – nicht auf onstart warten (iOS feuert es manchmal nicht)
+  document.getElementById('mic-btn').classList.add('rec');
+  document.getElementById('vlbl').textContent='Ich höre zu…';
+  document.getElementById('vhint').textContent='Nochmal tippen zum Beenden';
+  document.getElementById('vbars').classList.add('show');
+  if(navigator.vibrate)navigator.vibrate(40);
+  startNewRecognition();
+}
 
-  // iOS Safari: SpeechRecognition darf nicht wiederverwendet werden
-  // Immer neue Instanz erstellen, nie .abort() vor .start()
+function startNewRecognition(){
+  if(!isRec) return;
+  // Alte Instanz vollständig aufräumen
   if(recog){
-    try{recog.onend=null;recog.onerror=null;recog.onresult=null;recog.onstart=null;}catch(e){}
+    try{recog.onstart=null;recog.onend=null;recog.onerror=null;recog.onresult=null;}catch(e){}
+    try{recog.abort();}catch(e){}
     recog=null;
   }
-
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   recog=new SR();
-
-  // iOS Safari: continuous=false ist stabiler als true
-  // interimResults=false vermeidet aborted-Fehler
-  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  recog.lang='de-AT';  // Österreichisches Deutsch
-  recog.continuous=!isIOS;       // iOS: false (stabiler)
-  recog.interimResults=!isIOS;   // iOS: false (vermeidet abort)
+  recog.lang='de-AT';
+  recog.continuous=false;     // iOS: immer false
+  recog.interimResults=false; // iOS: immer false
   recog.maxAlternatives=1;
-
-  recog.onstart=function(){
-    isRec=true;
-    document.getElementById('mic-btn').classList.add('rec');
-    document.getElementById('vlbl').textContent='Ich höre zu…';
-    document.getElementById('vhint').textContent=isIOS?'Tippe nochmals zum Beenden':'Nochmal tippen zum Beenden';
-    document.getElementById('vbars').classList.add('show');
-    if(navigator.vibrate)navigator.vibrate(40);
-  };
 
   recog.onresult=function(e){
     var f='';
-    for(var i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal) f+=e.results[i][0].transcript;
+    for(var i=0;i<e.results.length;i++){
+      if(e.results[i].isFinal) f+=e.results[i][0].transcript+' ';
     }
-    if(f){
+    if(f.trim()){
       var ta=document.getElementById('obs-ta');
-      ta.value=(ta.value+' '+f).trim();
+      ta.value=(ta.value+' '+f.trim()).trim();
       wasVoice=true;
+      // Kurz grün aufleuchten als Feedback
+      var btn=document.getElementById('mic-btn');
+      btn.style.background='#2d5f4a';
+      setTimeout(function(){btn.style.background='';},300);
     }
-    // iOS: nach jedem Ergebnis neu starten für kontinuierliche Aufnahme
-    if(isIOS&&isRec){
-      try{
-        recog.stop();
-        setTimeout(function(){
-          if(isRec) startRecognition();
-        },300);
-      }catch(e){}
-    }
-  };
-
-  recog.onerror=function(e){
-    if(e.error==='aborted'){
-      // iOS aborted: einfach neu starten wenn noch aktiv
-      if(isRec){
-        setTimeout(function(){
-          if(isRec) startRecognition();
-        },400);
-      }
-      return;
-    }
-    if(e.error==='not-allowed'){
-      toast('Mikrofon-Zugriff verweigert – bitte in Einstellungen erlauben');
-    } else if(e.error==='no-speech'){
-      // Kein Fehler – einfach warten oder neu starten
-      if(isRec&&isIOS) setTimeout(function(){ if(isRec) startRecognition(); },300);
-    } else {
-      toast('Fehler: '+e.error);
-    }
-    if(e.error!=='aborted'&&e.error!=='no-speech') stopRec();
   };
 
   recog.onend=function(){
-    // iOS: onend feuert nach jedem Satz – nur stoppen wenn nicht mehr aktiv
     if(!isRec) return;
-    if(isIOS){
-      setTimeout(function(){ if(isRec) startRecognition(); },300);
-    } else {
-      stopRec();
-    }
+    // Sofort neu starten für kontinuierliche Aufnahme
+    setTimeout(startNewRecognition, 200);
   };
 
-  startRecognition();
-}
+  recog.onerror=function(e){
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      toast('Mikrofon-Zugriff verweigert – bitte in Einstellungen erlauben');
+      stopRec(); return;
+    }
+    // Alle anderen Fehler (aborted, no-speech, network): neu starten
+    if(isRec) setTimeout(startNewRecognition, 300);
+  };
 
-function startRecognition(){
-  if(!recog||!isRec&&recog){ }
   try{
     recog.start();
   }catch(e){
-    // InvalidStateError: bereits laufend – ignorieren
-    if(e.name!=='InvalidStateError'){
+    if(e.name==='InvalidStateError'){
+      // Bereits läuft – kurz warten und neu versuchen
+      setTimeout(startNewRecognition, 500);
+    } else {
       toast('Mikrofon konnte nicht gestartet werden');
       stopRec();
     }
   }
 }
+
 function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
 
 // ── EINSTELLUNGEN ──
@@ -1546,7 +1578,7 @@ function migrateRasterData() {
 // ── RASTER SPEICHERN MIT VERSION ──
 
 // ── SERVICE WORKER & AUTO-UPDATE ──
-const CACHE_VERSION = 'sprosse-v0.9.1';
+const CACHE_VERSION = 'sprosse-v0.9.2';
 
 (function() {
   if (!('serviceWorker' in navigator)) return;
