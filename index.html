@@ -1544,6 +1544,103 @@ function migrateRasterData() {
 }
 
 // ── RASTER SPEICHERN MIT VERSION ──
+
+// ── SERVICE WORKER & AUTO-UPDATE ──
+const CACHE_VERSION = 'sprosse-v0.9.1';
+
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+
+  // Service Worker Code als Blob erstellen (kein separater File nötig)
+  var swCode = `
+const CACHE = '${CACHE_VERSION}';
+const FILES = [location.href];
+
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(CACHE).then(function(cache) {
+      return cache.addAll(FILES);
+    }).then(function() {
+      return self.skipWaiting(); // sofort aktivieren
+    })
+  );
+});
+
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.filter(function(k) { return k !== CACHE; })
+            .map(function(k) { return caches.delete(k); })
+      );
+    }).then(function() {
+      return self.clients.claim();
+    })
+  );
+});
+
+self.addEventListener('fetch', function(e) {
+  e.respondWith(
+    fetch(e.request).then(function(response) {
+      // Netzwerk-First: immer frische Version versuchen
+      var clone = response.clone();
+      caches.open(CACHE).then(function(cache) {
+        cache.put(e.request, clone);
+      });
+      return response;
+    }).catch(function() {
+      // Offline-Fallback: Cache verwenden
+      return caches.match(e.request);
+    })
+  );
+});
+
+// Update-Nachricht an alle Clients senden
+self.addEventListener('message', function(e) {
+  if (e.data === 'skipWaiting') self.skipWaiting();
+});
+`;
+
+  var blob = new Blob([swCode], {type: 'application/javascript'});
+  var swUrl = URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(swUrl).then(function(reg) {
+
+    // Auf Updates prüfen
+    reg.addEventListener('updatefound', function() {
+      var newWorker = reg.installing;
+      newWorker.addEventListener('statechange', function() {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // Neue Version verfügbar – Banner anzeigen
+          showUpdateBanner(newWorker);
+        }
+      });
+    });
+
+    // Periodisch auf Updates prüfen (alle 60 Minuten)
+    setInterval(function() { reg.update(); }, 60 * 60 * 1000);
+
+  }).catch(function(e) {
+    // Service Worker Fehler still ignorieren – App funktioniert trotzdem
+    console.log('SW:', e.message);
+  });
+
+  // Wenn neuer SW aktiviert wird -> Seite neu laden
+  navigator.serviceWorker.addEventListener('controllerchange', function() {
+    if (window._swUpdating) window.location.reload();
+  });
+})();
+
+function showUpdateBanner(newWorker) {
+  var banner = document.getElementById('update-banner');
+  if (!banner) return;
+  banner.style.display = 'flex';
+  banner.querySelector('.update-btn').onclick = function() {
+    window._swUpdating = true;
+    banner.style.display = 'none';
+    newWorker.postMessage('skipWaiting');
+  };
+}
 </script>
 
 <!-- FIRST LAUNCH NOTICE -->
@@ -1629,6 +1726,39 @@ function migrateRasterData() {
       </div>
     </div>
   </div>
+</div>
+
+<!-- UPDATE BANNER -->
+<div id="update-banner" style="
+  display:none;
+  position:fixed;
+  top:calc(62px + env(safe-area-inset-top,0px) + 8px);
+  left:12px;right:12px;z-index:300;
+  background:#1a3a2a;color:#fff;
+  border-radius:14px;padding:14px 16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  border:1px solid #2d5f4a;
+  align-items:center;gap:12px;
+  animation:slideDown 0.3s ease;
+">
+<style>@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}</style>
+  <div style="font-size:20px;flex-shrink:0">🌱</div>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:2px">Update verfügbar</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.7)">Neue Version von Sprosse bereit</div>
+  </div>
+  <button class="update-btn" style="
+    background:#2d5f4a;border:none;color:#fff;
+    padding:8px 14px;border-radius:9px;
+    font-size:12px;font-weight:700;cursor:pointer;
+    font-family:inherit;-webkit-appearance:none;white-space:nowrap;
+  ">Jetzt laden</button>
+  <button onclick="document.getElementById('update-banner').style.display='none'" style="
+    background:rgba(255,255,255,0.1);border:none;color:#fff;
+    width:28px;height:28px;border-radius:7px;cursor:pointer;
+    font-size:14px;font-family:inherit;-webkit-appearance:none;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  ">✕</button>
 </div>
 </body>
 </html>
