@@ -615,14 +615,105 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
 const BC={sozial:'#1a6fbd',motorik:'#2a8a5c',sprache:'#5040c0',kognitiv:'#c07010',kreativ:'#c05a20',emotional:'#b02020'};
 const BEREICHE=Object.keys(BL);
-const RASTER={
-  sozial:['Spielt kooperativ mit anderen','Löst Konflikte zunehmend selbst','Zeigt Empathie gegenüber Gleichaltrigen','Hält Gruppenregeln ein','Nimmt Rücksicht auf andere'],
-  motorik:['Hält Gleichgewicht sicher','Feinmotorik (Schneiden, Malen)','Klettert und turnt sicher','Koordiniert beide Hände','Schreibt/zeichnet mit Stift'],
-  sprache:['Drückt Bedürfnisse sprachlich aus','Versteht und folgt Anweisungen','Erzählt Erlebnisse zusammenhängend','Interesse an Büchern/Schrift','Reimer, Lieder, Verse'],
-  kognitiv:['Löst Probleme selbständig','Konzentriert sich länger','Versteht Mengen und Zahlen','Erkennt Muster und Zusammenhänge','Stellt Fragen und forscht'],
-  kreativ:['Nutzt Materialien experimentierfreudig','Gestaltet eigene Werke','Fantasievolles Rollenspiel','Findet kreative Lösungen','Freude an Singen/Tanzen'],
-  emotional:['Benennt eigene Gefühle','Reguliert Emotionen zunehmend','Meistert Trennungssituationen','Zeigt Neugier und Lernfreude','Selbstvertrauen und Eigeninitiative']
+// Altersabhängige Entwicklungsraster (basierend auf Grenzsteinen der Entwicklung)
+const RASTER_JUNG = {  // 3–4 Jahre
+  sozial:[
+    'Spielt parallel oder kurz gemeinsam mit anderen Kindern',
+    'Kann kurz warten und teilen (mit Unterstützung)',
+    'Zeigt erste Empathie – tröstet weinende Kinder',
+    'Hält einfache Gruppenregeln mit Erinnerung ein',
+    'Trennt sich von Bezugspersonen ohne große Schwierigkeiten'
+  ],
+  motorik:[
+    'Steht kurz auf einem Bein (mind. 3 Sek.)',
+    'Fährt Dreirad / Laufrad sicher',
+    'Malt Kreise und einfache Formen',
+    'Hält Stift mit Dreipunktgriff oder ähnlich',
+    'Schneidet mit Schere entlang einer Linie (grob)'
+  ],
+  sprache:[
+    'Spricht in 3–5 Wort-Sätzen verständlich',
+    'Stellt Warum-Fragen, zeigt Sprachneugier',
+    'Versteht zweiteilige Aufträge (z.B. „Hol den Ball und leg ihn auf den Tisch")',
+    'Kennt Farben und einfache Formen beim Namen',
+    'Hört kurzen Geschichten aufmerksam zu'
+  ],
+  kognitiv:[
+    'Sortiert nach Farbe oder Form',
+    'Versteht Begriffe wie groß/klein, oben/unten',
+    'Zählt bis 3 mit Zuordnung (1:1)',
+    'Erinnert sich an kurze Erlebnisse vom Vortag',
+    'Beschäftigt sich 10–15 Min. mit einer Aufgabe'
+  ],
+  kreativ:[
+    'Malt erkennbare Bilder (Sonne, Haus, Mensch)',
+    'Entwickelt einfache Rollenspiele (Arzt, Kochen)',
+    'Singt bekannte Lieder mit',
+    'Nutzt Materialien auf ungewöhnliche Weise',
+    'Zeigt Freude am Gestalten und Bauen'
+  ],
+  emotional:[
+    'Benennt Grundgefühle (froh, traurig, wütend, Angst)',
+    'Beruhigt sich nach Aufregung mit Unterstützung',
+    'Zeigt Stolz auf eigene Leistungen',
+    'Zeigt Neugier und Entdeckerfreude',
+    'Sucht bei Bedarf Nähe zu vertrauten Erwachsenen'
+  ]
 };
+
+const RASTER_ALT = {  // 5–6 Jahre (Vorschulkinder)
+  sozial:[
+    'Spielt ausdauernd und kooperativ in der Gruppe',
+    'Löst kleinere Konflikte zunehmend selbständig',
+    'Zeigt ausgeprägte Empathie und Rücksichtnahme',
+    'Hält Gruppenregeln zuverlässig ein',
+    'Übernimmt kleine Verantwortung (Gruppendienst, Aufgaben)'
+  ],
+  motorik:[
+    'Steht sicher auf einem Bein (mind. 8–10 Sek.)',
+    'Hüpft auf einem Bein, klettert sicher',
+    'Schneidet präzise entlang von Linien und Kurven',
+    'Schreibt Namen oder einfache Buchstaben',
+    'Koordiniert beide Hände sicher beim Basteln/Bauen'
+  ],
+  sprache:[
+    'Spricht in vollständigen, grammatikalisch korrekten Sätzen',
+    'Erzählt Erlebnisse zusammenhängend und strukturiert',
+    'Versteht und folgt mehrteiligen Aufträgen selbständig',
+    'Zeigt Interesse an Buchstaben, Schrift und Zahlen',
+    'Erkennt Reime, klatscht Silben, hört Anlaute heraus'
+  ],
+  kognitiv:[
+    'Zählt sicher bis 10 mit Zuordnung, erste Rechenansätze',
+    'Versteht zeitliche Begriffe (gestern, heute, morgen)',
+    'Löst altersgemäße Problemstellungen selbständig',
+    'Konzentriert sich 20–30 Min. auf eine Aufgabe',
+    'Erkennt Muster, Reihen und Gesetzmäßigkeiten'
+  ],
+  kreativ:[
+    'Malt detailreiche, erzählende Bilder',
+    'Entwickelt komplexe Rollenspiele mit Handlung',
+    'Erfindet eigene Lieder, Reime und Geschichten',
+    'Plant und gestaltet Werke zielgerichtet',
+    'Experimentiert mutig mit verschiedenen Materialien'
+  ],
+  emotional:[
+    'Benennt und beschreibt eigene Gefühle differenziert',
+    'Reguliert Emotionen zunehmend selbständig',
+    'Zeigt stabiles Selbstvertrauen und Eigeninitiative',
+    'Meistert Übergänge und neue Situationen gut',
+    'Motiviert sich für Aufgaben aus eigenem Antrieb'
+  ]
+};
+
+// Raster je nach Alter des Kindes auswählen
+function getRaster(child) {
+  var age = parseInt((child.age||'').replace(/[^0-9]/g,'')) || 4;
+  return age <= 4 ? RASTER_JUNG : RASTER_ALT;
+}
+
+// Kompatibilität: altes RASTER als Fallback
+const RASTER = RASTER_ALT;
 
 // ── STATE ──
 let S={children:[],nextId:1,remindDays:5,apiKey:''};
@@ -890,8 +981,11 @@ function delObs(i){
 
 // ── RASTER ──
 function rasterPct(c){
-  const r=c.raster||{};let tot=0,chk=0;
-  BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if(r[b+'_'+i])chk++;});});
+  var r=c.raster||{};var tot=0,chk=0;
+  var raster=getRaster(c);
+  BEREICHE.forEach(function(b){
+    raster[b].forEach(function(_,i){tot++;if(r[b+'_'+i]===true)chk++;});
+  });
   return tot>0?Math.round(chk/tot*100):0;
 }
 function renderRasterSummary(){
@@ -899,21 +993,28 @@ function renderRasterSummary(){
   const pct=rasterPct(curChild);
   let chk=0,tot=0;
   BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if((curChild.raster||{})[b+'_'+i])chk++;});});
-  document.getElementById('raster-summary').innerHTML=`
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-      <div style="font-size:28px;font-weight:700;color:#2d5f4a;letter-spacing:-0.03em">${pct}%</div>
-      <div><div style="font-size:13px;font-weight:600">${chk} von ${tot} Kriterien</div><div style="font-size:11px;color:#9c9790">Über alle Bereiche</div></div>
-    </div>
-    <div class="rprog"><div class="rprog-fill" style="width:${pct}%"></div></div>`;
+  var ageGrp=parseInt((curChild.age||'').replace(/[^0-9]/g,''))||4;
+  var ageGrpLabel=ageGrp<=4?'Raster 3–4 Jahre':'Raster 5–6 Jahre';
+  document.getElementById('raster-summary').innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+    +'<div style="display:flex;align-items:center;gap:12px">'
+    +'<div style="font-size:28px;font-weight:700;color:#2d5f4a;letter-spacing:-0.03em">'+pct+'%</div>'
+    +'<div><div style="font-size:13px;font-weight:600">'+chk+' von '+tot+' Kriterien</div>'
+    +'<div style="font-size:11px;color:#9c9790">Über alle Bereiche</div></div>'
+    +'</div>'
+    +'<span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px">'+ageGrpLabel+'</span>'
+    +'</div>'
+    +'<div class="rprog"><div class="rprog-fill" style="width:'+pct+'%"></div></div>';
 }
 function openRaster(){
   if(!curChild) return;
   document.getElementById('raster-title').textContent=curChild.name+' – Raster';
   var r=curChild.raster||{};
+  var raster=getRaster(curChild);
   var out='';
   BEREICHE.forEach(function(b){
     out+='<div class="raster-section">'+BL[b]+'</div>';
-    RASTER[b].forEach(function(item,i){
+    raster[b].forEach(function(item,i){
       var key=b+'_'+i;
       var checked=r[key]?true:false;
       var cbClass=checked?'rcb on':'rcb';
@@ -935,7 +1036,14 @@ function toggleRasterItem(b,i,row){
   if(curChild.raster[key]){cb.classList.add('on');cb.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';}
   else{cb.classList.remove('on');cb.innerHTML='';}
 }
-function saveRaster(){save();closeModal('modal-raster');renderRasterSummary();toast('Raster gespeichert ✓');}
+function saveRaster(){
+  // Mark raster version when saving
+  if(!curChild.raster) curChild.raster={};
+  curChild.raster.__version='2';
+  var ageNum=parseInt((curChild.age||'').replace(/[^0-9]/g,''))||4;
+  curChild.raster.__ageGroup=ageNum<=4?'jung':'alt';
+  save();closeModal('modal-raster');renderRasterSummary();toast('Raster gespeichert ✓');
+}
 
 // ── BERICHTE ──
 function renderBerichte(){
@@ -1057,14 +1165,103 @@ function closeModal(id){document.getElementById(id).classList.remove('show');doc
 // ── VOICE ──
 function toggleRec(){
   if(isRec){stopRec();return;}
-  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){toast('Benötigt Chrome oder Safari');return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog=new SR(); recog.lang='de-DE'; recog.continuous=true; recog.interimResults=true;
-  recog.onstart=()=>{isRec=true;document.getElementById('mic-btn').classList.add('rec');document.getElementById('vlbl').textContent='Ich höre zu…';document.getElementById('vhint').textContent='Nochmal tippen zum Beenden';document.getElementById('vbars').classList.add('show');if(navigator.vibrate)navigator.vibrate(40);};
-  recog.onresult=e=>{let f='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;}if(f){const ta=document.getElementById('obs-ta');ta.value=(ta.value+' '+f).trim();wasVoice=true;}};
-  recog.onerror=e=>{if(e.error==='not-allowed')toast('Mikrofon verweigert');else if(e.error!=='no-speech')toast('Fehler: '+e.error);stopRec();};
-  recog.onend=()=>{if(isRec)stopRec();};
-  try{recog.start();}catch(e){toast('Mikrofon-Start fehlgeschlagen');}
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+    toast('Benötigt Safari oder Chrome');return;
+  }
+
+  // iOS Safari: SpeechRecognition darf nicht wiederverwendet werden
+  // Immer neue Instanz erstellen, nie .abort() vor .start()
+  if(recog){
+    try{recog.onend=null;recog.onerror=null;recog.onresult=null;recog.onstart=null;}catch(e){}
+    recog=null;
+  }
+
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR();
+
+  // iOS Safari: continuous=false ist stabiler als true
+  // interimResults=false vermeidet aborted-Fehler
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  recog.lang='de-AT';  // Österreichisches Deutsch
+  recog.continuous=!isIOS;       // iOS: false (stabiler)
+  recog.interimResults=!isIOS;   // iOS: false (vermeidet abort)
+  recog.maxAlternatives=1;
+
+  recog.onstart=function(){
+    isRec=true;
+    document.getElementById('mic-btn').classList.add('rec');
+    document.getElementById('vlbl').textContent='Ich höre zu…';
+    document.getElementById('vhint').textContent=isIOS?'Tippe nochmals zum Beenden':'Nochmal tippen zum Beenden';
+    document.getElementById('vbars').classList.add('show');
+    if(navigator.vibrate)navigator.vibrate(40);
+  };
+
+  recog.onresult=function(e){
+    var f='';
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) f+=e.results[i][0].transcript;
+    }
+    if(f){
+      var ta=document.getElementById('obs-ta');
+      ta.value=(ta.value+' '+f).trim();
+      wasVoice=true;
+    }
+    // iOS: nach jedem Ergebnis neu starten für kontinuierliche Aufnahme
+    if(isIOS&&isRec){
+      try{
+        recog.stop();
+        setTimeout(function(){
+          if(isRec) startRecognition();
+        },300);
+      }catch(e){}
+    }
+  };
+
+  recog.onerror=function(e){
+    if(e.error==='aborted'){
+      // iOS aborted: einfach neu starten wenn noch aktiv
+      if(isRec){
+        setTimeout(function(){
+          if(isRec) startRecognition();
+        },400);
+      }
+      return;
+    }
+    if(e.error==='not-allowed'){
+      toast('Mikrofon-Zugriff verweigert – bitte in Einstellungen erlauben');
+    } else if(e.error==='no-speech'){
+      // Kein Fehler – einfach warten oder neu starten
+      if(isRec&&isIOS) setTimeout(function(){ if(isRec) startRecognition(); },300);
+    } else {
+      toast('Fehler: '+e.error);
+    }
+    if(e.error!=='aborted'&&e.error!=='no-speech') stopRec();
+  };
+
+  recog.onend=function(){
+    // iOS: onend feuert nach jedem Satz – nur stoppen wenn nicht mehr aktiv
+    if(!isRec) return;
+    if(isIOS){
+      setTimeout(function(){ if(isRec) startRecognition(); },300);
+    } else {
+      stopRec();
+    }
+  };
+
+  startRecognition();
+}
+
+function startRecognition(){
+  if(!recog||!isRec&&recog){ }
+  try{
+    recog.start();
+  }catch(e){
+    // InvalidStateError: bereits laufend – ignorieren
+    if(e.name!=='InvalidStateError'){
+      toast('Mikrofon konnte nicht gestartet werden');
+      stopRec();
+    }
+  }
 }
 function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
 
@@ -1101,6 +1298,9 @@ if(!load()||!S.children.length) {
   seedDemo();
   // Mark as first launch
   localStorage.setItem('sprosse_first_launch', '1');
+} else {
+  // Migrate old raster data if needed
+  migrateRasterData();
 }
 if(!S.pinEnabled) S.pinEnabled = false;
 // Dynamically set content top based on actual header height
@@ -1309,6 +1509,37 @@ function deleteChild(id){
   if(navigator.vibrate) navigator.vibrate(30);
   nav('gruppe');
 }
+
+// ── RASTER MIGRATION ──
+function migrateRasterData() {
+  var migrated = false;
+  S.children.forEach(function(c) {
+    if (!c.raster) { c.raster = {}; return; }
+    // Check if raster has old data (no version key) AND has any checked items
+    var hasOldData = !c.raster.__version;
+    var hasCheckedItems = Object.keys(c.raster).some(function(k) {
+      return k !== '__version' && k !== '__ageGroup' && c.raster[k] === true;
+    });
+    if (hasOldData && hasCheckedItems) {
+      // Reset raster - old criteria don't map to new ones
+      c.raster = {};
+      migrated = true;
+    }
+    // Mark as new version if empty or already new
+    if (!c.raster.__version) {
+      c.raster.__version = '2';
+    }
+  });
+  if (migrated) {
+    save();
+    // Show migration notice
+    setTimeout(function() {
+      toast('Entwicklungsraster aktualisiert – bitte neu ausfüllen');
+    }, 2000);
+  }
+}
+
+// ── RASTER SPEICHERN MIT VERSION ──
 </script>
 
 <!-- FIRST LAUNCH NOTICE -->
