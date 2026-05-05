@@ -1231,73 +1231,49 @@ function toggleRec(){
     toast('Benötigt Safari oder Chrome');return;
   }
   isRec=true;
-  // UI sofort setzen – nicht auf onstart warten (iOS feuert es manchmal nicht)
   document.getElementById('mic-btn').classList.add('rec');
   document.getElementById('vlbl').textContent='Ich höre zu…';
   document.getElementById('vhint').textContent='Nochmal tippen zum Beenden';
   document.getElementById('vbars').classList.add('show');
   if(navigator.vibrate)navigator.vibrate(40);
-  startNewRecognition();
+  doRec();
 }
 
-function startNewRecognition(){
+function doRec(){
   if(!isRec) return;
-  // Alte Instanz vollständig aufräumen
-  if(recog){
-    try{recog.onstart=null;recog.onend=null;recog.onerror=null;recog.onresult=null;}catch(e){}
-    try{recog.abort();}catch(e){}
-    recog=null;
-  }
+  try{if(recog){recog.abort();}}catch(e){}
+  recog=null;
+
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   recog=new SR();
   recog.lang='de-AT';
-  recog.continuous=false;     // iOS: immer false
-  recog.interimResults=false; // iOS: immer false
-  recog.maxAlternatives=1;
+  recog.continuous=false;
+  recog.interimResults=false;
 
   recog.onresult=function(e){
-    var f='';
+    var txt='';
     for(var i=0;i<e.results.length;i++){
-      if(e.results[i].isFinal) f+=e.results[i][0].transcript+' ';
+      txt+=e.results[i][0].transcript+' ';
     }
-    if(f.trim()){
+    txt=txt.trim();
+    if(txt){
       var ta=document.getElementById('obs-ta');
-      ta.value=(ta.value+' '+f.trim()).trim();
+      ta.value=ta.value?ta.value+' '+txt:txt;
       wasVoice=true;
-      // Kurz grün aufleuchten als Feedback
-      var btn=document.getElementById('mic-btn');
-      btn.style.background='#2d5f4a';
-      setTimeout(function(){btn.style.background='';},300);
+      document.getElementById('vlbl').textContent='„'+txt.slice(0,30)+(txt.length>30?'…':'')+'“';
+      setTimeout(function(){if(isRec)document.getElementById('vlbl').textContent='Ich höre zu…';},1500);
     }
   };
 
-  recog.onend=function(){
-    if(!isRec) return;
-    // Sofort neu starten für kontinuierliche Aufnahme
-    setTimeout(startNewRecognition, 200);
-  };
-
+  recog.onend=function(){if(isRec)setTimeout(doRec,200);};
   recog.onerror=function(e){
-    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
-      toast('Mikrofon-Zugriff verweigert – bitte in Einstellungen erlauben');
-      stopRec(); return;
-    }
-    // Alle anderen Fehler (aborted, no-speech, network): neu starten
-    if(isRec) setTimeout(startNewRecognition, 300);
+    if(e.error==='not-allowed'){toast('Mikrofon verweigert');stopRec();return;}
+    if(isRec)setTimeout(doRec,300);
   };
 
-  try{
-    recog.start();
-  }catch(e){
-    if(e.name==='InvalidStateError'){
-      // Bereits läuft – kurz warten und neu versuchen
-      setTimeout(startNewRecognition, 500);
-    } else {
-      toast('Mikrofon konnte nicht gestartet werden');
-      stopRec();
-    }
-  }
+  try{recog.start();}catch(e){if(isRec)setTimeout(doRec,400);}
 }
+
 
 function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
 
