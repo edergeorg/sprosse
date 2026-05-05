@@ -547,7 +547,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.5</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.6</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -661,7 +661,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.9.5';
+const APP_VERSION = '0.9.6';
 
 // ── KONSTANTEN ──
 const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
@@ -1333,39 +1333,77 @@ function toggleRec(){
 
 function doRec(){
   if(!isRec) return;
-  try{if(recog){recog.abort();}}catch(e){}
+
+  var old=recog;
   recog=null;
+  if(old){
+    try{old.onresult=null;old.onend=null;old.onerror=null;}catch(e){}
+    try{old.stop();}catch(e){}
+  }
 
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog=new SR();
-  recog.lang='de-AT';
-  recog.continuous=false;
-  recog.interimResults=false;
+  var r=new SR();
+  recog=r;
+  r.lang='de-AT';
+  r.continuous=false;
+  r.interimResults=true;  // Interim-Ergebnisse einschalten
+  r.maxAlternatives=1;
 
-  recog.onresult=function(e){
-    var txt='';
+  r.onresult=function(e){
+    if(recog!==r) return;
+    var interim='';
+    var final='';
     for(var i=0;i<e.results.length;i++){
-      txt+=e.results[i][0].transcript+' ';
+      if(e.results[i].isFinal){
+        final+=e.results[i][0].transcript;
+      } else {
+        interim+=e.results[i][0].transcript;
+      }
     }
-    txt=txt.trim();
-    if(txt){
+    // Interim: nur im Label anzeigen, noch nicht ins Feld schreiben
+    if(interim){
+      document.getElementById('vlbl').textContent='„'+interim.slice(0,40)+(interim.length>40?'…':'')+'“';
+    }
+    // Final: ins Textfeld schreiben
+    if(final){
       var ta=document.getElementById('obs-ta');
-      ta.value=ta.value?ta.value+' '+txt:txt;
+      if(!ta) return;
+      ta.value=ta.value?(ta.value+' '+final.trim()):final.trim();
       wasVoice=true;
-      document.getElementById('vlbl').textContent='„'+txt.slice(0,30)+(txt.length>30?'…':'')+'“';
-      setTimeout(function(){if(isRec)document.getElementById('vlbl').textContent='Ich höre zu…';},1500);
+      document.getElementById('vlbl').textContent='„'+final.trim().slice(0,40)+(final.trim().length>40?'…':'')+'“';
+      setTimeout(function(){
+        if(isRec) document.getElementById('vlbl').textContent='Ich höre zu…';
+      },1000);
     }
   };
 
-  recog.onend=function(){if(isRec)setTimeout(doRec,200);};
-  recog.onerror=function(e){
-    if(e.error==='not-allowed'){toast('Mikrofon verweigert');stopRec();return;}
-    if(isRec)setTimeout(doRec,300);
+  r.onend=function(){
+    if(recog!==r) return;
+    if(isRec){
+      document.getElementById('vlbl').textContent='Ich höre zu…';
+      setTimeout(doRec,150);
+    }
   };
 
-  try{recog.start();}catch(e){if(isRec)setTimeout(doRec,400);}
-}
+  r.onerror=function(e){
+    if(recog!==r) return;
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      toast('Mikrofon verweigert');stopRec();return;
+    }
+    if(isRec) setTimeout(doRec,300);
+  };
 
+  try{
+    r.start();
+  }catch(e){
+    if(e.name==='InvalidStateError'){
+      if(isRec) setTimeout(doRec,400);
+    } else {
+      toast('Mikrofon-Start fehlgeschlagen');
+      stopRec();
+    }
+  }
+}
 
 function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
 
