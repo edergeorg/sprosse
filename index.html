@@ -1637,86 +1637,29 @@ function migrateRasterData() {
 // ── RASTER SPEICHERN MIT VERSION ──
 
 // ── SERVICE WORKER & AUTO-UPDATE ──
-const CACHE_VERSION = 'sprosse-v0.9.3';
-
 (function() {
   if (!('serviceWorker' in navigator)) return;
 
-  // Service Worker Code als Blob erstellen (kein separater File nötig)
-  var swCode = `
-const CACHE = '${CACHE_VERSION}';
-const FILES = [location.href];
-
-self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open(CACHE).then(function(cache) {
-      return cache.addAll(FILES);
-    }).then(function() {
-      return self.skipWaiting(); // sofort aktivieren
-    })
-  );
-});
-
-self.addEventListener('activate', function(e) {
-  e.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(
-        keys.filter(function(k) { return k !== CACHE; })
-            .map(function(k) { return caches.delete(k); })
-      );
-    }).then(function() {
-      return self.clients.claim();
-    })
-  );
-});
-
-self.addEventListener('fetch', function(e) {
-  e.respondWith(
-    fetch(e.request).then(function(response) {
-      // Netzwerk-First: immer frische Version versuchen
-      var clone = response.clone();
-      caches.open(CACHE).then(function(cache) {
-        cache.put(e.request, clone);
-      });
-      return response;
-    }).catch(function() {
-      // Offline-Fallback: Cache verwenden
-      return caches.match(e.request);
-    })
-  );
-});
-
-// Update-Nachricht an alle Clients senden
-self.addEventListener('message', function(e) {
-  if (e.data === 'skipWaiting') self.skipWaiting();
-});
-`;
-
-  var blob = new Blob([swCode], {type: 'application/javascript'});
-  var swUrl = URL.createObjectURL(blob);
+  var swUrl = '/sprosse/sw.js';
 
   navigator.serviceWorker.register(swUrl).then(function(reg) {
-
-    // Auf Updates prüfen
+    // Update gefunden
     reg.addEventListener('updatefound', function() {
       var newWorker = reg.installing;
       newWorker.addEventListener('statechange', function() {
         if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          // Neue Version verfügbar – Banner anzeigen
           showUpdateBanner(newWorker);
         }
       });
     });
-
-    // Periodisch auf Updates prüfen (alle 60 Minuten)
+    // Alle 60 Minuten prüfen
     setInterval(function() { reg.update(); }, 60 * 60 * 1000);
 
   }).catch(function(e) {
-    // Service Worker Fehler still ignorieren – App funktioniert trotzdem
-    console.log('SW:', e.message);
+    console.log('SW Fehler:', e.message);
   });
 
-  // Wenn neuer SW aktiviert wird -> Seite neu laden
+  // Seite neu laden wenn neuer SW aktiviert
   navigator.serviceWorker.addEventListener('controllerchange', function() {
     if (window._swUpdating) window.location.reload();
   });
@@ -1821,7 +1764,7 @@ function checkForUpdate(){
   var btn = document.getElementById('update-check-btn');
   if(btn){ btn.textContent = '⏳ Prüfe…'; btn.disabled = true; }
 
-  navigator.serviceWorker.getRegistration().then(function(reg){
+  navigator.serviceWorker.getRegistration('/sprosse/sw.js').then(function(reg){
     if(!reg){
       if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
       toast('Kein Service Worker aktiv');
