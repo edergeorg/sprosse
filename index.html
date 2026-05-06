@@ -400,12 +400,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       </div>
       <div class="frow"><label>Entwicklungsbereiche</label>
         <div class="tags">
-          <span class="tag sozial" onclick="pickTag(this,'sozial')">Sozial</span>
           <span class="tag motorik" onclick="pickTag(this,'motorik')">Motorik</span>
-          <span class="tag sprache" onclick="pickTag(this,'sprache')">Sprache</span>
+          <span class="tag sozial" onclick="pickTag(this,'sozial')">Sozial & Emotional</span>
           <span class="tag kognitiv" onclick="pickTag(this,'kognitiv')">Kognitiv</span>
-          <span class="tag kreativ" onclick="pickTag(this,'kreativ')">Kreativ</span>
-          <span class="tag emotional" onclick="pickTag(this,'emotional')">Emotional</span>
+          <span class="tag sprache" onclick="pickTag(this,'sprache')">Sprache</span>
         </div>
       </div>
       <div class="frow">
@@ -424,12 +422,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     </div>
     <div class="fchips">
       <span class="fc on" onclick="setFilter(this,'alle')">Alle</span>
-      <span class="fc" onclick="setFilter(this,'sozial')">Sozial</span>
       <span class="fc" onclick="setFilter(this,'motorik')">Motorik</span>
-      <span class="fc" onclick="setFilter(this,'sprache')">Sprache</span>
+      <span class="fc" onclick="setFilter(this,'sozial')">Sozial</span>
       <span class="fc" onclick="setFilter(this,'kognitiv')">Kognitiv</span>
-      <span class="fc" onclick="setFilter(this,'kreativ')">Kreativ</span>
-      <span class="fc" onclick="setFilter(this,'emotional')">Emotional</span>
+      <span class="fc" onclick="setFilter(this,'sprache')">Sprache</span>
     </div>
     <div id="obs-list"></div>
   </div>
@@ -547,7 +543,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.6</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.8</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -640,6 +636,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="raster-title">Entwicklungsraster</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button id="raster-tab-aktuell" onclick="setRasterTab('aktuell')" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid #2d5f4a;background:#2d5f4a;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none">Aktuelle Stufe</button>
+      <button id="raster-tab-laufbahn" onclick="setRasterTab('laufbahn')" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid #ddd8ce;background:#f6f3ee;color:#5c574e;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none">Gesamte Laufbahn</button>
+    </div>
     <div id="raster-content"></div>
     <button class="btn primary" onclick="saveRaster()" style="margin-top:8px">Speichern</button>
   </div>
@@ -661,114 +661,176 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.9.6';
+const APP_VERSION = '0.9.8';
+const CACHE_VERSION = 'sprosse-v0.9.8';
 
 // ── KONSTANTEN ──
-const BL={sozial:'Sozial',motorik:'Motorik',sprache:'Sprache',kognitiv:'Kognitiv',kreativ:'Kreativ',emotional:'Emotional'};
-const BC={sozial:'#1a6fbd',motorik:'#2a8a5c',sprache:'#5040c0',kognitiv:'#c07010',kreativ:'#c05a20',emotional:'#b02020'};
+const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
+const BC={motorik:'#2a8a5c',sozial:'#1a6fbd',kognitiv:'#c07010',sprache:'#5040c0'};
 const BEREICHE=Object.keys(BL);
-// Altersabhängige Entwicklungsraster (basierend auf Grenzsteinen der Entwicklung)
-const RASTER_JUNG = {  // 3–4 Jahre
-  sozial:[
-    'Spielt parallel oder kurz gemeinsam mit anderen Kindern',
-    'Kann kurz warten und teilen (mit Unterstützung)',
-    'Zeigt erste Empathie – tröstet weinende Kinder',
-    'Hält einfache Gruppenregeln mit Erinnerung ein',
-    'Trennt sich von Bezugspersonen ohne große Schwierigkeiten'
-  ],
+// ── NÖ ENTWICKLUNGSBOGEN RASTER ──
+// Quelle: Entwicklungsbogen für Kinder von 0-6 Jahre, Amt der NÖ Landesregierung, Abt. Kindergärten
+const RASTER_NÖ={
   motorik:[
-    'Steht kurz auf einem Bein (mind. 3 Sek.)',
-    'Fährt Dreirad / Laufrad sicher',
-    'Malt Kreise und einfache Formen',
-    'Hält Stift mit Dreipunktgriff oder ähnlich',
-    'Schneidet mit Schere entlang einer Linie (grob)'
+    {t:'Kann auf Zehenspitzen gehen',ab:24},
+    {t:'Kann rückwärts gehen',ab:24},
+    {t:'Bewältigt Treppen im Nachstellschritt (hält sich fest)',ab:24},
+    {t:'Hält Malstift mit Faustgriff oder Pinselgriff',ab:24},
+    {t:'Kann große Perlen auffädeln',ab:27},
+    {t:'Hüpft beidbeinig von einer Treppenstufe',ab:27},
+    {t:'Läuft mit Armschwung, umsteuert Hindernisse, kann plötzlich anhalten',ab:27},
+    {t:'Kann präzisen Dreifinger-Spitzgriff zur Manipulation kleiner Gegenstände benutzen',ab:30},
+    {t:'Blättert Buchseiten einzeln um',ab:30},
+    {t:'Klettert auf Sessel und Spielgeräte',ab:30},
+    {t:'Springt beidbeinig hoch, hüpft auf der Stelle',ab:30},
+    {t:'Malt vertikale Linie nach',ab:30},
+    {t:'Lernt Dreirad fahren',ab:36},
+    {t:'Gestaltet und kommentiert Gegenständliches (auch Kopffüßler)',ab:36},
+    {t:'Hält Malstift korrekt mit Spitzen der ersten drei Finger',ab:36},
+    {t:'Hüpft aus dem Stand mit beiden Beinen 30-50 cm nach vorne',ab:36},
+    {t:'Kann Dreirad zielgerichtet bewegen, tritt und lenkt gleichzeitig',ab:42},
+    {t:'Kann größere Bälle mit Händen/Armen auffangen (aus 2m Entfernung)',ab:42},
+    {t:'Begeht Treppen mit Beinwechsel sicher und freihändig',ab:48},
+    {t:'Kann mit Kinderschere entlang einer geraden Linie schneiden',ab:48},
+    {t:'Malt gut erkennbare Bilder oder kann einzelne Buchstaben schreiben',ab:48},
+    {t:'Kann kleinere Körperteile zeigen und benennen',ab:48},
+    {t:'Einbeinig Stehen: mind. 5 Sek. auf rechtem und linkem Bein',ab:54},
+    {t:'Kann auf einer Linie oder schmalen Erhebung balancieren',ab:54},
+    {t:'Einbeinig Hüpfen: mind. 3x auf einem Bein, flüssig und rhythmisch',ab:60},
+    {t:'Ball fangen: Tennisball aus 2m mit zufassenden Händen auffangen',ab:60},
+    {t:'Kann detaillierte Zeichnungen anfertigen (Mensch mit Bauch, Kopf, Fingern, Haaren)',ab:60},
+    {t:'Fahrrad fahren ohne Stützräder, sicher und koordiniert',ab:66},
   ],
-  sprache:[
-    'Spricht in 3–5 Wort-Sätzen verständlich',
-    'Stellt Warum-Fragen, zeigt Sprachneugier',
-    'Versteht zweiteilige Aufträge (z.B. „Hol den Ball und leg ihn auf den Tisch")',
-    'Kennt Farben und einfache Formen beim Namen',
-    'Hört kurzen Geschichten aufmerksam zu'
+  sozial:[
+    {t:'Spielt parallel mit Gleichaltrigen',ab:24},
+    {t:'Orientiert sich am Verhalten anderer, ahmt nach',ab:24},
+    {t:'Erkennt sich selbst im Spiegel',ab:24},
+    {t:'Kann abwarten, bis es an der Reihe ist',ab:30},
+    {t:'Kann sich 15-30 Min. allein beschäftigen (Bezugsperson in räumlicher Nähe)',ab:30},
+    {t:'Freut sich über Kontakt mit anderen Kindern',ab:30},
+    {t:'Spielt mit anderen Kindern (fangen, fahren, Puppenspiele)',ab:30},
+    {t:'Hat bevorzugte Spielpartner',ab:30},
+    {t:'Spielt gemeinsam mit anderen Kindern über mind. 5 Min.',ab:36},
+    {t:'Kann für einige Stunden bei bekannten Personen außerhalb des Zuhauses bleiben',ab:36},
+    {t:'Nimmt unterbrochene Spielhandlung wieder auf',ab:36},
+    {t:'Drückt Bedürfnisse durch Sprache aus (Ich will..., Ich mag nicht...)',ab:36},
+    {t:'Großer Wunsch möglichst viel selbst machen zu können',ab:36},
+    {t:'Beginnt und beteiligt sich an Regelspielen (Brett-, Karten-, Bewegungsspiele)',ab:42},
+    {t:'Kann eigene Emotionen bei alltäglichen Ereignissen meist selbst regulieren',ab:42},
+    {t:'Weiß, dass es ein Mädchen oder Bub ist',ab:42},
+    {t:'Kann Spielzeug gerecht zwischen sich und anderen aufteilen',ab:48},
+    {t:'Lädt andere Kinder ein, wird selbst eingeladen',ab:48},
+    {t:'Kann Regelverstöße erkennen',ab:48},
+    {t:'Kann Tätigkeit zu Ende bringen, bevor es Neues beginnt',ab:48},
+    {t:'Kann mit anderen Kindern kooperieren',ab:48},
+    {t:'Kann Konfliktlösungsstrategien entwickeln',ab:54},
+    {t:'Kein Problem mit Abwechseln im Spiel (ohne Eingriff Erwachsener)',ab:54},
+    {t:'Hat zeitweilig eine beste Freundin / einen besten Freund',ab:54},
+    {t:'Grundfunktionen in Essen, Körperpflege, Umgang mit Kleidung selbstständig',ab:60},
+    {t:'Kann mit Kritik und Frustration umgehen',ab:60},
+    {t:'Kann eigene Bedürfnisse vorläufig zurückstellen',ab:60},
+    {t:'Ist selbstbewusst, hat Vertrauen in die eigenen Fähigkeiten',ab:60},
+    {t:'Möchte gern zur Schule gehen und traut sich dies zu',ab:66},
   ],
   kognitiv:[
-    'Sortiert nach Farbe oder Form',
-    'Versteht Begriffe wie groß/klein, oben/unten',
-    'Zählt bis 3 mit Zuordnung (1:1)',
-    'Erinnert sich an kurze Erlebnisse vom Vortag',
-    'Beschäftigt sich 10–15 Min. mit einer Aufgabe'
-  ],
-  kreativ:[
-    'Malt erkennbare Bilder (Sonne, Haus, Mensch)',
-    'Entwickelt einfache Rollenspiele (Arzt, Kochen)',
-    'Singt bekannte Lieder mit',
-    'Nutzt Materialien auf ungewöhnliche Weise',
-    'Zeigt Freude am Gestalten und Bauen'
-  ],
-  emotional:[
-    'Benennt Grundgefühle (froh, traurig, wütend, Angst)',
-    'Beruhigt sich nach Aufregung mit Unterstützung',
-    'Zeigt Stolz auf eigene Leistungen',
-    'Zeigt Neugier und Entdeckerfreude',
-    'Sucht bei Bedarf Nähe zu vertrauten Erwachsenen'
-  ]
-};
-
-const RASTER_ALT = {  // 5–6 Jahre (Vorschulkinder)
-  sozial:[
-    'Spielt ausdauernd und kooperativ in der Gruppe',
-    'Löst kleinere Konflikte zunehmend selbständig',
-    'Zeigt ausgeprägte Empathie und Rücksichtnahme',
-    'Hält Gruppenregeln zuverlässig ein',
-    'Übernimmt kleine Verantwortung (Gruppendienst, Aufgaben)'
-  ],
-  motorik:[
-    'Steht sicher auf einem Bein (mind. 8–10 Sek.)',
-    'Hüpft auf einem Bein, klettert sicher',
-    'Schneidet präzise entlang von Linien und Kurven',
-    'Schreibt Namen oder einfache Buchstaben',
-    'Koordiniert beide Hände sicher beim Basteln/Bauen'
+    {t:'Sortiert Gegenstände nach Kategorien',ab:24},
+    {t:'Versteht und merkt sich erste einfache Regeln',ab:24},
+    {t:'Kennt Rituale, weiß in etwa was wann geschieht',ab:24},
+    {t:'Erkennt Unterschiede in Suchbildern',ab:30},
+    {t:'Kann einfache geometrische Formen erkennen und zuordnen',ab:30},
+    {t:'Spielt konzentriert Puppen-, Auto- und Bausteinspiele',ab:30},
+    {t:'Beginnt zu experimentieren',ab:30},
+    {t:'Beginnt zu zählen (noch ohne Mengenverständnis)',ab:30},
+    {t:'Setzt Puzzle aus mind. 6 Teilen zusammen',ab:36},
+    {t:'Ordnet Gegenstände nach 2 Merkmalen zu',ab:36},
+    {t:'Beginnt mit Mengen umzugehen (viel-wenig, groß-klein)',ab:36},
+    {t:'Stellt W-Fragen (warum, wieso, wann, wo, woher)',ab:36},
+    {t:'Erkennt Grundfarben und benennt sie',ab:36},
+    {t:'Liebt Sortierspiele',ab:42},
+    {t:'Beginnt kompliziertere Bauwerke zu bauen',ab:42},
+    {t:'Zählt kleine Mengen und erste Mengenerfassung',ab:42},
+    {t:'Spielt intensiv Rollenspiele, verkleidet sich',ab:42},
+    {t:'Verwendet Begriffe für Zeitbezüge richtig',ab:42},
+    {t:'Beginnt komplexere Spielregeln zu verstehen',ab:48},
+    {t:'Kann Formen benennen (Kreis, Dreieck, Viereck)',ab:48},
+    {t:'Ist neugierig, setzt sich aus Interesse mit Neuem auseinander',ab:48},
+    {t:'Hat Vorstellungen von morgen und übermorgen',ab:48},
+    {t:'Kann folgerichtig denken und Zusammenhänge erkennen (wenn-dann, weil, erst-dann)',ab:54},
+    {t:'Legt Muster, Reihen und Ordnungen her',ab:54},
+    {t:'Zählt nach oben und nach unten, befasst sich mit einfachen Additionen und Subtraktionen',ab:60},
+    {t:'Kann Symbolen die entsprechenden Gegenstände zuordnen',ab:60},
+    {t:'Kann einzelne Buchstaben, eigenen Namen und Ziffern weitgehend richtig schreiben',ab:66},
   ],
   sprache:[
-    'Spricht in vollständigen, grammatikalisch korrekten Sätzen',
-    'Erzählt Erlebnisse zusammenhängend und strukturiert',
-    'Versteht und folgt mehrteiligen Aufträgen selbständig',
-    'Zeigt Interesse an Buchstaben, Schrift und Zahlen',
-    'Erkennt Reime, klatscht Silben, hört Anlaute heraus'
+    {t:'Spricht Zweiwortsätze',ab:24},
+    {t:'Entdeckt die Mehrzahl und beginnt sie zu verwenden',ab:24},
+    {t:'Verwendet eigenen Vor- oder Rufnamen',ab:24},
+    {t:'Spricht in Drei- bis Fünfwortsätzen',ab:30},
+    {t:'Versteht Unterschied von lang-kurz, hoch-niedrig',ab:30},
+    {t:'Hört Geschichten zu',ab:30},
+    {t:'Stellt Fragen',ab:30},
+    {t:'Versteht auf, unter, vor, hinter und neben',ab:30},
+    {t:'Kann zusammenhängende einfache Sätze sprechen',ab:36},
+    {t:'Verwendet Ich zur Selbstbezeichnung',ab:36},
+    {t:'Gibt Ereignisse in zeitlicher Reihenfolge wieder',ab:36},
+    {t:'Fragt viel, antwortet auf Fragen',ab:36},
+    {t:'Verwendet Mehrzahl',ab:36},
+    {t:'Grammatikalische Regeln werden verwendet (noch Fehler, z.B. ich bin gegeht)',ab:42},
+    {t:'Ordnet Gegenstände entsprechenden Oberbegriffen zu',ab:42},
+    {t:'Führt Dialoge, verwendet Sprache situationsangepasst',ab:42},
+    {t:'Versteht Raum-Lage-Begriffe',ab:48},
+    {t:'Vergangenheit wird eingesetzt',ab:48},
+    {t:'Entdeckt Wortspiele',ab:48},
+    {t:'Vielfältiger Wortschatz',ab:48},
+    {t:'Spricht fehlerfrei aus',ab:54},
+    {t:'Verwendet verschiedene Zeitformen',ab:54},
+    {t:'Kann Meinung und Erklärungen formulieren',ab:54},
+    {t:'Spricht in Sechs- bis Achtwort-Sätzen, beherrscht wichtigste grammatikalische Strukturen',ab:60},
+    {t:'Kann kleine Erlebnisse in richtiger zeitlicher und logischer Reihenfolge erzählen',ab:60},
   ],
-  kognitiv:[
-    'Zählt sicher bis 10 mit Zuordnung, erste Rechenansätze',
-    'Versteht zeitliche Begriffe (gestern, heute, morgen)',
-    'Löst altersgemäße Problemstellungen selbständig',
-    'Konzentriert sich 20–30 Min. auf eine Aufgabe',
-    'Erkennt Muster, Reihen und Gesetzmäßigkeiten'
-  ],
-  kreativ:[
-    'Malt detailreiche, erzählende Bilder',
-    'Entwickelt komplexe Rollenspiele mit Handlung',
-    'Erfindet eigene Lieder, Reime und Geschichten',
-    'Plant und gestaltet Werke zielgerichtet',
-    'Experimentiert mutig mit verschiedenen Materialien'
-  ],
-  emotional:[
-    'Benennt und beschreibt eigene Gefühle differenziert',
-    'Reguliert Emotionen zunehmend selbständig',
-    'Zeigt stabiles Selbstvertrauen und Eigeninitiative',
-    'Meistert Übergänge und neue Situationen gut',
-    'Motiviert sich für Aufgaben aus eigenem Antrieb'
-  ]
 };
 
-// Raster je nach Alter des Kindes auswählen
+// Gibt Kriterien zurück die für das Alter des Kindes relevant sind
+// Zeigt aktuelle Altersstufe + eine Stufe voraus (Entwicklungsperspektive)
+function getAgeInMonths(child){
+  if(child.bday){
+    var b=new Date(child.bday);
+    var now=new Date();
+    return (now.getFullYear()-b.getFullYear())*12+(now.getMonth()-b.getMonth());
+  }
+  // Fallback: age string -> Monate
+  var y=parseInt((child.age||'').replace(/[^0-9]/g,''))||4;
+  return y*12;
+}
+
+function getAgeRaster(child){
+  var ageMonths=getAgeInMonths(child);
+  // Zeige Kriterien von Kindesalter -6 Monate bis +9 Monate (eine Stufe Puffer)
+  var minAb=Math.max(24, ageMonths-6);
+  var maxAb=ageMonths+9;
+  var result={};
+  Object.keys(RASTER_NÖ).forEach(function(b){
+    result[b]=RASTER_NÖ[b].filter(function(item){
+      return item.ab>=minAb && item.ab<=maxAb;
+    });
+  });
+  return result;
+}
+
+function getAgeRasterLabel(child){
+  var m=getAgeInMonths(child);
+  var age=child.bday?calcAge(child.bday):(child.age||'');
+  return age ? m+' Monate ('+age+')' : m+' Monate';
+}
+
 function getAgeNum(child){
-  if(child.bday) return parseInt(calcAge(child.bday))||4;
-  return parseInt((child.age||'').replace(/[^0-9]/g,''))||4;
-}
-function getRaster(child) {
-  return getAgeNum(child) <= 4 ? RASTER_JUNG : RASTER_ALT;
+  return Math.round(getAgeInMonths(child)/12);
 }
 
-// Kompatibilität: altes RASTER als Fallback
-const RASTER = RASTER_ALT;
+function getRaster(child){
+  return getAgeRaster(child);
+}
+
 
 // ── STATE ──
 let S={children:[],nextId:1,remindDays:5,apiKey:''};
@@ -1104,69 +1166,206 @@ function delObs(i){
 
 // ── RASTER ──
 function rasterPct(c){
+  // Aktuelle Stufe
   var r=c.raster||{};var tot=0,chk=0;
-  var raster=getRaster(c);
+  var raster=getAgeRaster(c);
   BEREICHE.forEach(function(b){
-    raster[b].forEach(function(_,i){tot++;if(r[b+'_'+i]===true)chk++;});
+    var items=raster[b]||[];
+    var fullList=RASTER_NÖ[b]||[];
+    items.forEach(function(item){
+      var globalIdx=fullList.indexOf(item);
+      var key=b+'_'+item.ab+'_'+globalIdx;
+      tot++;
+      if(r[key]===true) chk++;
+    });
   });
   return tot>0?Math.round(chk/tot*100):0;
 }
-function renderRasterSummary(){
-  if(!curChild) return;
-  const pct=rasterPct(curChild);
-  let chk=0,tot=0;
-  BEREICHE.forEach(b=>{RASTER[b].forEach((_,i)=>{tot++;if((curChild.raster||{})[b+'_'+i])chk++;});});
-  var ageGrp=parseInt((curChild.age||'').replace(/[^0-9]/g,''))||4;
-  var ageGrpLabel=ageGrp<=4?'Raster 3–4 Jahre':'Raster 5–6 Jahre';
-  document.getElementById('raster-summary').innerHTML=
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
-    +'<div style="display:flex;align-items:center;gap:12px">'
-    +'<div style="font-size:28px;font-weight:700;color:#2d5f4a;letter-spacing:-0.03em">'+pct+'%</div>'
-    +'<div><div style="font-size:13px;font-weight:600">'+chk+' von '+tot+' Kriterien</div>'
-    +'<div style="font-size:11px;color:#9c9790">Über alle Bereiche</div></div>'
-    +'</div>'
-    +'<span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px">'+ageGrpLabel+'</span>'
-    +'</div>'
-    +'<div class="rprog"><div class="rprog-fill" style="width:'+pct+'%"></div></div>';
-}
-function openRaster(){
-  if(!curChild) return;
-  document.getElementById('raster-title').textContent=curChild.name+' – Raster';
-  var r=curChild.raster||{};
-  var raster=getRaster(curChild);
-  var out='';
+
+function rasterPctAll(c){
+  // Gesamte Laufbahn: alle Kriterien von 24 Monaten bis Ende des aktuellen Fensters
+  var r=c.raster||{};var tot=0,chk=0;
+  var ageMonths=getAgeInMonths(c);
+  var maxAb=ageMonths+9; // gleiche Obergrenze wie aktuelle Stufe
   BEREICHE.forEach(function(b){
-    out+='<div class="raster-section">'+BL[b]+'</div>';
-    raster[b].forEach(function(item,i){
-      var key=b+'_'+i;
-      var checked=r[key]?true:false;
-      var cbClass=checked?'rcb on':'rcb';
-      var checkIcon=checked?'<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/></svg>':'';
-      out+='<div class="raster-item" onclick="toggleRasterItem(\'' + b + '\','+ i +',this)">';
-      out+='<div class="'+cbClass+'" id="rcb_'+b+'_'+i+'">'+checkIcon+'</div>';
-      out+='<div class="rlbl">'+item+'</div>';
-      out+='</div>';
+    var fullList=RASTER_NÖ[b]||[];
+    fullList.forEach(function(item,globalIdx){
+      if(item.ab < 24 || item.ab > maxAb) return;
+      var key=b+'_'+item.ab+'_'+globalIdx;
+      tot++;
+      if(r[key]===true) chk++;
     });
   });
-  document.getElementById('raster-content').innerHTML=out;
+  return {pct:tot>0?Math.round(chk/tot*100):0, chk:chk, tot:tot};
+}
+function renderRasterSummary(){
+  if(!curChild) return;
+  var pctAktuell=rasterPct(curChild);
+  var all=rasterPctAll(curChild);
+  var raster=getAgeRaster(curChild);
+  // Count for current window
+  var chkA=0,totA=0;
+  var fullLists={};
+  BEREICHE.forEach(function(b){ fullLists[b]=RASTER_NÖ[b]||[]; });
+  BEREICHE.forEach(function(b){
+    (raster[b]||[]).forEach(function(item){
+      var globalIdx=fullLists[b].indexOf(item);
+      totA++;
+      if((curChild.raster||{})[b+'_'+item.ab+'_'+globalIdx]===true) chkA++;
+    });
+  });
+  document.getElementById('raster-summary').innerHTML=
+    // Aktuelle Stufe
+    '<div style="display:flex;gap:10px;margin-bottom:10px">'
+    +'<div style="flex:1;background:#e8f4ee;border-radius:12px;padding:10px 12px">'
+    +'<div style="font-size:11px;font-weight:700;color:#2d5f4a;letter-spacing:0.03em;margin-bottom:4px">AKTUELLE STUFE</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#2d5f4a;letter-spacing:-0.02em">'+pctAktuell+'%</div>'
+    +'<div style="font-size:11px;color:#5c574e;margin-top:2px">'+chkA+' von '+totA+' Kriterien</div>'
+    +'<div class="rprog" style="margin-top:6px"><div class="rprog-fill" style="width:'+pctAktuell+'%"></div></div>'
+    +'</div>'
+    // Gesamte Laufbahn
+    +'<div style="flex:1;background:#f6f3ee;border-radius:12px;padding:10px 12px">'
+    +'<div style="font-size:11px;font-weight:700;color:#9c9790;letter-spacing:0.03em;margin-bottom:4px">GESAMTE LAUFBAHN</div>'
+    +'<div style="font-size:24px;font-weight:700;color:#9c9790;letter-spacing:-0.02em">'+all.pct+'%</div>'
+    +'<div style="font-size:11px;color:#9c9790;margin-top:2px">'+all.chk+' von '+all.tot+' Kriterien</div>'
+    +'<div class="rprog" style="margin-top:6px"><div class="rprog-fill" style="width:'+all.pct+'%;background:#ccc6ba"></div></div>'
+    +'</div>'
+    +'</div>';
+}
+var rasterTab = 'aktuell';
+
+function setRasterTab(tab){
+  rasterTab = tab;
+  var btnA = document.getElementById('raster-tab-aktuell');
+  var btnL = document.getElementById('raster-tab-laufbahn');
+  if(btnA && btnL){
+    if(tab === 'aktuell'){
+      btnA.style.background='#2d5f4a'; btnA.style.color='#fff'; btnA.style.borderColor='#2d5f4a';
+      btnL.style.background='#f6f3ee'; btnL.style.color='#5c574e'; btnL.style.borderColor='#ddd8ce';
+    } else {
+      btnL.style.background='#2d5f4a'; btnL.style.color='#fff'; btnL.style.borderColor='#2d5f4a';
+      btnA.style.background='#f6f3ee'; btnA.style.color='#5c574e'; btnA.style.borderColor='#ddd8ce';
+    }
+  }
+  renderRasterContent();
+}
+
+function buildRasterHTML(raster, r, ageMonths, showAll){
+  var out = '';
+  // Group by month if showing full laufbahn
+  if(showAll){
+    // Collect all months
+    var months = [];
+    BEREICHE.forEach(function(b){
+      (RASTER_NÖ[b]||[]).forEach(function(item){
+        if(item.ab >= 24 && months.indexOf(item.ab) === -1) months.push(item.ab);
+      });
+    });
+    months.sort(function(a,b){return a-b;});
+
+    months.forEach(function(m){
+      var hasItems = BEREICHE.some(function(b){
+        return (RASTER_NÖ[b]||[]).some(function(item){ return item.ab === m; });
+      });
+      if(!hasItems) return;
+
+      // Month header
+      var isPast = m <= ageMonths;
+      var isCurrent = m > ageMonths - 6 && m <= ageMonths + 9;
+      var monthLabel = m + ' Monate';
+      var yearLabel = Math.floor(m/12) + (m%12 > 0 ? ',' + (m%12) : '') + ' Jahre';
+      var badge = isCurrent ? ' <span style="background:#e6f2ec;color:#2d5f4a;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px">Aktuelle Stufe</span>' : '';
+      var opacity = isPast || isCurrent ? '1' : '0.55';
+      out += '<div style="margin:16px 0 6px;padding-top:14px;border-top:1.5px solid #ddd8ce;opacity:'+opacity+'">';
+      out += '<div style="font-size:12px;font-weight:700;color:#2d5f4a;letter-spacing:0.04em">' + monthLabel + ' · ' + yearLabel + badge + '</div>';
+      out += '</div>';
+
+      BEREICHE.forEach(function(b){
+        var items = (RASTER_NÖ[b]||[]).filter(function(item){ return item.ab === m; });
+        if(!items.length) return;
+        out += '<div style="font-size:10px;font-weight:700;color:#9c9790;letter-spacing:0.06em;text-transform:uppercase;margin:8px 0 4px">' + BL[b] + '</div>';
+        items.forEach(function(item, i){
+          // Find global index in full array for this bereich
+          var globalIdx = (RASTER_NÖ[b]||[]).indexOf(item);
+          var key = b + '_' + item.ab + '_' + globalIdx;
+          var checked = r[key] === true;
+          var cbClass = checked ? 'rcb on' : 'rcb';
+          var checkIcon = checked ? '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>' : '';
+          var disabled = !isPast && !isCurrent ? ' style="opacity:0.5;pointer-events:none"' : '';
+          out += '<div class="raster-item" onclick="toggleRasterNÖ(this,\''+b+'\','+item.ab+','+globalIdx+')"'+disabled+'>';
+          out += '<div class="'+cbClass+'" id="rcb_'+b+'_'+item.ab+'_'+globalIdx+'">'+checkIcon+'</div>';
+          out += '<div class="rlbl">'+item.t+'</div>';
+          out += '</div>';
+        });
+      });
+    });
+  } else {
+    // Aktuelle Stufe
+    out += '<div style="font-size:11px;color:#9c9790;margin-bottom:12px;padding:8px 10px;background:#f6f3ee;border-radius:8px">NÖ Entwicklungsbogen · '+getAgeRasterLabel(curChild)+'</div>';
+    BEREICHE.forEach(function(b){
+      var items = raster[b];
+      if(!items || !items.length) return;
+      out += '<div class="raster-section">'+BL[b]+'</div>';
+      items.forEach(function(item, i){
+        var globalIdx = (RASTER_NÖ[b]||[]).indexOf(item);
+        var key = b+'_'+item.ab+'_'+globalIdx;
+        var checked = r[key] === true;
+        var cbClass = checked ? 'rcb on' : 'rcb';
+        var checkIcon = checked ? '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>' : '';
+        var future = item.ab > ageMonths;
+        var abLabel = future ? ' <span style="font-size:10px;color:#c87820;font-weight:600">ab '+item.ab+' Mon.</span>' : '';
+        out += '<div class="raster-item" onclick="toggleRasterNÖ(this,\''+b+'\','+item.ab+','+globalIdx+')">';
+        out += '<div class="'+cbClass+'" id="rcb_'+b+'_'+item.ab+'_'+globalIdx+'">'+checkIcon+'</div>';
+        out += '<div class="rlbl">'+item.t+abLabel+'</div>';
+        out += '</div>';
+      });
+    });
+  }
+  return out;
+}
+
+function renderRasterContent(){
+  if(!curChild) return;
+  var r = curChild.raster || {};
+  var ageMonths = getAgeInMonths(curChild);
+  var raster = getAgeRaster(curChild);
+  var showAll = rasterTab === 'laufbahn';
+  document.getElementById('raster-content').innerHTML = buildRasterHTML(raster, r, ageMonths, showAll);
+}
+
+function openRaster(){
+  if(!curChild) return;
+  rasterTab = 'aktuell';
+  document.getElementById('raster-title').textContent=fullName(curChild)+' – Raster';
+  // Reset tabs
+  setRasterTab('aktuell');
   openModal('modal-raster');
 }
-function toggleRasterItem(b,i,row){
+
+function toggleRasterNÖ(row,b,ab,i){
   if(!curChild.raster) curChild.raster={};
-  const key=b+'_'+i;
-  curChild.raster[key]=!curChild.raster[key];
-  const cb=document.getElementById('rcb_'+b+'_'+i);
-  if(curChild.raster[key]){cb.classList.add('on');cb.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';}
-  else{cb.classList.remove('on');cb.innerHTML='';}
+  var key=b+'_'+ab+'_'+i;
+  var cb=row.querySelector('.rcb');
+  if(cb.classList.contains('on')){
+    cb.classList.remove('on');
+    cb.innerHTML='';
+    curChild.raster[key]=false;
+  } else {
+    cb.classList.add('on');
+    cb.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';
+    curChild.raster[key]=true;
+  }
 }
+
 function saveRaster(){
-  // Mark raster version when saving
   if(!curChild.raster) curChild.raster={};
-  curChild.raster.__version='2';
-  var ageNum=parseInt((curChild.age||'').replace(/[^0-9]/g,''))||4;
-  curChild.raster.__ageGroup=ageNum<=4?'jung':'alt';
-  save();closeModal('modal-raster');renderRasterSummary();toast('Raster gespeichert ✓');
+  curChild.raster.__version='3';
+  save();
+  closeModal('modal-raster');
+  renderRasterSummary();
+  toast('Raster gespeichert ✓');
 }
+
 
 // ── BERICHTE ──
 function renderBerichte(){
@@ -1291,9 +1490,16 @@ function calcAge(bday){
   var b=new Date(bday);
   var now=new Date();
   var years=now.getFullYear()-b.getFullYear();
-  var m=now.getMonth()-b.getMonth();
-  if(m<0||(m===0&&now.getDate()<b.getDate())) years--;
-  return years+' Jahre';
+  var months=now.getMonth()-b.getMonth();
+  if(months<0||(months===0&&now.getDate()<b.getDate())){
+    years--;
+    months+=12;
+  }
+  if(now.getDate()<b.getDate()) months--;
+  if(months<0) months+=12;
+  months=months%12;
+  if(months===0) return years+' Jahre';
+  return years+','+months+' Jahre';
 }
 
 function fullName(c){
@@ -1346,11 +1552,23 @@ function doRec(){
   recog=r;
   r.lang='de-AT';
   r.continuous=false;
-  r.interimResults=true;  // Interim-Ergebnisse einschalten
+  r.interimResults=true;
   r.maxAlternatives=1;
+
+  // Basis-Text im Feld bevor diese Runde startet
+  var baseText='';
+
+  r.onstart=function(){
+    if(recog!==r) return;
+    var ta=document.getElementById('obs-ta');
+    baseText=ta?ta.value:'';
+  };
 
   r.onresult=function(e){
     if(recog!==r) return;
+    var ta=document.getElementById('obs-ta');
+    if(!ta) return;
+
     var interim='';
     var final='';
     for(var i=0;i<e.results.length;i++){
@@ -1360,27 +1578,26 @@ function doRec(){
         interim+=e.results[i][0].transcript;
       }
     }
-    // Interim: nur im Label anzeigen, noch nicht ins Feld schreiben
-    if(interim){
-      document.getElementById('vlbl').textContent='„'+interim.slice(0,40)+(interim.length>40?'…':'')+'“';
-    }
-    // Final: ins Textfeld schreiben
+
     if(final){
-      var ta=document.getElementById('obs-ta');
-      if(!ta) return;
-      ta.value=ta.value?(ta.value+' '+final.trim()):final.trim();
+      // Finaler Text: permanent ins Feld
+      baseText=baseText?(baseText+' '+final.trim()):final.trim();
+      ta.value=baseText;
       wasVoice=true;
-      document.getElementById('vlbl').textContent='„'+final.trim().slice(0,40)+(final.trim().length>40?'…':'')+'“';
-      setTimeout(function(){
-        if(isRec) document.getElementById('vlbl').textContent='Ich höre zu…';
-      },1000);
+      document.getElementById('vlbl').textContent='Ich höre zu…';
+    } else if(interim){
+      // Interim: live anzeigen aber noch nicht als baseText speichern
+      ta.value=baseText?(baseText+' '+interim):interim;
+      document.getElementById('vlbl').textContent='⌛ '+interim.slice(0,30)+(interim.length>30?'…':'');
     }
+
+    // Scroll ans Ende des Textfelds
+    ta.scrollTop=ta.scrollHeight;
   };
 
   r.onend=function(){
     if(recog!==r) return;
     if(isRec){
-      document.getElementById('vlbl').textContent='Ich höre zu…';
       setTimeout(doRec,150);
     }
   };
@@ -1682,7 +1899,7 @@ function migrateRasterData() {
     }
     // Mark as new version if empty or already new
     if (!c.raster.__version) {
-      c.raster.__version = '2';
+      c.raster.__version = '3';
     }
   });
   if (migrated) {
