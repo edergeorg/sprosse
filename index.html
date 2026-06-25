@@ -556,7 +556,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.1</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.2</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -674,8 +674,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.10.1';
-const CACHE_VERSION = 'sprosse-v0.10.1';
+const APP_VERSION = '0.10.2';
+const CACHE_VERSION = 'sprosse-v0.10.2';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -1570,18 +1570,56 @@ function openModal(id){document.getElementById(id).classList.add('show');documen
 function closeModal(id){document.getElementById(id).classList.remove('show');document.body.style.overflow='';}
 
 // ── VOICE ──
+var micWatchdog=null, recHadResult=false;
+
+function isStandaloneIOS(){
+  var iOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  var standalone=(window.navigator.standalone===true)||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+  return iOS&&standalone;
+}
+
 function toggleRec(){
   if(isRec){stopRec();return;}
   if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
-    toast('Benötigt Safari oder Chrome');return;
+    toast('Spracheingabe wird hier nicht unterstützt');return;
   }
+  // Mikrofon-Berechtigung aktiv anfragen – löst auf iOS den Permission-Dialog aus.
+  // Ohne diesen Schritt scheitert die Erkennung in der installierten PWA oft lautlos.
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      try{stream.getTracks().forEach(function(t){t.stop();});}catch(e){}
+      startRecFlow();
+    }).catch(function(err){
+      var n=err&&err.name||'';
+      if(n==='NotAllowedError'||n==='SecurityError'){
+        toast('Mikrofon verweigert – bitte in den iOS-Einstellungen erlauben');
+      } else if(isStandaloneIOS()){
+        toast('Mikrofon in der App-Version blockiert – in Safari öffnen');
+      } else {
+        toast('Kein Mikrofonzugriff ('+(n||'Fehler')+')');
+      }
+    });
+  } else {
+    startRecFlow();
+  }
+}
+
+function startRecFlow(){
   isRec=true;
+  recHadResult=false;
   document.getElementById('mic-btn').classList.add('rec');
   document.getElementById('vlbl').textContent='Ich höre zu…';
   document.getElementById('vhint').textContent='Nochmal tippen zum Beenden';
   document.getElementById('vbars').classList.add('show');
   if(navigator.vibrate)navigator.vibrate(40);
   doRec();
+  // Watchdog: wenn nach 5s nichts erkannt wurde, ehrlichen Hinweis zeigen.
+  clearTimeout(micWatchdog);
+  micWatchdog=setTimeout(function(){
+    if(isRec&&!recHadResult&&isStandaloneIOS()){
+      document.getElementById('vhint').textContent='Klappt nichts? iOS erlaubt Spracheingabe oft nur in Safari, nicht in der installierten App.';
+    }
+  },5000);
 }
 
 function doRec(){
@@ -1613,6 +1651,7 @@ function doRec(){
 
   r.onresult=function(e){
     if(recog!==r) return;
+    recHadResult=true;
     var ta=document.getElementById('obs-ta');
     if(!ta) return;
 
@@ -1669,7 +1708,7 @@ function doRec(){
   }
 }
 
-function stopRec(){isRec=false;if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
+function stopRec(){isRec=false;clearTimeout(micWatchdog);if(recog)try{recog.stop();}catch(e){}document.getElementById('mic-btn').classList.remove('rec');document.getElementById('vlbl').textContent='Zum Sprechen tippen';document.getElementById('vhint').textContent='Text kann noch angepasst werden';document.getElementById('vbars').classList.remove('show');}
 
 // ── EINSTELLUNGEN ──
 function saveKey(){S.apiKey=document.getElementById('api-key').value.trim();save();toast('Gespeichert ✓');}
