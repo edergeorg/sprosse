@@ -90,10 +90,13 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .tag.kognitiv.on { background:#fef3d0; border-color:#c07010; color:#7a4a0a; }
 .tag.kreativ.on { background:#fde8d8; border-color:#c05a20; color:#a04018; }
 .tag.emotional.on { background:#fde8e8; border-color:#b02020; color:#901818; }
+.tag.spielverhalten.on { background:#e0f0f4; border-color:#1c7a8c; color:#0a4a58; }
+.tag.allgemein.on { background:#ece9e2; border-color:#8a8378; color:#5c574e; }
 .otag { padding:3px 8px; border-radius:100px; font-size:11px; font-weight:600; }
 .otag.sozial{background:#daeeff;color:#0c447c} .otag.motorik{background:#d4f0e8;color:#0a5035}
 .otag.sprache{background:#ece8fe;color:#3a2ea8} .otag.kognitiv{background:#fef3d0;color:#7a4a0a}
 .otag.kreativ{background:#fde8d8;color:#a04018} .otag.emotional{background:#fde8e8;color:#901818}
+.otag.spielverhalten{background:#e0f0f4;color:#0a4a58} .otag.allgemein{background:#ece9e2;color:#5c574e}
 
 /* MOOD */
 .moods { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
@@ -160,8 +163,11 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 /* RASTER */
 .raster-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid #ddd8ce; cursor:pointer; }
 .raster-item:last-child { border-bottom:none; }
-.rcb { width:24px; height:24px; border-radius:7px; border:1.5px solid #ccc6ba; background:transparent; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.1s; margin-top:1px; }
+.rcb { width:24px; height:24px; border-radius:7px; border:1.5px solid #ccc6ba; background:transparent; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.1s; margin-top:1px; cursor:pointer; }
+.rcb.ja.on { background:#2d5f4a; border-color:#2d5f4a; }
+.rcb.nein.on { background:#b02020; border-color:#b02020; }
 .rcb.on { background:#2d5f4a; border-color:#2d5f4a; }
+.rboxes { display:flex; gap:6px; flex-shrink:0; }
 .rlbl { font-size:13px; color:#1c1a16; line-height:1.4; flex:1; }
 .raster-section { font-size:11px; font-weight:700; color:#9c9790; letter-spacing:0.06em; text-transform:uppercase; margin:14px 0 6px; padding-top:14px; border-top:1px solid #ddd8ce; }
 .raster-section:first-child { margin-top:0; padding-top:0; border-top:none; }
@@ -400,10 +406,12 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       </div>
       <div class="frow"><label>Entwicklungsbereiche</label>
         <div class="tags">
-          <span class="tag motorik" onclick="pickTag(this,'motorik')">Motorik</span>
-          <span class="tag sozial" onclick="pickTag(this,'sozial')">Sozial & Emotional</span>
-          <span class="tag kognitiv" onclick="pickTag(this,'kognitiv')">Kognitiv</span>
-          <span class="tag sprache" onclick="pickTag(this,'sprache')">Sprache</span>
+          <span class="tag motorik" data-tag="motorik" onclick="pickTag(this,'motorik')">Motorik</span>
+          <span class="tag sozial" data-tag="sozial" onclick="pickTag(this,'sozial')">Sozial & Emotional</span>
+          <span class="tag kognitiv" data-tag="kognitiv" onclick="pickTag(this,'kognitiv')">Kognitiv</span>
+          <span class="tag sprache" data-tag="sprache" onclick="pickTag(this,'sprache')">Sprache</span>
+          <span class="tag spielverhalten" data-tag="spielverhalten" onclick="pickTag(this,'spielverhalten')">Spielverhalten</span>
+          <span class="tag allgemein" data-tag="allgemein" onclick="pickTag(this,'allgemein')">Allgemein</span>
         </div>
       </div>
       <div class="frow">
@@ -426,6 +434,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <span class="fc" onclick="setFilter(this,'sozial')">Sozial</span>
       <span class="fc" onclick="setFilter(this,'kognitiv')">Kognitiv</span>
       <span class="fc" onclick="setFilter(this,'sprache')">Sprache</span>
+      <span class="fc" onclick="setFilter(this,'spielverhalten')">Spielverhalten</span>
+      <span class="fc" onclick="setFilter(this,'allgemein')">Allgemein</span>
     </div>
     <div id="obs-list"></div>
   </div>
@@ -543,7 +553,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.9.8</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.0</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -661,12 +671,14 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.9.8';
-const CACHE_VERSION = 'sprosse-v0.9.8';
+const APP_VERSION = '0.10.0';
+const CACHE_VERSION = 'sprosse-v0.10.0';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
 const BC={motorik:'#2a8a5c',sozial:'#1a6fbd',kognitiv:'#c07010',sprache:'#5040c0'};
+// Anzeige-Labels für Beobachtungs-Tags (NICHT Raster-Bereiche – BEREICHE bleibt auf BL beschränkt)
+const TAGS={motorik:'Motorik',sozial:'Sozial & Emotional',kognitiv:'Kognitiv',sprache:'Sprache',kreativ:'Kreativ',emotional:'Emotional',spielverhalten:'Spielverhalten',allgemein:'Allgemein'};
 const BEREICHE=Object.keys(BL);
 // ── NÖ ENTWICKLUNGSBOGEN RASTER ──
 // Quelle: Entwicklungsbogen für Kinder von 0-6 Jahre, Amt der NÖ Landesregierung, Abt. Kindergärten
@@ -1147,7 +1159,7 @@ function renderObsList(){
         ${o.voice?'<span class="vbadge">🎤</span>':''}
         <div class="obs-actions"><button class="del-btn" onclick="editObs(${i})" style="color:#2d5f4a" title="Bearbeiten"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="del-btn" onclick="delObs(${i})" title="Löschen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div>
       </div>
-      <div class="obs-otags">${o.tags.map(t=>`<span class="otag ${t}">${BL[t]}</span>`).join('')}</div>
+      <div class="obs-otags">${o.tags.map(t=>`<span class="otag ${t}">${TAGS[t]||BL[t]||t}</span>`).join('')}</div>
       <div class="obs-text">${o.text}</div>
       ${o.steps?`<div style="margin-top:8px;padding:8px 10px;background:#f2f8f4;border-radius:9px;border-left:3px solid #2d5f4a">
         <div style="font-size:10px;font-weight:700;color:#2d5f4a;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px">Päd. Schritte</div>
@@ -1176,7 +1188,7 @@ function rasterPct(c){
       var globalIdx=fullList.indexOf(item);
       var key=b+'_'+item.ab+'_'+globalIdx;
       tot++;
-      if(r[key]===true) chk++;
+      if(rasterState(r,key)==='ja') chk++;
     });
   });
   return tot>0?Math.round(chk/tot*100):0;
@@ -1193,7 +1205,7 @@ function rasterPctAll(c){
       if(item.ab < 24 || item.ab > maxAb) return;
       var key=b+'_'+item.ab+'_'+globalIdx;
       tot++;
-      if(r[key]===true) chk++;
+      if(rasterState(r,key)==='ja') chk++;
     });
   });
   return {pct:tot>0?Math.round(chk/tot*100):0, chk:chk, tot:tot};
@@ -1211,7 +1223,7 @@ function renderRasterSummary(){
     (raster[b]||[]).forEach(function(item){
       var globalIdx=fullLists[b].indexOf(item);
       totA++;
-      if((curChild.raster||{})[b+'_'+item.ab+'_'+globalIdx]===true) chkA++;
+      if(rasterState(curChild.raster,b+'_'+item.ab+'_'+globalIdx)==='ja') chkA++;
     });
   });
   document.getElementById('raster-summary').innerHTML=
@@ -1252,6 +1264,12 @@ function setRasterTab(tab){
 
 function buildRasterHTML(raster, r, ageMonths, showAll){
   var out = '';
+  // Legende: Ja / Nein / noch nicht beobachtet
+  out += '<div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;color:#5c574e;margin-bottom:12px;padding:9px 11px;background:#f6f3ee;border-radius:8px">'
+    + '<span style="display:flex;align-items:center;gap:6px"><span class="rcb ja on" style="width:18px;height:18px;margin-top:0">'+RASTER_CHECK+'</span> Ja</span>'
+    + '<span style="display:flex;align-items:center;gap:6px"><span class="rcb nein on" style="width:18px;height:18px;margin-top:0">'+RASTER_CROSS+'</span> Nein</span>'
+    + '<span style="display:flex;align-items:center;gap:6px"><span class="rcb" style="width:18px;height:18px;margin-top:0"></span> noch nicht beobachtet</span>'
+    + '</div>';
   // Group by month if showing full laufbahn
   if(showAll){
     // Collect all months
@@ -1288,12 +1306,10 @@ function buildRasterHTML(raster, r, ageMonths, showAll){
           // Find global index in full array for this bereich
           var globalIdx = (RASTER_NÖ[b]||[]).indexOf(item);
           var key = b + '_' + item.ab + '_' + globalIdx;
-          var checked = r[key] === true;
-          var cbClass = checked ? 'rcb on' : 'rcb';
-          var checkIcon = checked ? '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>' : '';
+          var state = rasterState(r, key);
           var disabled = !isPast && !isCurrent ? ' style="opacity:0.5;pointer-events:none"' : '';
-          out += '<div class="raster-item" onclick="toggleRasterNÖ(this,\''+b+'\','+item.ab+','+globalIdx+')"'+disabled+'>';
-          out += '<div class="'+cbClass+'" id="rcb_'+b+'_'+item.ab+'_'+globalIdx+'">'+checkIcon+'</div>';
+          out += '<div class="raster-item"'+disabled+'>';
+          out += rasterBoxes(b, item.ab, globalIdx, state);
           out += '<div class="rlbl">'+item.t+'</div>';
           out += '</div>';
         });
@@ -1309,13 +1325,11 @@ function buildRasterHTML(raster, r, ageMonths, showAll){
       items.forEach(function(item, i){
         var globalIdx = (RASTER_NÖ[b]||[]).indexOf(item);
         var key = b+'_'+item.ab+'_'+globalIdx;
-        var checked = r[key] === true;
-        var cbClass = checked ? 'rcb on' : 'rcb';
-        var checkIcon = checked ? '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>' : '';
+        var state = rasterState(r, key);
         var future = item.ab > ageMonths;
         var abLabel = future ? ' <span style="font-size:10px;color:#c87820;font-weight:600">ab '+item.ab+' Mon.</span>' : '';
-        out += '<div class="raster-item" onclick="toggleRasterNÖ(this,\''+b+'\','+item.ab+','+globalIdx+')">';
-        out += '<div class="'+cbClass+'" id="rcb_'+b+'_'+item.ab+'_'+globalIdx+'">'+checkIcon+'</div>';
+        out += '<div class="raster-item">';
+        out += rasterBoxes(b, item.ab, globalIdx, state);
         out += '<div class="rlbl">'+item.t+abLabel+'</div>';
         out += '</div>';
       });
@@ -1342,19 +1356,40 @@ function openRaster(){
   openModal('modal-raster');
 }
 
-function toggleRasterNÖ(row,b,ab,i){
+// Drei Zustände pro Kriterium: '' (noch nicht beobachtet) · 'ja' · 'nein'
+// Abwärtskompatibel: altes true wird als 'ja' interpretiert.
+var RASTER_CHECK='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';
+var RASTER_CROSS='<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M3 3l6 6M9 3l-6 6"/><\/svg>';
+
+function rasterState(r,key){
+  var v=(r||{})[key];
+  if(v===true||v==='ja') return 'ja';
+  if(v==='nein') return 'nein';
+  return '';
+}
+
+function rasterBoxes(b,ab,gi,state){
+  var key=b+'_'+ab+'_'+gi;
+  var ja=state==='ja', nein=state==='nein';
+  var h='<div class="rboxes">';
+  h+='<div class="rcb ja'+(ja?' on':'')+'" id="rcb_ja_'+key+'" onclick="event.stopPropagation();setRasterState(\''+b+'\','+ab+','+gi+',\'ja\')">'+(ja?RASTER_CHECK:'')+'</div>';
+  h+='<div class="rcb nein'+(nein?' on':'')+'" id="rcb_nein_'+key+'" onclick="event.stopPropagation();setRasterState(\''+b+'\','+ab+','+gi+',\'nein\')">'+(nein?RASTER_CROSS:'')+'</div>';
+  h+='</div>';
+  return h;
+}
+
+function setRasterState(b,ab,gi,val){
   if(!curChild.raster) curChild.raster={};
-  var key=b+'_'+ab+'_'+i;
-  var cb=row.querySelector('.rcb');
-  if(cb.classList.contains('on')){
-    cb.classList.remove('on');
-    cb.innerHTML='';
-    curChild.raster[key]=false;
-  } else {
-    cb.classList.add('on');
-    cb.innerHTML='<svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l2.5 2.5L10 3"/><\/svg>';
-    curChild.raster[key]=true;
-  }
+  var key=b+'_'+ab+'_'+gi;
+  var cur=rasterState(curChild.raster,key);
+  if(cur===val){ delete curChild.raster[key]; }
+  else { curChild.raster[key]=val; }
+  var ns=rasterState(curChild.raster,key);
+  var jaEl=document.getElementById('rcb_ja_'+key);
+  var neinEl=document.getElementById('rcb_nein_'+key);
+  if(jaEl){ jaEl.classList.toggle('on',ns==='ja'); jaEl.innerHTML=ns==='ja'?RASTER_CHECK:''; }
+  if(neinEl){ neinEl.classList.toggle('on',ns==='nein'); neinEl.innerHTML=ns==='nein'?RASTER_CROSS:''; }
+  save(); renderRasterSummary();
 }
 
 function saveRaster(){
@@ -1956,9 +1991,13 @@ function showUpdateBanner(newWorker) {
 var editObsIdx = -1;
 
 function editObs(i){
-  var o=curChild.obs[i];
+  // i ist der Index in der gefilterten+sortierten Liste (wie sie angezeigt wird),
+  // NICHT der Index in curChild.obs. Daher echtes Objekt auflösen wie in delObs.
+  var obs=curChild.obs.filter(function(o){return curFilter==='alle'||o.tags.includes(curFilter);});
+  var sorted=[...obs].sort(function(a,b){return parseDt(b.date)-parseDt(a.date);});
+  var o=sorted[i];
   if(!o) return;
-  editObsIdx=i;
+  editObsIdx=curChild.obs.indexOf(o);
   // Formular befüllen
   document.getElementById('obs-ta').value=o.text||'';
   document.getElementById('obs-steps').value=o.steps||'';
@@ -1970,7 +2009,7 @@ function editObs(i){
   // Tags setzen
   curTags=o.tags?[...o.tags]:[];
   document.querySelectorAll('.tag').forEach(function(t){
-    t.classList.toggle('on', curTags.includes(t.dataset&&t.dataset.tag||t.textContent.toLowerCase().trim()));
+    t.classList.toggle('on', curTags.includes(t.dataset.tag));
   });
   // Fotos
   curPhotos=o.photos?[...o.photos]:[];

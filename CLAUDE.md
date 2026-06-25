@@ -5,7 +5,7 @@
 Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (PWA)** für Kindergartenpädagog:innen in Österreich. Sie ermöglicht die digitale Erfassung von Kinderentwicklungs-Beobachtungen direkt am Handy – ohne Cloud, ohne Installation, ohne Kompromisse beim Datenschutz.
 
 **Entwickler:** Georg Eder · hallo@ederge.org  
-**Status:** Beta v0.9.8  
+**Status:** Beta v0.10.0  
 **Live-URL:** https://edergeorg.github.io/sprosse  
 **Repository:** https://github.com/edergeorg/sprosse  
 
@@ -29,14 +29,17 @@ sprosse/
 Beide Werte müssen immer synchron erhöht werden:
 
 ```javascript
-const APP_VERSION = '0.9.8';           // → Badge in Mehr-Panel
-const CACHE_VERSION = 'sprosse-v0.9.8'; // → immer = 'sprosse-v' + APP_VERSION
+const APP_VERSION = '0.10.0';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 556!)
+const CACHE_VERSION = 'sprosse-v0.10.0'; // → immer = 'sprosse-v' + APP_VERSION
 ```
 
 Und in `sw.js`:
 ```javascript
-const CACHE = 'sprosse-v0.9.8'; // → muss mit CACHE_VERSION übereinstimmen
+const CACHE = 'sprosse-v0.10.0'; // → muss mit CACHE_VERSION übereinstimmen
 ```
+
+**Achtung:** Das Versions-Badge im Mehr-Panel ist zusätzlich **hartcodiert im HTML**
+(`<span ...>v0.10.0</span>`, ~Zeile 556) – beim Bump dort ebenfalls ändern.
 
 **Versionierungsschema:** `0.9.x` Bugfixes · `0.10.0` neues Feature · `1.0.0` stabiler Release
 
@@ -51,13 +54,14 @@ Sprosse hat produktive Nutzerdaten. Jede Datenstruktur-Änderung braucht Migrati
 2. **Keine Keys umbenennen/löschen** – alte Daten gehen sonst verloren
 3. **Bei strukturellen Änderungen:** Versions-Key setzen (`__version: '3'`)
 4. **Migration-Funktion schreiben** die nach `load()` aufgerufen wird
-5. **Raster-Keys:** `r[key] === true` (nicht nur `r[key]`) um Versions-Keys zu ignorieren
+5. **Raster-Keys:** 3 Zustände – `r[key]` ist `'ja'` (erfüllt) · `'nein'` (nicht erfüllt) · fehlt/`''` (noch nicht beobachtet). Altes `r[key] === true` zählt abwärtskompatibel als `'ja'`. Immer über `rasterState(r,key)` lesen, nie direkt vergleichen.
 
 ### Durchgeführte Migrationen
 | Version | Was | Warum |
 |---|---|---|
 | Raster v2 | RASTER_JUNG/RASTER_ALT | Neue altersabhängige Kriterien |
 | Raster v3 | NÖ Entwicklungsbogen, Key-Format `b_ab_globalIdx` | Monatsgenaue Kriterien |
+| v0.10.0 | Raster-Werte `true` → `'ja'`/`'nein'` (3 Zustände) | Ja/Nein/unbeobachtet unterscheidbar; `true` bleibt als `'ja'` gültig |
 
 ### Pre-Deploy Checkliste
 - [ ] Funktioniert die App mit alten localStorage-Daten?
@@ -153,6 +157,11 @@ const BL = {
 };
 const BEREICHE = Object.keys(BL); // ['motorik','sozial','kognitiv','sprache']
 ```
+
+**Wichtig:** `BEREICHE` (= Raster-Bereiche) ist NUR die 4 BL-Keys. Beobachtungs-**Tags**
+sind davon getrennt und in `TAGS` definiert (motorik, sozial, kognitiv, sprache,
+kreativ, emotional, spielverhalten, allgemein). Neue Tags NICHT zu BL hinzufügen,
+sonst entstehen leere Raster-Sektionen.
 
 **109 Kriterien** mit Alters-Referenz in Monaten (ab 24 bis 72 Monate).
 
