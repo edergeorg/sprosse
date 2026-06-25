@@ -370,6 +370,9 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     </div>
     <div class="card">
       <div class="frow"><label>Beobachtung</label><textarea id="obs-ta" placeholder="Sprich oder tippe…"></textarea></div>
+      <div class="frow"><label>Datum <span style="color:#9c9790;font-weight:400">(Standard: heute)</span></label>
+        <input type="date" id="obs-date" max="" style="color:#1c1a16">
+      </div>
       <div class="frow">
         <label>Fotos</label>
         <div class="photo-zone" onclick="document.getElementById('photo-in').click()">
@@ -553,7 +556,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.0</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.1</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -671,8 +674,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.10.0';
-const CACHE_VERSION = 'sprosse-v0.10.0';
+const APP_VERSION = '0.10.1';
+const CACHE_VERSION = 'sprosse-v0.10.1';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -885,6 +888,9 @@ function needsAttn(c){return dSince(lastObs(c))>=S.remindDays;}
 function warnKids(){return S.children.filter(needsAttn);}
 function ini(n){return n.slice(0,2).toUpperCase();}
 function today(){return fmt(new Date());}
+function todayIso(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isoToDe(iso){if(!iso)return today();var p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0];}
+function deToIso(de){if(!de)return todayIso();var p=de.split('.');return p[2]+'-'+p[1]+'-'+p[0];}
 function todayHuman(){
   const W=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
   const M=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -931,11 +937,14 @@ function openChild(id){
   if(!curChild) return;
   if(!curChild.raster) curChild.raster={};
   curMood=''; curTags=[]; curFilter='alle'; curPhotos=[]; wasVoice=false;
+  editObsIdx=-1; cancelEdit();
   document.querySelectorAll('.mood').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
   document.querySelector('.fc').classList.add('on');
   document.getElementById('obs-ta').value='';
+  var odEl=document.getElementById('obs-date');
+  if(odEl){ odEl.max=todayIso(); odEl.value=todayIso(); }
   document.getElementById('photo-thumbs').innerHTML='';
   document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
   document.getElementById('panel-kind').classList.add('active');
@@ -1104,10 +1113,12 @@ function saveObs(){
   var text=document.getElementById('obs-ta').value.trim();
   if(!text){toast('Bitte Text eingeben');return;}
   var steps=document.getElementById('obs-steps')?document.getElementById('obs-steps').value.trim():'';
+  var dateEl=document.getElementById('obs-date');
+  var obsDate=dateEl&&dateEl.value?isoToDe(dateEl.value):today();
   if(editObsIdx>=0){
     var existing=curChild.obs[editObsIdx];
     curChild.obs[editObsIdx]={
-      date:existing.date,
+      date:obsDate,
       editedAt:today(),
       text:text,mood:curMood,
       tags:[...curTags],
@@ -1120,7 +1131,7 @@ function saveObs(){
     toast('Beobachtung aktualisiert ✓');
   } else {
     curChild.obs.push({
-      date:today(),text:text,mood:curMood,
+      date:obsDate,text:text,mood:curMood,
       tags:[...curTags],voice:wasVoice,
       photos:[...curPhotos],steps:steps
     });
@@ -1130,6 +1141,7 @@ function saveObs(){
   save();
   document.getElementById('obs-ta').value='';
   if(document.getElementById('obs-steps')) document.getElementById('obs-steps').value='';
+  if(dateEl){ dateEl.value=todayIso(); }
   document.getElementById('photo-thumbs').innerHTML='';
   curMood='';curTags=[];
   document.querySelectorAll('.mood-assess').forEach(function(b){b.classList.remove('on');});
@@ -2001,6 +2013,8 @@ function editObs(i){
   // Formular befüllen
   document.getElementById('obs-ta').value=o.text||'';
   document.getElementById('obs-steps').value=o.steps||'';
+  var dEl=document.getElementById('obs-date');
+  if(dEl) dEl.value=deToIso(o.date);
   // Mood setzen
   curMood=o.mood||'';
   document.querySelectorAll('.mood-assess').forEach(function(b){
@@ -2027,6 +2041,8 @@ function cancelEdit(){
   editObsIdx=-1;
   var btn=document.querySelector('.btn.primary[onclick="saveObs()"]');
   if(btn){ btn.textContent='Speichern'; btn.style.background=''; btn.style.borderColor=''; }
+  var dEl=document.getElementById('obs-date');
+  if(dEl) dEl.value=todayIso();
 }
 
 // ── KIND BEARBEITEN ──
