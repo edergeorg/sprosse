@@ -556,7 +556,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.2</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.3</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -647,8 +647,13 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <!-- MODAL: Raster -->
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="raster-title">Entwicklungsraster</div>
+    <div style="position:sticky;top:0;z-index:10;background:#ffffff;margin:-20px -20px 0;padding:16px 20px 0">
+      <div class="modal-handle"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
+        <div class="modal-title" id="raster-title" style="margin-bottom:0">Entwicklungsraster</div>
+        <button onclick="closeModal('modal-raster')" aria-label="Schließen" style="width:34px;height:34px;border-radius:10px;border:1.5px solid #ddd8ce;background:#f6f3ee;color:#5c574e;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-appearance:none">✕</button>
+      </div>
+    </div>
     <div style="display:flex;gap:6px;margin-bottom:14px">
       <button id="raster-tab-aktuell" onclick="setRasterTab('aktuell')" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid #2d5f4a;background:#2d5f4a;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none">Aktuelle Stufe</button>
       <button id="raster-tab-laufbahn" onclick="setRasterTab('laufbahn')" style="flex:1;padding:8px;border-radius:10px;border:1.5px solid #ddd8ce;background:#f6f3ee;color:#5c574e;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-appearance:none">Gesamte Laufbahn</button>
@@ -674,8 +679,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.10.2';
-const CACHE_VERSION = 'sprosse-v0.10.2';
+const APP_VERSION = '0.10.3';
+const CACHE_VERSION = 'sprosse-v0.10.3';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
