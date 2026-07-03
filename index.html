@@ -218,6 +218,11 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .modal { background:#ffffff; border-radius:22px 22px 0 0; width:100%; max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:20px 20px calc(24px + env(safe-area-inset-bottom,20px)); animation:slideUp 0.28s cubic-bezier(0.32,0.72,0,1); box-shadow:0 -4px 32px rgba(0,0,0,0.2); }
 .modal-handle { width:42px; height:5px; background:#ccc6ba; border-radius:100px; margin:0 auto 16px; }
 .modal-title { font-size:20px; font-weight:700; letter-spacing:-0.02em; margin-bottom:16px; color:#1c1a16; }
+.modal-head { position:sticky; top:0; z-index:10; background:#ffffff; margin:-20px -20px 0; padding:16px 20px 0; }
+.modal-head-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.modal-head-row .modal-title { margin-bottom:0; }
+.modal-x { width:34px; height:34px; border-radius:10px; border:1.5px solid #ddd8ce; background:#f6f3ee; color:#5c574e; font-size:16px; line-height:1; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; -webkit-appearance:none; }
+.modal-x:active { transform:scale(0.94); }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 
 /* COLOR PICKER */
@@ -556,7 +561,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.3</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.4</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -597,8 +602,13 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <!-- MODAL: Kind -->
 <div class="modal-bg" id="modal-kind" onclick="if(event.target===this)closeModal('modal-kind')">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Neues Kind anlegen</div>
+    <div class="modal-head">
+      <div class="modal-handle"></div>
+      <div class="modal-head-row">
+        <div class="modal-title">Neues Kind anlegen</div>
+        <button class="modal-x" onclick="closeModal('modal-kind')" aria-label="Schließen">✕</button>
+      </div>
+    </div>
     <div class="frow"><label>Nachname</label><input type="text" id="nk-lastname" placeholder="z.B. Huber"></div>
     <div class="frow"><label>Vorname</label><input type="text" id="nk-name" placeholder="z.B. Emma"></div>
     <div class="frow"><label>Geburtsdatum</label><input type="date" id="nk-bday" max="" style="color:#1c1a16"></div>
@@ -622,8 +632,13 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <!-- MODAL: Kind bearbeiten -->
 <div class="modal-bg" id="modal-edit-kind" onclick="if(event.target===this)closeModal('modal-edit-kind')">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Kind bearbeiten</div>
+    <div class="modal-head">
+      <div class="modal-handle"></div>
+      <div class="modal-head-row">
+        <div class="modal-title">Kind bearbeiten</div>
+        <button class="modal-x" onclick="closeModal('modal-edit-kind')" aria-label="Schließen">✕</button>
+      </div>
+    </div>
     <div class="frow"><label>Nachname</label><input type="text" id="ek-lastname" placeholder="z.B. Huber"></div>
     <div class="frow"><label>Vorname</label><input type="text" id="ek-name" placeholder="z.B. Emma"></div>
     <div class="frow"><label>Geburtsdatum</label><input type="date" id="ek-bday" style="color:#1c1a16"></div>
@@ -647,11 +662,11 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <!-- MODAL: Raster -->
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
   <div class="modal">
-    <div style="position:sticky;top:0;z-index:10;background:#ffffff;margin:-20px -20px 0;padding:16px 20px 0">
+    <div class="modal-head">
       <div class="modal-handle"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
-        <div class="modal-title" id="raster-title" style="margin-bottom:0">Entwicklungsraster</div>
-        <button onclick="closeModal('modal-raster')" aria-label="Schließen" style="width:34px;height:34px;border-radius:10px;border:1.5px solid #ddd8ce;background:#f6f3ee;color:#5c574e;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-appearance:none">✕</button>
+      <div class="modal-head-row">
+        <div class="modal-title" id="raster-title">Entwicklungsraster</div>
+        <button class="modal-x" onclick="closeModal('modal-raster')" aria-label="Schließen">✕</button>
       </div>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:14px">
@@ -679,8 +694,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.10.3';
-const CACHE_VERSION = 'sprosse-v0.10.3';
+const APP_VERSION = '0.10.4';
+const CACHE_VERSION = 'sprosse-v0.10.4';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
