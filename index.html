@@ -97,6 +97,11 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .otag.sprache{background:#ece8fe;color:#3a2ea8} .otag.kognitiv{background:#fef3d0;color:#7a4a0a}
 .otag.kreativ{background:#fde8d8;color:#a04018} .otag.emotional{background:#fde8e8;color:#901818}
 .otag.spielverhalten{background:#e0f0f4;color:#0a4a58} .otag.allgemein{background:#ece9e2;color:#5c574e}
+.tpl-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.tpl-chip { display:inline-flex; align-items:center; gap:7px; padding:7px 11px; border-radius:100px; font-size:12px; border:1.5px solid #ddd8ce; background:#f6f3ee; color:#5c574e; cursor:pointer; -webkit-appearance:none; }
+.tpl-chip:active { transform:scale(0.96); }
+.tpl-chip .tpl-x { color:#b7b0a4; font-weight:700; font-size:13px; line-height:1; }
+.tpl-chip.add { border-style:dashed; color:#2d5f4a; border-color:#a9c9ba; background:#eef5f1; font-weight:600; }
 
 /* MOOD */
 .moods { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
@@ -115,18 +120,21 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .obs-date { font-size:12px; color:#9c9790; font-weight:500; }
 .obs-otags { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:7px; }
 .obs-text { font-size:14px; color:#1c1a16; line-height:1.6; }
-.obs-photos { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-.obs-photo { width:76px; height:76px; object-fit:cover; border-radius:10px; border:1.5px solid #ddd8ce; }
+.obs-photos { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+.obs-photo { width:76px; height:76px; object-fit:cover; border-radius:10px; border:1.5px solid #ddd8ce; display:block; }
+.obs-photo-fig { width:76px; }
+.obs-photo-cap { font-size:10px; color:#5c574e; line-height:1.3; margin-top:3px; word-break:break-word; }
 .vbadge { font-size:11px; color:#1a6fbd; background:#daeeff; padding:2px 7px; border-radius:100px; font-weight:600; }
 .del-btn { padding:5px; border:none; background:transparent; cursor:pointer; color:#9c9790; border-radius:8px; display:flex; align-items:center; -webkit-appearance:none; }
 .obs-actions { margin-left:auto; display:flex; align-items:center; gap:2px; }
 
 /* PHOTO UPLOAD */
 .photo-zone { border:2px dashed #ccc6ba; border-radius:12px; padding:18px; text-align:center; cursor:pointer; background:#ede9e0; margin-top:4px; }
-.photo-thumbs { display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; }
-.thumb-wrap { position:relative; width:70px; }
-.thumb-wrap img { width:70px; height:70px; object-fit:cover; border-radius:9px; border:1.5px solid #ddd8ce; display:block; }
-.thumb-del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#c03030; color:#fff; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; }
+.photo-thumbs { display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; align-items:flex-start; }
+.thumb-wrap { position:relative; width:84px; }
+.thumb-wrap img { width:84px; height:70px; object-fit:cover; border-radius:9px; border:1.5px solid #ddd8ce; display:block; }
+.thumb-del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#c03030; color:#fff; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; z-index:2; }
+.thumb-cap { width:100%; margin-top:4px; padding:4px 6px; font-size:11px; min-height:0; border-radius:7px; border:1px solid #ddd8ce; background:#f6f3ee; }
 
 /* CHILD GRID */
 .cgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -223,6 +231,12 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 .modal-head-row .modal-title { margin-bottom:0; }
 .modal-x { width:34px; height:34px; border-radius:10px; border:1.5px solid #ddd8ce; background:#f6f3ee; color:#5c574e; font-size:16px; line-height:1; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; -webkit-appearance:none; }
 .modal-x:active { transform:scale(0.94); }
+#print-report { display:none; }
+@media print {
+  body > *:not(#print-report) { display:none !important; }
+  #print-report { display:block !important; }
+  @page { margin:14mm; }
+}
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
 
 /* COLOR PICKER */
@@ -360,6 +374,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div class="stitle">Meine Gruppe</div>
       <div style="font-size:12px;color:#5c574e" id="group-summary"></div>
     </div>
+    <input type="search" id="group-search" placeholder="🔍 Kind suchen…" oninput="renderGroup()" style="margin-bottom:10px">
+    <div class="fchips" id="group-chips" style="display:none"></div>
     <div class="cgrid" id="group-grid"></div>
   </div>
 
@@ -375,6 +391,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     </div>
     <div class="card">
       <div class="frow"><label>Beobachtung</label><textarea id="obs-ta" placeholder="Sprich oder tippe…"></textarea></div>
+      <div class="frow" id="tpl-frow">
+        <label>Bausteine <span style="color:#9c9790;font-weight:400">(tippen zum Einfügen)</span></label>
+        <div class="tpl-chips" id="tpl-chips"></div>
+      </div>
       <div class="frow"><label>Datum <span style="color:#9c9790;font-weight:400">(Standard: heute)</span></label>
         <input type="date" id="obs-date" max="" style="color:#1c1a16">
       </div>
@@ -431,7 +451,10 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     <div class="card">
       <div class="card-title">Entwicklungsraster</div>
       <div id="raster-summary"></div>
-      <button class="btn" onclick="openRaster()" style="margin-top:8px;background:#f6f3ee;color:#1c1a16;border-color:#ddd8ce">Raster bearbeiten</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" onclick="openRaster()" style="flex:1;background:#f6f3ee;color:#1c1a16;border-color:#ddd8ce">Raster bearbeiten</button>
+        <button class="btn" onclick="openPortfolio()" style="flex:1;background:#e8f4ee;color:#2d5f4a;border-color:#a9c9ba">📄 Portfolio / PDF</button>
+      </div>
     </div>
     <div class="shdr" style="margin-top:4px">
       <div class="stitle" id="obs-count">Beobachtungen</div>
@@ -473,7 +496,9 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div class="scard"><div class="snum" id="d-today">0</div><div class="slbl">Heute</div></div>
       <div class="scard"><div class="snum" id="d-voice">0</div><div class="slbl">Per Sprache</div></div>
     </div>
-    <div class="card"><div class="card-title">Entwicklungsbereiche</div><div id="d-bars"></div></div>
+    <div class="card"><div class="card-title">Beobachtungen je Bereich</div><div id="d-bars"></div></div>
+    <div class="card"><div class="card-title">Raster-Fortschritt je Bereich (Ø)</div><div id="d-raster"></div></div>
+    <div class="card"><div class="card-title">Einschätzungen & Aufmerksamkeit</div><div id="d-mood"></div></div>
     <div class="card"><div class="card-title">Letzte Beobachtungen</div><div id="d-recent"></div></div>
   </div>
 
@@ -561,7 +586,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.10.4</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.11.0</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -612,6 +637,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     <div class="frow"><label>Nachname</label><input type="text" id="nk-lastname" placeholder="z.B. Huber"></div>
     <div class="frow"><label>Vorname</label><input type="text" id="nk-name" placeholder="z.B. Emma"></div>
     <div class="frow"><label>Geburtsdatum</label><input type="date" id="nk-bday" max="" style="color:#1c1a16"></div>
+    <div class="frow"><label>Gruppe <span style="color:#9c9790;font-weight:400">(optional)</span></label><input type="text" id="nk-group" list="group-options" placeholder="z.B. Marienkäfer"></div>
     <div class="frow"><label>Farbe</label>
       <div class="cpick" id="cpick">
         <div class="copt on" style="background:#daeeff" onclick="pickColor(this,'#daeeff','#0c447c')"></div>
@@ -642,6 +668,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     <div class="frow"><label>Nachname</label><input type="text" id="ek-lastname" placeholder="z.B. Huber"></div>
     <div class="frow"><label>Vorname</label><input type="text" id="ek-name" placeholder="z.B. Emma"></div>
     <div class="frow"><label>Geburtsdatum</label><input type="date" id="ek-bday" style="color:#1c1a16"></div>
+    <div class="frow"><label>Gruppe <span style="color:#9c9790;font-weight:400">(optional)</span></label><input type="text" id="ek-group" list="group-options" placeholder="z.B. Marienkäfer"></div>
     <div class="frow"><label>Farbe</label>
       <div class="cpick" id="cpick-edit">
         <div class="copt" style="background:#daeeff" onclick="pickEditColor(this,'#daeeff','#0c447c')"></div>
@@ -658,6 +685,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     </div>
   </div>
 </div>
+
+<datalist id="group-options"></datalist>
 
 <!-- MODAL: Raster -->
 <div class="modal-bg" id="modal-raster" onclick="if(event.target===this)closeModal('modal-raster')">
@@ -678,6 +707,27 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
   </div>
 </div>
 
+<!-- MODAL: Portfolio -->
+<div class="modal-bg" id="modal-portfolio" onclick="if(event.target===this)closeModal('modal-portfolio')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-handle"></div>
+      <div class="modal-head-row">
+        <div class="modal-title" id="portfolio-title">Portfolio</div>
+        <button class="modal-x" onclick="closeModal('modal-portfolio')" aria-label="Schließen">✕</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn primary" onclick="printPortfolio()" style="flex:1">🖨 Drucken / PDF</button>
+        <button class="btn" onclick="downloadPortfolio()" style="flex:1;background:#f6f3ee;color:#1c1a16;border-color:#ddd8ce">💾 Als Datei</button>
+      </div>
+    </div>
+    <div id="portfolio-body"></div>
+  </div>
+</div>
+
+<!-- Druck-Container (nur beim Drucken sichtbar) -->
+<div id="print-report" aria-hidden="true"></div>
+
 <!-- Install Banner -->
 <div id="ibanner">
   <div style="font-size:28px;flex-shrink:0">📲</div>
@@ -694,8 +744,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.10.4';
-const CACHE_VERSION = 'sprosse-v0.10.4';
+const APP_VERSION = '0.11.0';
+const CACHE_VERSION = 'sprosse-v0.11.0';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -703,6 +753,8 @@ const BC={motorik:'#2a8a5c',sozial:'#1a6fbd',kognitiv:'#c07010',sprache:'#5040c0
 // Anzeige-Labels für Beobachtungs-Tags (NICHT Raster-Bereiche – BEREICHE bleibt auf BL beschränkt)
 const TAGS={motorik:'Motorik',sozial:'Sozial & Emotional',kognitiv:'Kognitiv',sprache:'Sprache',kreativ:'Kreativ',emotional:'Emotional',spielverhalten:'Spielverhalten',allgemein:'Allgemein'};
 const BEREICHE=Object.keys(BL);
+// Standard-Textbausteine für die Beobachtungs-Erfassung (in S.templates überschreibbar)
+const DEFAULT_TEMPLATES=['zeigt Interesse an …','beim Freispiel …','hat heute selbstständig …','im Umgang mit anderen Kindern …','braucht noch Unterstützung bei …'];
 // ── NÖ ENTWICKLUNGSBOGEN RASTER ──
 // Quelle: Entwicklungsbogen für Kinder von 0-6 Jahre, Amt der NÖ Landesregierung, Abt. Kindergärten
 const RASTER_NÖ={
@@ -911,6 +963,9 @@ function today(){return fmt(new Date());}
 function todayIso(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function isoToDe(iso){if(!iso)return today();var p=iso.split('-');return p[2]+'.'+p[1]+'.'+p[0];}
 function deToIso(de){if(!de)return todayIso();var p=de.split('.');return p[2]+'-'+p[1]+'-'+p[0];}
+// Fotos sind abwärtskompatibel: entweder String (dataURL) oder {src,caption}
+function photoSrc(p){return typeof p==='string'?p:(p&&p.src)||'';}
+function photoCap(p){return typeof p==='string'?'':((p&&p.caption)||'');}
 function todayHuman(){
   const W=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
   const M=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
@@ -965,6 +1020,7 @@ function openChild(id){
   document.getElementById('obs-ta').value='';
   var odEl=document.getElementById('obs-date');
   if(odEl){ odEl.max=todayIso(); odEl.value=todayIso(); }
+  renderTemplates();
   document.getElementById('photo-thumbs').innerHTML='';
   document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
   document.getElementById('panel-kind').classList.add('active');
@@ -994,8 +1050,23 @@ function updateBadge(){
 }
 
 // ── GRUPPE ──
+var curGroupFilter='__alle';
+
+// Distinkte, nicht-leere Gruppennamen (sortiert) – für Chips, datalist, Dashboard
+function groupList(){
+  var set={};
+  (S.children||[]).forEach(function(c){ if(c.group) set[c.group]=true; });
+  return Object.keys(set).sort(function(a,b){return a.localeCompare(b,'de');});
+}
+function renderGroupOptions(){
+  var dl=document.getElementById('group-options');
+  if(dl) dl.innerHTML=groupList().map(function(g){return '<option value="'+g.replace(/"/g,'&quot;')+'">';}).join('');
+}
+function setGroupFilter(f){ curGroupFilter=f; renderGroup(); }
+
 function renderGroup(){
   updateBadge();
+  renderGroupOptions();
   const w=warnKids();
   document.getElementById('group-summary').textContent=S.children.length+' · '+S.children.reduce((s,c)=>s+c.obs.length,0)+' Beob.';
   const wb=document.getElementById('warn-banner');
@@ -1008,14 +1079,39 @@ function renderGroup(){
         <button class="btn sm" onclick="openChild(${c.id})">Jetzt</button>
       </div>`).join('');
   } else wb.style.display='none';
-  document.getElementById('group-grid').innerHTML=S.children.map(c=>`
+
+  // Gruppen-Filter-Chips (nur wenn es überhaupt Gruppen gibt)
+  var groups=groupList();
+  var hasUngrouped=(S.children||[]).some(function(c){return !c.group;});
+  var chipsEl=document.getElementById('group-chips');
+  if(groups.length){
+    if(!['__alle','__ohne'].includes(curGroupFilter)&&groups.indexOf(curGroupFilter)===-1) curGroupFilter='__alle';
+    var chips=[{k:'__alle',l:'Alle'}].concat(groups.map(function(g){return {k:g,l:g};}));
+    if(hasUngrouped) chips.push({k:'__ohne',l:'Ohne Gruppe'});
+    chipsEl.style.display='flex';
+    chipsEl.innerHTML=chips.map(function(ch){
+      return '<span class="fc'+(curGroupFilter===ch.k?' on':'')+'" onclick="setGroupFilter(\''+String(ch.k).replace(/'/g,"\\'")+'\')">'+ch.l+'</span>';
+    }).join('');
+  } else { chipsEl.style.display='none'; curGroupFilter='__alle'; }
+
+  // Filtern nach Gruppe + Suchtext
+  var q=(document.getElementById('group-search')?document.getElementById('group-search').value:'').trim().toLowerCase();
+  var list=(S.children||[]).filter(function(c){
+    if(curGroupFilter==='__ohne'){ if(c.group) return false; }
+    else if(curGroupFilter!=='__alle'){ if(c.group!==curGroupFilter) return false; }
+    if(q){ return (fullName(c)||'').toLowerCase().indexOf(q)!==-1; }
+    return true;
+  });
+
+  document.getElementById('group-grid').innerHTML=list.map(c=>`
     <div class="ccard ${needsAttn(c)?'warn':''}" onclick="openChild(${c.id})">
       ${needsAttn(c)?'<div class="warn-badge">!</div>':''}
       <div class="av av-lg" style="background:${c.bg};color:${c.tc}">${ini(c.name)}</div>
       <div class="cname">${fullName(c)}</div>
       <div class="cage">${c.bday?calcAge(c.bday):c.age}</div>
+      ${c.group?`<div style="font-size:10px;color:#9c9790;margin-top:2px">${c.group}</div>`:''}
       <div class="clast">${c.obs.length?c.obs.length+' Beob. · '+lastObs(c):'Noch nichts'}</div>
-    </div>`).join('')||'<div class="empty" style="grid-column:span 2">Noch keine Kinder.<br>Tippe auf + um anzulegen.</div>';
+    </div>`).join('')||`<div class="empty" style="grid-column:span 2">${S.children.length?'Keine Treffer.':'Noch keine Kinder.<br>Tippe auf + um anzulegen.'}</div>`;
 }
 
 // ── DASHBOARD ──
@@ -1035,6 +1131,36 @@ function renderDash(){
       <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(cnt[b]/mx*100)}%;background:${BC[b]}"></div></div>
       <div class="bar-ct">${cnt[b]}</div>
     </div>`).join('');
+
+  // Ø Raster-Fortschritt je Bereich (aktuelle Stufe), über alle Kinder gemittelt
+  var rAvg={};BEREICHE.forEach(function(b){rAvg[b]={sum:0,n:0};});
+  S.children.forEach(function(c){
+    var rf=getAgeRaster(c), r=c.raster||{};
+    BEREICHE.forEach(function(b){
+      var items=rf[b]||[]; if(!items.length) return;
+      var full=RASTER_NÖ[b]||[], chk=0;
+      items.forEach(function(it){ if(rasterState(r,b+'_'+it.ab+'_'+full.indexOf(it))==='ja') chk++; });
+      rAvg[b].sum+=Math.round(chk/items.length*100); rAvg[b].n++;
+    });
+  });
+  document.getElementById('d-raster').innerHTML=BEREICHE.map(function(b){
+    var a=rAvg[b], pct=a.n?Math.round(a.sum/a.n):0;
+    return '<div class="bar-row"><div class="bar-lbl">'+BL[b]+'</div><div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+BC[b]+'"></div></div><div class="bar-ct">'+pct+'%</div></div>';
+  }).join('');
+
+  // Einschätzungs-Verteilung + Aufmerksamkeit
+  var moods={sorge:0,'kann-schon':0,'lerne-noch':0};
+  all.forEach(function(o){ if(moods[o.mood]!==undefined) moods[o.mood]++; });
+  function moodPill(emo,lbl,n,fg,bg){return '<div style="flex:1;min-width:90px;background:'+bg+';border-radius:12px;padding:10px 12px"><div style="font-size:22px;font-weight:700;color:'+fg+';letter-spacing:-0.02em">'+n+'</div><div style="font-size:11px;color:'+fg+';font-weight:600;margin-top:2px">'+emo+' '+lbl+'</div></div>';}
+  var att=warnKids().length;
+  document.getElementById('d-mood').innerHTML=
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +moodPill('⚠️','Sorge',moods.sorge,'#c03030','#fff0f0')
+    +moodPill('✅','Kann schon',moods['kann-schon'],'#2d5f4a','#e6f2ec')
+    +moodPill('🌱','Lernend',moods['lerne-noch'],'#c87820','#fef4e4')
+    +'</div>'
+    +'<div style="margin-top:10px;font-size:13px;color:#5c574e">'+(att?'⚠️ <strong>'+att+'</strong> '+(att!==1?'Kinder brauchen':'Kind braucht')+' Aufmerksamkeit':'✓ Alle Kinder aktuell beobachtet')+'</div>';
+
   const recent=[...all].sort((a,b)=>parseDt(b.date)-parseDt(a.date)).slice(0,5);
   document.getElementById('d-recent').innerHTML=recent.length?recent.map(o=>`
     <div style="padding:10px 0;border-bottom:1px solid #ddd8ce">
@@ -1106,29 +1232,66 @@ function setFilter(el,f){
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
   el.classList.add('on'); renderObsList();
 }
-function renderPhotoThumbs(){
-  var container=document.getElementById('photo-thumbs');
-  if(!container) return;
-  container.innerHTML=curPhotos.map(function(p,i){
-    return '<div class="thumb-wrap"><img src="'+p+'" /><button class="thumb-del" onclick="removePhoto('+i+')">×</button></div>';
-  }).join('');
-}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
+// ── TEXTBAUSTEINE ──
+function renderTemplates(){
+  var el=document.getElementById('tpl-chips'); if(!el) return;
+  var chips=(S.templates||[]).map(function(t,i){
+    var short=t.length>28?t.slice(0,28)+'…':t;
+    return '<span class="tpl-chip" onclick="insertTemplate('+i+')">'+esc(short)+'<span class="tpl-x" onclick="event.stopPropagation();delTemplate('+i+')">×</span></span>';
+  });
+  chips.push('<span class="tpl-chip add" onclick="saveTemplate()">＋ Baustein</span>');
+  el.innerHTML=chips.join('');
+}
+function insertTemplate(i){
+  var t=(S.templates||[])[i]; if(t==null) return;
+  var ta=document.getElementById('obs-ta'); if(!ta) return;
+  var cur=ta.value;
+  ta.value=cur?(cur.replace(/\s+$/,'')+' '+t):t;
+  ta.focus();
+  try{ta.setSelectionRange(ta.value.length,ta.value.length);}catch(e){}
+  ta.scrollTop=ta.scrollHeight;
+}
+function saveTemplate(){
+  var ta=document.getElementById('obs-ta'); if(!ta) return;
+  var t=(ta.value||'').trim();
+  if(!t){toast('Erst Text eingeben, dann als Baustein speichern');return;}
+  if(t.length>120) t=t.slice(0,120);
+  if(!Array.isArray(S.templates)) S.templates=[];
+  if(S.templates.indexOf(t)!==-1){toast('Baustein existiert bereits');return;}
+  S.templates.push(t); save(); renderTemplates(); toast('Baustein gespeichert ✓');
+}
+function delTemplate(i){
+  if(!Array.isArray(S.templates)) return;
+  S.templates.splice(i,1); save(); renderTemplates();
+}
 function addPhotos(e){
   Array.from(e.target.files).forEach(f=>{
     const r=new FileReader();
-    r.onload=ev=>{curPhotos.push(ev.target.result);renderThumbs();};
+    r.onload=ev=>{curPhotos.push({src:ev.target.result,caption:''});renderThumbs();};
     r.readAsDataURL(f);
   });
   e.target.value='';
 }
-function renderThumbs(){
-  document.getElementById('photo-thumbs').innerHTML=curPhotos.map((p,i)=>`
-    <div class="thumb-wrap">
-      <img src="${p}">
-      <button class="thumb-del" onclick="curPhotos.splice(${i},1);renderThumbs()">×</button>
-    </div>`).join('');
+function removePhoto(i){ curPhotos.splice(i,1); renderThumbs(); }
+function setPhotoCaption(i,val){
+  var p=curPhotos[i];
+  if(typeof p==='string') curPhotos[i]={src:p,caption:val};
+  else if(p) p.caption=val;
 }
+function renderThumbs(){
+  var c=document.getElementById('photo-thumbs'); if(!c) return;
+  c.innerHTML=curPhotos.map(function(p,i){
+    return '<div class="thumb-wrap">'
+      +'<img src="'+photoSrc(p)+'">'
+      +'<button class="thumb-del" onclick="removePhoto('+i+')">×</button>'
+      +'<input class="thumb-cap" type="text" placeholder="Untertitel…" value="'+esc(photoCap(p))+'" oninput="setPhotoCaption('+i+',this.value)">'
+      +'</div>';
+  }).join('');
+}
+// Alias (Aufrufe aus editObs) – gleiche Darstellung
+function renderPhotoThumbs(){ renderThumbs(); }
 function saveObs(){
   var text=document.getElementById('obs-ta').value.trim();
   if(!text){toast('Bitte Text eingeben');return;}
@@ -1197,7 +1360,7 @@ function renderObsList(){
         <div style="font-size:10px;font-weight:700;color:#2d5f4a;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px">Päd. Schritte</div>
         <div style="font-size:12px;color:#4a4a45;line-height:1.5">${o.steps}</div>
       </div>`:''}
-      ${o.photos&&o.photos.length?`<div class="obs-photos">${o.photos.map(p=>`<img class="obs-photo" src="${p}">`).join('')}</div>`:''}
+      ${o.photos&&o.photos.length?`<div class="obs-photos">${o.photos.map(p=>`<figure class="obs-photo-fig"><img class="obs-photo" src="${photoSrc(p)}">${photoCap(p)?`<figcaption class="obs-photo-cap">${esc(photoCap(p))}</figcaption>`:''}</figure>`).join('')}</div>`:''}
     </div>`).join('')||`<div class="empty">Keine Beobachtungen${curFilter!=='alle'?' in diesem Bereich':''}</div>`;
 }
 function delObs(i){
@@ -1434,6 +1597,110 @@ function saveRaster(){
 }
 
 
+// ── PORTFOLIO / PDF ──
+var MONTHS_DE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+function moodMeta(m){
+  if(m==='sorge')return{t:'⚠️ Sorge',fg:'#c03030',bg:'#fff0f0'};
+  if(m==='kann-schon')return{t:'✅ Kann schon',fg:'#2d5f4a',bg:'#e6f2ec'};
+  if(m==='lerne-noch')return{t:'🌱 Lernend',fg:'#c87820',bg:'#fef4e4'};
+  return null;
+}
+// % erfüllte Kriterien je Bereich (aktuelle Stufe) für ein Kind; null wenn keine Kriterien
+function childBereichPct(c){
+  var rf=getAgeRaster(c), r=c.raster||{}, out={};
+  BEREICHE.forEach(function(b){
+    var items=rf[b]||[]; if(!items.length){out[b]=null;return;}
+    var full=RASTER_NÖ[b]||[], chk=0;
+    items.forEach(function(it){ if(rasterState(r,b+'_'+it.ab+'_'+full.indexOf(it))==='ja') chk++; });
+    out[b]=Math.round(chk/items.length*100);
+  });
+  return out;
+}
+function buildChildReportHTML(c){
+  var age=c.bday?calcAge(c.bday):(c.age||'');
+  var pctAkt=rasterPct(c), all=rasterPctAll(c), bp=childBereichPct(c);
+  var moods={sorge:0,'kann-schon':0,'lerne-noch':0};
+  c.obs.forEach(function(o){ if(moods[o.mood]!==undefined) moods[o.mood]++; });
+  var sorted=[...c.obs].sort(function(a,b){return parseDt(b.date)-parseDt(a.date);});
+  var groups=[], gmap={};
+  sorted.forEach(function(o){
+    var d=parseDt(o.date), key=d.getFullYear()+'-'+d.getMonth();
+    if(!gmap[key]){ gmap[key]={label:MONTHS_DE[d.getMonth()]+' '+d.getFullYear(),items:[]}; groups.push(gmap[key]); }
+    gmap[key].items.push(o);
+  });
+  var h='<div style="max-width:720px;margin:0 auto;color:#1c1a16;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;line-height:1.5">';
+  // Kopf
+  h+='<div style="border-bottom:2px solid #2d5f4a;padding-bottom:12px;margin-bottom:16px">';
+  h+='<div style="font-size:22px;font-weight:700">'+esc(fullName(c))+'</div>';
+  h+='<div style="font-size:13px;color:#5c574e;margin-top:2px">'+esc(age)+(c.group?' · Gruppe '+esc(c.group):'')+'</div>';
+  h+='<div style="font-size:11px;color:#9c9790;margin-top:2px">Entwicklungsdokumentation · erstellt am '+esc(todayHuman())+'</div>';
+  h+='</div>';
+  // Raster
+  h+='<div style="font-size:15px;font-weight:700;margin:14px 0 8px">Entwicklungsraster</div>';
+  h+='<div style="font-size:12px;color:#5c574e;margin-bottom:8px">Aktuelle Stufe: <strong>'+pctAkt+'%</strong> · Gesamte Laufbahn: <strong>'+all.pct+'%</strong> ('+all.chk+'/'+all.tot+')</div>';
+  BEREICHE.forEach(function(b){
+    var pct=bp[b];
+    h+='<div style="display:flex;align-items:center;gap:8px;margin:5px 0">'
+      +'<div style="width:160px;font-size:12px">'+BL[b]+'</div>'
+      +'<div style="flex:1;height:9px;background:#ede9e0;border-radius:100px;overflow:hidden"><div style="height:100%;width:'+(pct==null?0:pct)+'%;background:'+BC[b]+'"></div></div>'
+      +'<div style="width:38px;text-align:right;font-size:12px;color:#5c574e">'+(pct==null?'–':pct+'%')+'</div>'
+      +'</div>';
+  });
+  // Einschätzungen
+  h+='<div style="font-size:15px;font-weight:700;margin:16px 0 8px">Einschätzungen</div>';
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  [['⚠️ Sorge',moods.sorge,'#c03030','#fff0f0'],['✅ Kann schon',moods['kann-schon'],'#2d5f4a','#e6f2ec'],['🌱 Lernend',moods['lerne-noch'],'#c87820','#fef4e4']].forEach(function(m){
+    h+='<div style="background:'+m[3]+';border-radius:10px;padding:8px 12px"><span style="font-weight:700;color:'+m[2]+'">'+m[1]+'</span> <span style="font-size:12px;color:'+m[2]+'">'+m[0]+'</span></div>';
+  });
+  h+='</div>';
+  // Timeline
+  h+='<div style="font-size:15px;font-weight:700;margin:18px 0 8px">Beobachtungen ('+c.obs.length+')</div>';
+  if(!groups.length) h+='<div style="font-size:13px;color:#9c9790">Noch keine Beobachtungen.</div>';
+  groups.forEach(function(g){
+    h+='<div style="font-size:12px;font-weight:700;color:#2d5f4a;margin:12px 0 6px;text-transform:uppercase;letter-spacing:0.04em">'+esc(g.label)+'</div>';
+    g.items.forEach(function(o){
+      var mm=moodMeta(o.mood);
+      h+='<div style="border-left:3px solid #ddd8ce;padding:4px 0 4px 12px;margin-bottom:8px;page-break-inside:avoid;break-inside:avoid">';
+      h+='<div style="font-size:11px;color:#9c9790;margin-bottom:3px">'+esc(o.date)+((o.tags&&o.tags.length)?' · '+o.tags.map(function(t){return TAGS[t]||BL[t]||t;}).join(', '):'')+(mm?' · <span style="color:'+mm.fg+';font-weight:600">'+mm.t+'</span>':'')+'</div>';
+      h+='<div style="font-size:13px">'+esc(o.text)+'</div>';
+      if(o.steps) h+='<div style="font-size:12px;color:#2d5f4a;margin-top:4px"><strong>Nächste Schritte:</strong> '+esc(o.steps)+'</div>';
+      if(o.photos&&o.photos.length){
+        h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">';
+        o.photos.forEach(function(p){
+          h+='<div style="width:120px"><img src="'+photoSrc(p)+'" style="width:120px;height:95px;object-fit:cover;border-radius:8px;border:1px solid #ddd8ce">'+(photoCap(p)?'<div style="font-size:10px;color:#5c574e;margin-top:2px">'+esc(photoCap(p))+'</div>':'')+'</div>';
+        });
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+  });
+  h+='<div style="margin-top:20px;padding-top:10px;border-top:1px solid #ddd8ce;font-size:10px;color:#9c9790">Erstellt mit Sprosse · NÖ Entwicklungsbogen</div>';
+  h+='</div>';
+  return h;
+}
+function openPortfolio(){
+  if(!curChild) return;
+  document.getElementById('portfolio-title').textContent=fullName(curChild)+' – Portfolio';
+  document.getElementById('portfolio-body').innerHTML=buildChildReportHTML(curChild);
+  openModal('modal-portfolio');
+}
+function printPortfolio(){
+  if(!curChild) return;
+  document.getElementById('print-report').innerHTML=buildChildReportHTML(curChild);
+  window.print();
+}
+function downloadPortfolio(){
+  if(!curChild) return;
+  var doc='<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sprosse – '+esc(fullName(curChild))+'</title></head><body style="margin:0;padding:20px;background:#fff">'+buildChildReportHTML(curChild)+'</body></html>';
+  var blob=new Blob([doc],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='Sprosse_'+fullName(curChild).replace(/\s+/g,'_')+'_'+today().replace(/\./g,'-')+'.html';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  toast('Portfolio gespeichert ✓');
+}
+
+
 // ── BERICHTE ──
 function renderBerichte(){
   updateBadge();
@@ -1541,12 +1808,14 @@ function addChild(){
   if(!ln){toast('Bitte Nachnamen eingeben');return;}
   if(!bday){toast('Bitte Geburtsdatum eingeben');return;}
   var age=calcAge(bday);
+  var grp=(document.getElementById('nk-group').value||'').trim();
   var displayName=ln+' '+fn;
-  S.children.push({id:S.nextId++,name:fn,lastname:ln,bday:bday,age:age,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
+  S.children.push({id:S.nextId++,name:fn,lastname:ln,bday:bday,age:age,group:grp,bg:nkColor.bg,tc:nkColor.tc,obs:[],raster:{}});
   save();
   document.getElementById('nk-name').value='';
   document.getElementById('nk-lastname').value='';
   document.getElementById('nk-bday').value='';
+  document.getElementById('nk-group').value='';
   closeModal('modal-kind');
   toast(displayName+' angelegt ✓');
   renderGroup();
@@ -1767,6 +2036,7 @@ if(!load()||!S.children.length) {
   migrateChildData();
   migrateRasterData();
 }
+normalizeState();
 if(!S.pinEnabled) S.pinEnabled = false;
 // Dynamically set content top based on actual header height
 function fixContentTop(){
@@ -1989,6 +2259,14 @@ function migrateChildData() {
   if(changed) save();
 }
 
+// Additive Fallbacks für neue Felder (läuft nach load() UND seedDemo())
+function normalizeState(){
+  if(!Array.isArray(S.templates)) S.templates = DEFAULT_TEMPLATES.slice();
+  (S.children||[]).forEach(function(c){
+    if(c.group===undefined||c.group===null) c.group='';
+  });
+}
+
 function migrateRasterData() {
   var migrated = false;
   S.children.forEach(function(c) {
@@ -2119,6 +2397,8 @@ function openEditChild() {
   document.getElementById('ek-lastname').value = curChild.lastname || '';
   document.getElementById('ek-bday').value = curChild.bday || '';
   document.getElementById('ek-bday').max = new Date().toISOString().split('T')[0];
+  document.getElementById('ek-group').value = curChild.group || '';
+  renderGroupOptions();
   // Farbe vorauswählen
   editColor = {bg: curChild.bg, tc: curChild.tc};
   document.querySelectorAll('#cpick-edit .copt').forEach(function(o){
@@ -2139,6 +2419,7 @@ function saveEditChild() {
   curChild.lastname = ln;
   curChild.bday = bday;
   curChild.age = calcAge(bday);
+  curChild.group = (document.getElementById('ek-group').value||'').trim();
   if(editColor){ curChild.bg = editColor.bg; curChild.tc = editColor.tc; }
   save();
   // Header aktualisieren

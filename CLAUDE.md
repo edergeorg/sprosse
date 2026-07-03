@@ -5,7 +5,7 @@
 Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (PWA)** für Kindergartenpädagog:innen in Österreich. Sie ermöglicht die digitale Erfassung von Kinderentwicklungs-Beobachtungen direkt am Handy – ohne Cloud, ohne Installation, ohne Kompromisse beim Datenschutz.
 
 **Entwickler:** Georg Eder · hallo@ederge.org  
-**Status:** Beta v0.10.0  
+**Status:** Beta v0.11.0  
 **Live-URL:** https://edergeorg.github.io/sprosse  
 **Repository:** https://github.com/edergeorg/sprosse  
 
@@ -29,17 +29,17 @@ sprosse/
 Beide Werte müssen immer synchron erhöht werden:
 
 ```javascript
-const APP_VERSION = '0.10.0';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 556!)
-const CACHE_VERSION = 'sprosse-v0.10.0'; // → immer = 'sprosse-v' + APP_VERSION
+const APP_VERSION = '0.11.0';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 564!)
+const CACHE_VERSION = 'sprosse-v0.11.0'; // → immer = 'sprosse-v' + APP_VERSION
 ```
 
 Und in `sw.js`:
 ```javascript
-const CACHE = 'sprosse-v0.10.0'; // → muss mit CACHE_VERSION übereinstimmen
+const CACHE = 'sprosse-v0.11.0'; // → muss mit CACHE_VERSION übereinstimmen
 ```
 
 **Achtung:** Das Versions-Badge im Mehr-Panel ist zusätzlich **hartcodiert im HTML**
-(`<span ...>v0.10.0</span>`, ~Zeile 556) – beim Bump dort ebenfalls ändern.
+(`<span ...>v0.11.0</span>`, ~Zeile 564) – beim Bump dort ebenfalls ändern.
 
 **Versionierungsschema:** `0.9.x` Bugfixes · `0.10.0` neues Feature · `1.0.0` stabiler Release
 
@@ -62,6 +62,7 @@ Sprosse hat produktive Nutzerdaten. Jede Datenstruktur-Änderung braucht Migrati
 | Raster v2 | RASTER_JUNG/RASTER_ALT | Neue altersabhängige Kriterien |
 | Raster v3 | NÖ Entwicklungsbogen, Key-Format `b_ab_globalIdx` | Monatsgenaue Kriterien |
 | v0.10.0 | Raster-Werte `true` → `'ja'`/`'nein'` (3 Zustände) | Ja/Nein/unbeobachtet unterscheidbar; `true` bleibt als `'ja'` gültig |
+| v0.11.0 | `c.group` (String), `S.templates` (Array), Foto `{src,caption}` \| String | Gruppen, Textbausteine, Foto-Untertitel – alle additiv via `normalizeState()`, Fotos abwärtskompatibel |
 
 ### Pre-Deploy Checkliste
 - [ ] Funktioniert die App mit alten localStorage-Daten?
@@ -117,9 +118,10 @@ S = {
       age: '5,2 Jahre',      // wird aus bday berechnet (calcAge)
       bg: '#daeeff',         // Avatar-Hintergrundfarbe
       tc: '#0c447c',         // Avatar-Textfarbe
+      group: 'Marienkäfer',  // Gruppe (neu ab v0.11.0, String, Default '')
       raster: {
         __version: '3',      // Raster-Version
-        'motorik_36_2': true, // Key-Format: bereich_monat_globalIdx
+        'motorik_36_2': 'ja', // Key-Format: bereich_monat_globalIdx · 'ja'|'nein' (alt: true=ja)
       },
       obs: [
         {
@@ -129,7 +131,8 @@ S = {
           mood: 'kann-schon',    // 'sorge'|'kann-schon'|'lerne-noch'|''
           tags: ['motorik'],     // Entwicklungsbereiche
           voice: false,
-          photos: [],            // base64 Strings
+          // Fotos ab v0.11.0: {src, caption} ODER String (abwärtskompatibel) – immer über photoSrc()/photoCap() lesen
+          photos: [{src:'data:image/…', caption:'Baustelle'}],
           steps: ''              // pädagogische Schritte (optional)
         }
       ]
@@ -138,9 +141,14 @@ S = {
   nextId: 7,
   remindDays: 5,
   apiKey: '',
-  pinEnabled: false
+  pinEnabled: false,
+  templates: ['zeigt Interesse an …']  // Textbausteine (neu ab v0.11.0, Default DEFAULT_TEMPLATES)
 }
 ```
+
+**Hinweis:** Neue Felder (`c.group`, `S.templates`) werden nach `load()`/`seedDemo()` durch
+`normalizeState()` mit Fallback gesetzt – nie ohne Fallback lesen. Fotos immer über
+`photoSrc(p)` / `photoCap(p)` (String **oder** `{src,caption}`).
 
 ---
 
@@ -275,14 +283,21 @@ function doRec() {
 
 ---
 
+## Erledigt (Auswahl)
+
+- [x] PDF-Export/Portfolio pro Kind (`buildChildReportHTML`, `openPortfolio`/`printPortfolio`/`downloadPortfolio`, v0.11.0)
+- [x] Gruppen (leichtgewichtig, `c.group` + Filter/Suche auf Gruppe-Seite, v0.11.0)
+- [x] Textbausteine (`S.templates`, v0.11.0) · Foto-Untertitel (v0.11.0) · Dashboard-Ausbau (v0.11.0)
+- [x] Kind umbenennen (Name/Rest im Bearbeiten-Dialog editierbar)
+
 ## Offene TODOs
 
-- [ ] Matomo Analytics (analytics.ederge.org, Site-ID noch einrichten)
-- [ ] Zugangscode-System (mehrere Codes pro Einrichtung)
-- [ ] PDF-Export pro Kind (strukturiert und formatiert)
-- [ ] Sprach-Bereinigung (ähm, Grammatikfehler) via KI – optional per Button
-- [ ] Dunkelmodus
-- [ ] Kind umbenennen (nur Name, Rest schon editierbar)
+- [ ] Dunkelmodus (aufwändig: fest verdrahtete Hex-Farben, kein Theming-Layer)
+- [ ] Sprach-Bereinigung (ähm, Grammatik) via KI – optional per Button
+- [ ] KI-Vorschläge für päd. Schritte · aktuelleres Modell + Streaming
+- [ ] Foto-Annotation (Zeichnen/Markieren) – bisher nur Untertitel
+- [ ] Portfolio/PDF: `window.print()` in installierter iOS-PWA auf Gerät verifizieren (Fallback: „Als Datei"-Download)
+- [ ] Matomo Analytics · Zugangscode-System
 
 ---
 
