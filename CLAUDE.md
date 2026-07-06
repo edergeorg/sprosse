@@ -5,7 +5,7 @@
 Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (PWA)** für Kindergartenpädagog:innen in Österreich. Sie ermöglicht die digitale Erfassung von Kinderentwicklungs-Beobachtungen direkt am Handy – ohne Cloud, ohne Installation, ohne Kompromisse beim Datenschutz.
 
 **Entwickler:** Georg Eder · hallo@ederge.org  
-**Status:** Beta v0.11.0  
+**Status:** Beta v0.12.0  
 **Live-URL:** https://edergeorg.github.io/sprosse  
 **Repository:** https://github.com/edergeorg/sprosse  
 
@@ -29,17 +29,17 @@ sprosse/
 Beide Werte müssen immer synchron erhöht werden:
 
 ```javascript
-const APP_VERSION = '0.11.0';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 564!)
-const CACHE_VERSION = 'sprosse-v0.11.0'; // → immer = 'sprosse-v' + APP_VERSION
+const APP_VERSION = '0.12.0';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 564!)
+const CACHE_VERSION = 'sprosse-v0.12.0'; // → immer = 'sprosse-v' + APP_VERSION
 ```
 
 Und in `sw.js`:
 ```javascript
-const CACHE = 'sprosse-v0.11.0'; // → muss mit CACHE_VERSION übereinstimmen
+const CACHE = 'sprosse-v0.12.0'; // → muss mit CACHE_VERSION übereinstimmen
 ```
 
 **Achtung:** Das Versions-Badge im Mehr-Panel ist zusätzlich **hartcodiert im HTML**
-(`<span ...>v0.11.0</span>`, ~Zeile 564) – beim Bump dort ebenfalls ändern.
+(`<span ...>v0.12.0</span>`, ~Zeile 564) – beim Bump dort ebenfalls ändern.
 
 **Versionierungsschema:** `0.9.x` Bugfixes · `0.10.0` neues Feature · `1.0.0` stabiler Release
 
@@ -237,6 +237,23 @@ function doRec() {
 
 ---
 
+## Datenverlust-Schutz (v0.12.0)
+
+Da Sprosse **ausschließlich lokal** speichert, ist Speicherverlust das größte Risiko. Alle Maßnahmen bleiben strikt geräteseitig – kein neuer Server, kein Sprosse-Backend.
+
+- **`save()` schlägt nie mehr lautlos fehl:** bei Fehler (z.B. `QuotaExceededError` wenn `localStorage` voll ist) erscheint ein **nicht wegtippbarer** Banner (`#save-error-banner`), der erst verschwindet, wenn ein Save wieder erfolgreich war (`lastSaveOk`-Flag, `showSaveError`/`hideSaveError`).
+- **Speicherplatz-Anzeige** im Mehr-Panel (`renderStorageUsage()`): Balken auf Basis der Größe des `localStorage`-Keys `'sprosse'` gegen eine konservative 5MB-Annahme (`STORAGE_ASSUMED_LIMIT`), Warnfarbe ab 60%/85%. Zusätzlich informativ `navigator.storage.estimate()` falls verfügbar.
+- **`navigator.storage.persist()`** wird beim Start best-effort angefragt – reduziert das Risiko, dass iOS/Browser die App-Daten bei Speicherdruck evictiert (kein UI, scheitert lautlos auf nicht unterstützten Browsern).
+- **Sicherheitsnetz vor riskanten Aktionen:** `importData()` (Überschreiben) und `deleteAll()` lösen automatisch einen Sicherungs-Export (`triggerJsonDownload`) aus, **bevor** Daten überschrieben/gelöscht werden (`Sprosse_Sicherung-vor-Import_…`/`Sprosse_Sicherung-vor-Loeschen_…`).
+- **Optionaler verschlüsselter Export:** „🔒 Verschlüsselt exportieren" nutzt Web Crypto (PBKDF2 250k Iterationen + AES-GCM-256, kein Dependency). Format: `{sprosseEncrypted:1, salt, iv, data}` (Base64). `importData()` erkennt dieses Format automatisch und fragt über ein Modal (`decryptImportedData()`) nach der Passphrase; falsches Passwort → saubere Fehlermeldung statt Absturz. **Bei vergessener Passphrase ist die Datei nicht wiederherstellbar** – der normale Klartext-Export bleibt die primäre Sicherung.
+
+### Bekannte Restrisiken (bewusst nicht adressiert)
+- **PIN vergessen** = kompletter Lockout ohne Wiederherstellungsweg (Daten technisch noch vorhanden, aber unerreichbar).
+- **Kein Multi-Device-Sync** – Daten bleiben an ein Gerät gebunden.
+- **localStorage-Limit (~5MB) besteht weiterhin** – Umstieg auf IndexedDB als größeres, separates Vorhaben in den TODOs (bewusst nicht Teil von v0.12.0).
+
+---
+
 ## Anthropic API
 
 ```javascript
@@ -266,16 +283,18 @@ function doRec() {
 | `openModal(id)` | Modal öffnen |
 | `closeModal(id)` | Modal schließen |
 | `toast(msg)` | Kurze Benachrichtigung |
-| `save()` | State in localStorage |
+| `save()` | State in localStorage; zeigt bei Fehlschlag `#save-error-banner` (nicht wegtippbar) |
 | `load()` | State aus localStorage laden |
 | `exportData()` | JSON-Export + Timestamp |
+| `triggerJsonDownload(obj, suffix)` | Gemeinsamer Download-Helfer (Export + Sicherheitsnetz-Exporte) |
+| `encryptState(pass)` / `decryptState(enc, pass)` | Verschlüsselter Export/Import (PBKDF2 + AES-GCM) |
 | `checkBackupReminder()` | Wöchentliche Backup-Erinnerung |
 
 ---
 
 ## Bekannte Einschränkungen
 
-1. **localStorage ~5MB** – bei vielen Fotos kann es voll werden
+1. **localStorage ~5MB** – bei vielen Fotos kann es voll werden (seit v0.12.0 zumindest sichtbar: Speicherplatz-Anzeige + Fehler-Banner statt stillem Datenverlust)
 2. **Spracherkennung** – nur Safari, Chrome, Edge (nicht Firefox)
 3. **Kein Multi-User** – jedes Gerät hat eigene Daten
 4. **iOS `position:fixed`** – Header und Nav müssen `fixed` sein, sonst scrollen sie mit
@@ -289,6 +308,7 @@ function doRec() {
 - [x] Gruppen (leichtgewichtig, `c.group` + Filter/Suche auf Gruppe-Seite, v0.11.0)
 - [x] Textbausteine (`S.templates`, v0.11.0) · Foto-Untertitel (v0.11.0) · Dashboard-Ausbau (v0.11.0)
 - [x] Kind umbenennen (Name/Rest im Bearbeiten-Dialog editierbar)
+- [x] Datenverlust-Schutz: Speicherfehler-Banner, Speicherplatz-Anzeige, Sicherheitsnetz-Exporte, optionaler verschlüsselter Export (v0.12.0)
 
 ## Offene TODOs
 

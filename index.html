@@ -563,7 +563,9 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     </div>
     <div class="card">
       <div class="card-title">Daten</div>
+      <div id="storage-usage" style="margin-bottom:12px"></div>
       <button class="btn" onclick="exportData()" style="background:#f6f3ee">📥 Exportieren (JSON)</button>
+      <button class="btn" onclick="openEncryptExport()" style="background:#f6f3ee">🔒 Verschlüsselt exportieren</button>
       <button class="btn" onclick="document.getElementById('import-in').click()" style="background:#f6f3ee">📤 Importieren</button>
       <input type="file" id="import-in" accept=".json" style="display:none" onchange="importData(event)">
       <button class="btn amber" onclick="resetDemo()">🔄 Demo-Daten laden</button>
@@ -586,7 +588,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.11.0</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.12.0</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -728,6 +730,44 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <!-- Druck-Container (nur beim Drucken sichtbar) -->
 <div id="print-report" aria-hidden="true"></div>
 
+<!-- MODAL: Verschlüsselt exportieren -->
+<div class="modal-bg" id="modal-encrypt-export" onclick="if(event.target===this)closeModal('modal-encrypt-export')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-handle"></div>
+      <div class="modal-head-row">
+        <div class="modal-title">Verschlüsselt exportieren</div>
+        <button class="modal-x" onclick="closeModal('modal-encrypt-export')" aria-label="Schließen">✕</button>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#5c574e;line-height:1.55;margin-bottom:12px">⚠️ Bei vergessener Passphrase ist diese Datei <strong>nicht wiederherstellbar</strong>. Der normale, unverschlüsselte Export bleibt deine primäre Sicherung – diese Variante eignet sich zusätzlich für Backups, die das Gerät verlassen (z.B. iCloud Drive).</p>
+    <div class="frow"><label>Passphrase (min. 6 Zeichen)</label><input type="password" id="enc-pass" autocomplete="new-password"></div>
+    <div class="frow"><label>Passphrase wiederholen</label><input type="password" id="enc-pass-confirm" autocomplete="new-password"></div>
+    <div id="enc-export-error" style="font-size:12px;color:#c03030;margin-bottom:8px"></div>
+    <button class="btn primary" onclick="doEncryptedExport()">🔒 Verschlüsselt exportieren</button>
+  </div>
+</div>
+
+<!-- MODAL: Passphrase für verschlüsselten Import -->
+<div class="modal-bg" id="modal-decrypt-import">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-handle"></div>
+      <div class="modal-head-row">
+        <div class="modal-title">Passphrase eingeben</div>
+        <button class="modal-x" onclick="cancelDecryptImport()" aria-label="Abbrechen">✕</button>
+      </div>
+    </div>
+    <p style="font-size:12px;color:#5c574e;line-height:1.55;margin-bottom:12px">Diese Sicherungsdatei ist verschlüsselt. Bitte die Passphrase eingeben, mit der sie erstellt wurde.</p>
+    <div class="frow"><label>Passphrase</label><input type="password" id="dec-pass" autocomplete="current-password"></div>
+    <div id="dec-import-error" style="font-size:12px;color:#c03030;margin-bottom:8px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn" onclick="cancelDecryptImport()" style="background:#f3efe8;color:#1c1a16;border-color:#ddd8ce">Abbrechen</button>
+      <button class="btn primary" onclick="doDecryptImport()">Entschlüsseln</button>
+    </div>
+  </div>
+</div>
+
 <!-- Install Banner -->
 <div id="ibanner">
   <div style="font-size:28px;flex-shrink:0">📲</div>
@@ -744,8 +784,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.11.0';
-const CACHE_VERSION = 'sprosse-v0.11.0';
+const APP_VERSION = '0.12.0';
+const CACHE_VERSION = 'sprosse-v0.12.0';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -924,8 +964,30 @@ let S={children:[],nextId:1,remindDays:5,apiKey:''};
 let curChild=null, curFilter='alle', curMood='', curTags=[], curPhotos=[], curLetterType='elternbrief', sumSel=new Set(), nkColor={bg:'#daeeff',tc:'#0c447c'}, isRec=false, recog=null, wasVoice=false;
 
 // ── STORAGE ──
-function save(){try{localStorage.setItem('sprosse',JSON.stringify(S));}catch(e){}}
+var lastSaveOk=true;
+function save(){
+  try{
+    localStorage.setItem('sprosse',JSON.stringify(S));
+    if(!lastSaveOk){ lastSaveOk=true; hideSaveError(); }
+    renderStorageUsage();
+  }catch(e){
+    if(lastSaveOk){ lastSaveOk=false; showSaveError(e); }
+  }
+}
 function load(){try{const d=localStorage.getItem('sprosse');if(d){S=JSON.parse(d);return true;}}catch(e){}return false;}
+function showSaveError(e){
+  var b=document.getElementById('save-error-banner');
+  if(!b) return;
+  var isQuota=e&&(e.name==='QuotaExceededError'||e.code===22||e.code===1014);
+  document.getElementById('save-error-text').textContent=isQuota
+    ? 'Speicher ist voll – Beobachtungen werden NICHT mehr gespeichert! Bitte jetzt exportieren und alte Fotos entfernen.'
+    : 'Speichern fehlgeschlagen – deine letzten Änderungen sind eventuell nicht gesichert. Bitte jetzt exportieren.';
+  b.style.display='flex';
+}
+function hideSaveError(){
+  var b=document.getElementById('save-error-banner');
+  if(b) b.style.display='none';
+}
 
 function seedDemo(){
   const d=n=>{ const x=new Date(); x.setDate(x.getDate()-n); return fmt(x); };
@@ -2001,11 +2063,120 @@ function stopRec(){isRec=false;clearTimeout(micWatchdog);if(recog)try{recog.stop
 
 // ── EINSTELLUNGEN ──
 function saveKey(){S.apiKey=document.getElementById('api-key').value.trim();save();toast('Gespeichert ✓');}
+// Gemeinsamer Download-Helfer (Export + automatische Sicherheits-Exporte)
+function triggerJsonDownload(obj, filenameSuffix){
+  const b=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u; a.download='Sprosse_'+filenameSuffix+'_'+today().replace(/\./g,'-')+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(u);
+}
 function exportData(){
-  localStorage.setItem('sprosse_last_export', Date.now().toString());const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='Sprosse_'+today().replace(/\./g,'-')+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(u);toast('Exportiert');}
-function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.children)throw new Error('Ungültiges Format');if(confirm('Alle bestehenden Daten ersetzen?')){S=d;save();nav('gruppe');toast('Importiert ✓');}}catch(err){toast('Fehler: '+err.message);}};r.readAsText(f);e.target.value='';}
+  localStorage.setItem('sprosse_last_export', Date.now().toString());
+  triggerJsonDownload(S,'Export');
+  toast('Exportiert');
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=async ev=>{
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(d.sprosseEncrypted){ d=await decryptImportedData(d); if(!d) return; }
+      if(!d.children) throw new Error('Ungültiges Format');
+      if(confirm('Alle bestehenden Daten ersetzen?')){
+        // Sicherheitsnetz: aktuellen Stand vor dem Überschreiben automatisch sichern
+        triggerJsonDownload(S,'Sicherung-vor-Import');
+        S=d; normalizeState(); save(); nav('gruppe'); toast('Importiert ✓ (Sicherung wurde vorher heruntergeladen)');
+      }
+    }catch(err){ toast('Fehler: '+err.message); }
+  };
+  r.readAsText(f); e.target.value='';
+}
 function resetDemo(){if(!confirm('Demo-Daten laden?'))return;seedDemo();nav('gruppe');toast('Demo geladen');}
-function deleteAll(){if(!confirm('WIRKLICH alles löschen?'))return;if(!confirm('Endgültig?'))return;S={children:[],nextId:1,remindDays:5,apiKey:''};save();nav('gruppe');toast('Alles gelöscht');}
+function deleteAll(){
+  if(!confirm('WIRKLICH alles löschen?')) return;
+  if(!confirm('Endgültig?')) return;
+  // Sicherheitsnetz: letzten Stand automatisch sichern, bevor unwiderruflich gelöscht wird
+  triggerJsonDownload(S,'Sicherung-vor-Loeschen');
+  S={children:[],nextId:1,remindDays:5,apiKey:''};
+  normalizeState();
+  save(); nav('gruppe'); toast('Alles gelöscht (Sicherung wurde vorher heruntergeladen)');
+}
+
+// ── VERSCHLÜSSELTER EXPORT/IMPORT (Web Crypto, keine Abhängigkeiten) ──
+function bufToB64(buf){var bytes=new Uint8Array(buf),bin='';for(var i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin);}
+function b64ToBuf(b64){var bin=atob(b64),bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes.buffer;}
+async function deriveAesKey(passphrase,salt){
+  var enc=new TextEncoder();
+  var keyMaterial=await crypto.subtle.importKey('raw',enc.encode(passphrase),{name:'PBKDF2'},false,['deriveKey']);
+  return crypto.subtle.deriveKey(
+    {name:'PBKDF2',salt:salt,iterations:250000,hash:'SHA-256'},
+    keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']
+  );
+}
+async function encryptState(passphrase){
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var key=await deriveAesKey(passphrase,salt);
+  var plaintext=new TextEncoder().encode(JSON.stringify(S));
+  var ciphertext=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,plaintext);
+  return {sprosseEncrypted:1,salt:bufToB64(salt),iv:bufToB64(iv),data:bufToB64(ciphertext)};
+}
+async function decryptState(encObj,passphrase){
+  var salt=b64ToBuf(encObj.salt),iv=b64ToBuf(encObj.iv),data=b64ToBuf(encObj.data);
+  var key=await deriveAesKey(passphrase,salt);
+  var plainBuf=await crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(iv)},key,data); // wirft bei falschem Passwort (Auth-Tag)
+  return JSON.parse(new TextDecoder().decode(plainBuf));
+}
+function openEncryptExport(){
+  document.getElementById('enc-pass').value='';
+  document.getElementById('enc-pass-confirm').value='';
+  document.getElementById('enc-export-error').textContent='';
+  openModal('modal-encrypt-export');
+}
+async function doEncryptedExport(){
+  var p1=document.getElementById('enc-pass').value;
+  var p2=document.getElementById('enc-pass-confirm').value;
+  var errEl=document.getElementById('enc-export-error');
+  if(p1.length<6){ errEl.textContent='Mindestens 6 Zeichen.'; return; }
+  if(p1!==p2){ errEl.textContent='Passphrasen stimmen nicht überein.'; return; }
+  errEl.textContent='';
+  try{
+    var enc=await encryptState(p1);
+    triggerJsonDownload(enc,'Verschluesselt');
+    closeModal('modal-encrypt-export');
+    toast('Verschlüsselt exportiert ✓');
+  }catch(err){ errEl.textContent='Verschlüsselung fehlgeschlagen: '+err.message; }
+}
+// Promise-Brücke: importData() wartet, bis Passphrase-Modal aufgelöst ist
+var pendingDecrypt=null;
+function decryptImportedData(encObj){
+  return new Promise(function(resolve){
+    pendingDecrypt={encObj:encObj,resolve:resolve};
+    document.getElementById('dec-pass').value='';
+    document.getElementById('dec-import-error').textContent='';
+    openModal('modal-decrypt-import');
+  });
+}
+function cancelDecryptImport(){
+  closeModal('modal-decrypt-import');
+  if(pendingDecrypt){ pendingDecrypt.resolve(null); pendingDecrypt=null; }
+}
+async function doDecryptImport(){
+  if(!pendingDecrypt) return;
+  var pass=document.getElementById('dec-pass').value;
+  var errEl=document.getElementById('dec-import-error');
+  try{
+    var data=await decryptState(pendingDecrypt.encObj,pass);
+    closeModal('modal-decrypt-import');
+    var resolve=pendingDecrypt.resolve; pendingDecrypt=null;
+    resolve(data);
+  }catch(err){
+    errEl.textContent='Falsches Passwort oder beschädigte Datei.';
+  }
+}
 
 // ── INSTALL ──
 function renderMehr(){
@@ -2015,6 +2186,36 @@ function renderMehr(){
     pinStatus.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="font-size:13px;color:#2d5f4a;font-weight:600">✓ PIN aktiv</span></div><button class="btn danger" onclick="disablePin()" style="margin-bottom:0">PIN deaktivieren</button>';
   } else {
     pinStatus.innerHTML = '<button class="btn primary" onclick="enablePin()" style="margin-bottom:0">PIN einrichten</button>';
+  }
+  renderStorageUsage();
+}
+
+// Konservative Annahme, da das reale localStorage-Limit je Browser variiert (oft ~5MB)
+var STORAGE_ASSUMED_LIMIT=5*1024*1024;
+function renderStorageUsage(){
+  var el=document.getElementById('storage-usage');
+  if(!el) return;
+  var raw=localStorage.getItem('sprosse')||'';
+  var bytes=raw.length; // ausreichend genaue Schätzung für UI-Zwecke
+  var pct=Math.min(100,Math.round(bytes/STORAGE_ASSUMED_LIMIT*100));
+  var color = pct>=85?'#c03030':(pct>=60?'#c87820':'#4caf7d');
+  var mb=(bytes/1024/1024).toFixed(1);
+  var limitMb=(STORAGE_ASSUMED_LIMIT/1024/1024).toFixed(0);
+  el.innerHTML=
+    '<div style="font-size:12px;color:#5c574e;margin-bottom:4px">'+mb+' von ~'+limitMb+' MB genutzt</div>'
+    +'<div class="rprog"><div class="rprog-fill" style="width:'+pct+'%;background:'+color+'"></div></div>'
+    +(pct>=85?'<div style="font-size:11px;color:#c03030;margin-top:5px;font-weight:600">⚠️ Speicher wird knapp – jetzt sichern und ggf. alte Fotos entfernen</div>':'');
+  if(navigator.storage&&navigator.storage.estimate){
+    navigator.storage.estimate().then(function(est){
+      if(!est||!est.quota) return;
+      var d=document.getElementById('storage-usage');
+      if(!d) return;
+      var devMb=(est.quota/1024/1024).toFixed(0);
+      var extra=document.createElement('div');
+      extra.style.cssText='font-size:10px;color:#9c9790;margin-top:4px';
+      extra.textContent='Verfügbarer Gerätespeicher für diese App: ~'+devMb+' MB';
+      d.appendChild(extra);
+    }).catch(function(){});
   }
 }
 
@@ -2060,6 +2261,8 @@ updateBadge();
 setInterval(save,30000);
 maybeShowInstall();
 checkBackupReminder();
+// Best-effort: reduziert Risiko, dass iOS/Browser die Site-Daten bei Speicherdruck evictiert
+if(navigator.storage&&navigator.storage.persist){ try{navigator.storage.persist();}catch(e){} }
 // Hide splash
 (function(){
   var s=document.getElementById('splash');
@@ -2213,6 +2416,7 @@ function checkBackupReminder(){
   setTimeout(showBackupReminder,3000);
 }
 function showBackupReminder(){
+  if(!lastSaveOk) return; // kritischer Speicherfehler hat Vorrang
   var b=document.getElementById('backup-reminder');
   if(b) b.style.display='flex';
 }
@@ -2509,6 +2713,33 @@ function checkForUpdate(){
       <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5">Es wurden Demo-Daten geladen damit du die App gleich ausprobieren kannst. Du kannst diese jederzeit unter <strong style="color:#86c9a0">Mehr &rarr; Alles l&ouml;schen</strong> entfernen.</div>
     </div>
     <button onclick="dismissFirstLaunch()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;">&#x2715;</button>
+  </div>
+</div>
+
+<!-- SAVE ERROR (nicht wegtippbar, bleibt bis Speichern wieder klappt) -->
+<div id="save-error-banner" style="
+  display:none;
+  position:fixed;
+  bottom:calc(60px + env(safe-area-inset-bottom,0px) + 12px);
+  left:12px;right:12px;z-index:310;
+  background:#3a1414;color:#fff;
+  border-radius:16px;padding:16px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  border:1px solid #c03030;
+  animation:slideUp 0.4s cubic-bezier(0.32,0.72,0,1);
+">
+  <div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:24px;flex-shrink:0">⚠️</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:5px">Speichern fehlgeschlagen!</div>
+      <div id="save-error-text" style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.5;margin-bottom:12px"></div>
+      <button onclick="exportData()" style="
+        background:#c03030;border:none;color:#fff;
+        padding:9px 16px;border-radius:10px;
+        font-size:13px;font-weight:600;cursor:pointer;
+        font-family:inherit;-webkit-appearance:none;width:100%;
+      ">📥 Jetzt exportieren</button>
+    </div>
   </div>
 </div>
 
