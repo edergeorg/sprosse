@@ -589,7 +589,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.12.1</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.12.2</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -785,8 +785,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.12.1';
-const CACHE_VERSION = 'sprosse-v0.12.1';
+const APP_VERSION = '0.12.2';
+const CACHE_VERSION = 'sprosse-v0.12.2';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -2626,7 +2626,9 @@ function migrateRasterData() {
 (function() {
   if (!('serviceWorker' in navigator)) return;
 
-  var swUrl = '/sprosse/sw.js';
+  // Relativ auflösen: funktioniert im Unterordner (/sprosse/sw.js) genauso wie
+  // im Wurzelverzeichnis einer eigenen Domain (/sw.js).
+  var swUrl = new URL('sw.js', location.href).href;
 
   navigator.serviceWorker.register(swUrl).then(function(reg) {
     reg.addEventListener('updatefound', function() {
@@ -2760,7 +2762,7 @@ function checkForUpdate(){
   var btn = document.getElementById('update-check-btn');
   if(btn){ btn.textContent = '⏳ Prüfe…'; btn.disabled = true; }
 
-  navigator.serviceWorker.getRegistration('/sprosse/sw.js').then(function(reg){
+  navigator.serviceWorker.getRegistration().then(function(reg){
     if(!reg){
       if(btn){ btn.textContent = '🔄 Auf Updates prüfen'; btn.disabled = false; }
       toast('Kein Service Worker aktiv');

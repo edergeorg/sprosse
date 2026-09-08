@@ -1,0 +1,25 @@
+# Sprosse – Webspace-Konfiguration (Apache / easyname)
+
+# HTTPS erzwingen
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+</IfModule>
+
+# index.html und sw.js duerfen NIE aus dem Cache kommen, sonst greift das
+# Versions-Update der App nicht und Nutzerinnen bleiben auf einer alten Fassung.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|sw\.js)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "no-referrer"
+  Header set Content-Security-Policy "frame-ancestors 'none'"
+</IfModule>
+
+# Service Worker mit korrektem MIME-Type ausliefern
+<IfModule mod_mime.c>
+  AddType text/javascript .js
+</IfModule>

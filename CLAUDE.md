@@ -5,7 +5,7 @@
 Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (PWA)** für Kindergartenpädagog:innen in Österreich. Sie ermöglicht die digitale Erfassung von Kinderentwicklungs-Beobachtungen direkt am Handy – ohne Cloud, ohne Installation, ohne Kompromisse beim Datenschutz.
 
 **Entwickler:** Georg Eder · hallo@ederge.org  
-**Status:** Beta v0.12.1  
+**Status:** Beta v0.12.2  
 **Live-URL:** https://edergeorg.github.io/sprosse  
 **Repository:** https://github.com/edergeorg/sprosse  
 
@@ -17,6 +17,7 @@ Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (
 sprosse/
 ├── index.html      ← gesamte App (eine einzige HTML-Datei)
 ├── sw.js           ← Service Worker (muss separat liegen für iOS Safari)
+├── .htaccess       ← Webspace-Konfiguration (HTTPS, Cache-Header) – auf GitHub Pages wirkungslos
 ├── .nojekyll       ← verhindert Jekyll-Processing auf GitHub Pages
 ├── README.md
 └── CLAUDE.md       ← diese Datei
@@ -29,17 +30,17 @@ sprosse/
 Beide Werte müssen immer synchron erhöht werden:
 
 ```javascript
-const APP_VERSION = '0.12.1';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 592!)
-const CACHE_VERSION = 'sprosse-v0.12.1'; // → immer = 'sprosse-v' + APP_VERSION
+const APP_VERSION = '0.12.2';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 592!)
+const CACHE_VERSION = 'sprosse-v0.12.2'; // → immer = 'sprosse-v' + APP_VERSION
 ```
 
 Und in `sw.js`:
 ```javascript
-const CACHE = 'sprosse-v0.12.1'; // → muss mit CACHE_VERSION übereinstimmen
+const CACHE = 'sprosse-v0.12.2'; // → muss mit CACHE_VERSION übereinstimmen
 ```
 
 **Achtung:** Das Versions-Badge im Mehr-Panel ist zusätzlich **hartcodiert im HTML**
-(`<span ...>v0.12.1</span>`, ~Zeile 592) – beim Bump dort ebenfalls ändern.
+(`<span ...>v0.12.2</span>`, ~Zeile 592) – beim Bump dort ebenfalls ändern.
 
 **Versionierungsschema:** `0.9.x` Bugfixes · `0.10.0` neues Feature · `1.0.0` stabiler Release
 
@@ -96,6 +97,14 @@ Die gesamte App ist **eine einzige HTML-Datei** (`index.html`). Kein Build-Syste
 }
 ```
 Header-Höhe wird via JS `offsetHeight` dynamisch gemessen.
+
+### Adressunabhängigkeit (v0.12.2)
+Die App muss unter `edergeorg.github.io/sprosse/` **und** unter `sprosse.at/` (Wurzelverzeichnis)
+laufen. Deshalb keine absoluten Pfade auf `/sprosse/…` mehr:
+- SW-Registrierung über `new URL('sw.js', location.href)` statt `'/sprosse/sw.js'`
+- `getRegistration()` ohne Argument (liefert die Registrierung des aktuellen Dokuments)
+
+Neue absolute Pfade im Code vermeiden – sie brechen eine der beiden Adressen.
 
 ### Service Worker
 - Liegt als separate `sw.js` Datei (Blob-URL funktioniert nicht auf iOS Safari)
