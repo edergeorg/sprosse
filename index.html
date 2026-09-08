@@ -564,6 +564,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
     <div class="card">
       <div class="card-title">Daten</div>
       <div id="storage-usage" style="margin-bottom:12px"></div>
+      <button class="btn" id="shrink-btn" onclick="shrinkAllPhotos()" style="background:#f6f3ee">🗜 Bestehende Fotos verkleinern</button>
       <button class="btn" onclick="exportData()" style="background:#f6f3ee">📥 Exportieren (JSON)</button>
       <button class="btn" onclick="openEncryptExport()" style="background:#f6f3ee">🔒 Verschlüsselt exportieren</button>
       <button class="btn" onclick="document.getElementById('import-in').click()" style="background:#f6f3ee">📤 Importieren</button>
@@ -588,7 +589,7 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
       <div style="font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:6px">Sprosse</div>
       <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:8px">
         <span style="background:#c87820;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.08em">BETA</span>
-        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.12.0</span>
+        <span style="background:#e8f4ee;color:#2d5f4a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em">v0.12.1</span>
       </div>
       <div style="font-size:12px;color:#9c9790;margin-bottom:10px">Kinderentwicklung liebevoll begleiten</div>
       <div style="font-size:11px;color:#9c9790;line-height:1.6;background:#f6f3ee;border-radius:10px;padding:10px 12px;text-align:left;margin-bottom:12px">
@@ -784,8 +785,8 @@ input:focus, textarea:focus, select:focus { outline:none; border-color:#2d5f4a; 
 <script>
 
 // ── VERSION ──
-const APP_VERSION = '0.12.0';
-const CACHE_VERSION = 'sprosse-v0.12.0';
+const APP_VERSION = '0.12.1';
+const CACHE_VERSION = 'sprosse-v0.12.1';
 
 // ── KONSTANTEN ──
 const BL={motorik:'Grob- & Feinmotorik',sozial:'Soziale & Emotionale Entwicklung',kognitiv:'Kognitive Entwicklung',sprache:'Sprache & Kommunikation'};
@@ -1328,13 +1329,97 @@ function delTemplate(i){
   if(!Array.isArray(S.templates)) return;
   S.templates.splice(i,1); save(); renderTemplates();
 }
-function addPhotos(e){
-  Array.from(e.target.files).forEach(f=>{
-    const r=new FileReader();
-    r.onload=ev=>{curPhotos.push({src:ev.target.result,caption:''});renderThumbs();};
-    r.readAsDataURL(f);
+// ── FOTO-VERKLEINERUNG ──
+// Handyfotos sind 3-4 MB groß; als Data-URL (+33% durch Base64) sprengen zwei davon
+// bereits das ~5-MB-Limit von localStorage. Darum vor dem Speichern skalieren.
+const PHOTO_MAX_DIM=1600;
+const PHOTO_QUALITY=0.8;
+
+function fileToDataURL(file){
+  return new Promise(function(resolve,reject){
+    var r=new FileReader();
+    r.onload=function(ev){resolve(ev.target.result);};
+    r.onerror=function(){reject(r.error||new Error('read'));};
+    r.readAsDataURL(file);
   });
+}
+
+// createImageBitmap dreht EXIF-Hochformat (iPhone) korrekt; <img> ist der Fallback.
+function loadDrawable(file){
+  if(typeof createImageBitmap==='function'){
+    try{
+      return createImageBitmap(file,{imageOrientation:'from-image'}).then(function(bmp){
+        return {img:bmp,w:bmp.width,h:bmp.height,done:function(){if(bmp.close)bmp.close();}};
+      });
+    }catch(e){/* fällt auf <img> zurück */}
+  }
+  return new Promise(function(resolve,reject){
+    var url=URL.createObjectURL(file);
+    var im=new Image();
+    im.onload=function(){resolve({img:im,w:im.naturalWidth,h:im.naturalHeight,done:function(){URL.revokeObjectURL(url);}});};
+    im.onerror=function(){URL.revokeObjectURL(url);reject(new Error('Bild nicht lesbar'));};
+    im.src=url;
+  });
+}
+
+// Zeichnet auf ein Canvas und gibt eine JPEG-Data-URL zurück.
+function drawToJpeg(img,w0,h0,maxDim,quality){
+  var scale=Math.min(1,maxDim/Math.max(w0,h0));
+  var w=Math.max(1,Math.round(w0*scale)), h=Math.max(1,Math.round(h0*scale));
+  var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+  var ctx=cv.getContext('2d');
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h); // Transparenz sonst schwarz
+  ctx.drawImage(img,0,0,w,h);
+  return cv.toDataURL('image/jpeg',quality);
+}
+
+// Sicherheitsnetz: Wird das Ergebnis nicht kleiner oder schlägt etwas fehl,
+// bleibt das Original erhalten – Verkleinern darf nie Daten kosten.
+async function resizeImage(file,maxDim,quality){
+  maxDim=maxDim||PHOTO_MAX_DIM; quality=quality||PHOTO_QUALITY;
+  var original=null;
+  try{ original=await fileToDataURL(file); }catch(e){ return null; }
+  var d=null;
+  try{
+    d=await loadDrawable(file);
+    var out=drawToJpeg(d.img,d.w,d.h,maxDim,quality);
+    return (out&&out.length<original.length)?out:original;
+  }catch(e){
+    return original;
+  }finally{
+    if(d&&d.done){ try{d.done();}catch(e){} }
+  }
+}
+
+// Variante für bereits gespeicherte Fotos (Data-URL statt File).
+function resizeDataURL(dataUrl,maxDim,quality){
+  maxDim=maxDim||PHOTO_MAX_DIM; quality=quality||PHOTO_QUALITY;
+  return new Promise(function(resolve){
+    if(!dataUrl){ resolve(dataUrl); return; }
+    var im=new Image();
+    im.onload=function(){
+      try{
+        var out=drawToJpeg(im,im.naturalWidth,im.naturalHeight,maxDim,quality);
+        resolve(out&&out.length<dataUrl.length?out:dataUrl);
+      }catch(e){ resolve(dataUrl); }
+    };
+    im.onerror=function(){ resolve(dataUrl); };
+    im.src=dataUrl;
+  });
+}
+
+// Sequenziell – damit bleibt die Reihenfolge der ausgewählten Dateien erhalten
+// (die alte Fassung schrieb parallele FileReader-Callbacks in beliebiger Reihenfolge).
+async function addPhotos(e){
+  var files=Array.from(e.target.files);
   e.target.value='';
+  if(!files.length) return;
+  if(files.length>1) toast('Fotos werden verarbeitet …');
+  for(var i=0;i<files.length;i++){
+    var src=await resizeImage(files[i]);
+    if(src){ curPhotos.push({src:src,caption:''}); renderThumbs(); }
+    else toast('Ein Foto konnte nicht gelesen werden');
+  }
 }
 function removePhoto(i){ curPhotos.splice(i,1); renderThumbs(); }
 function setPhotoCaption(i,val){
@@ -2217,6 +2302,42 @@ function renderStorageUsage(){
       d.appendChild(extra);
     }).catch(function(){});
   }
+}
+
+// Bestandsrettung: rechnet bereits gespeicherte Fotos herunter. Vorher wird automatisch
+// gesichert – dieselbe Vorsichtsmassnahme wie in importData()/deleteAll().
+async function shrinkAllPhotos(){
+  var items=[];
+  (S.children||[]).forEach(function(c){
+    (c.obs||[]).forEach(function(o){
+      if(Array.isArray(o.photos)) o.photos.forEach(function(p,i){ items.push({obs:o,idx:i}); });
+    });
+  });
+  if(!items.length){ toast('Keine Fotos vorhanden'); return; }
+  if(!confirm(items.length+' Foto(s) werden verkleinert.\n\nVorher wird automatisch eine Sicherung heruntergeladen. Fortfahren?')) return;
+
+  triggerJsonDownload(S,'Sicherung-vor-Fotoverkleinerung');
+
+  var btn=document.getElementById('shrink-btn');
+  var label=btn?btn.textContent:'';
+  var before=(localStorage.getItem('sprosse')||'').length;
+
+  for(var i=0;i<items.length;i++){
+    if(btn) btn.textContent='Verkleinere \u2026 ('+(i+1)+'/'+items.length+')';
+    var it=items[i];
+    var p=it.obs.photos[it.idx];
+    var src=photoSrc(p);
+    if(!src) continue;
+    var out=await resizeDataURL(src);
+    if(out&&out.length<src.length) it.obs.photos[it.idx]={src:out,caption:photoCap(p)};
+  }
+
+  if(btn) btn.textContent=label;
+  save();
+  renderStorageUsage();
+  var after=(localStorage.getItem('sprosse')||'').length;
+  var mb=function(n){ return (n/1024/1024).toFixed(1)+' MB'; };
+  toast('Fotos verkleinert: '+mb(before)+' \u2192 '+mb(after));
 }
 
 function maybeShowInstall(){
