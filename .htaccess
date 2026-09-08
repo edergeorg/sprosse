@@ -17,6 +17,12 @@
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "no-referrer"
   Header set Content-Security-Policy "frame-ancestors 'none'"
+
+  # HSTS bewusst noch AUS. Erst einschalten, wenn sprosse.at UND app.sprosse.at
+  # beide ein gültiges Zertifikat haben - includeSubDomains macht sonst die
+  # Subdomain für jeden Browser unerreichbar, der den Header schon gesehen hat.
+  # Und der Header bleibt ein Jahr lang gespeichert, auch nach dem Entfernen.
+  # Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
 # Service Worker mit korrektem MIME-Type ausliefern
