@@ -5,7 +5,7 @@
 Sprosse ist eine **datenschutzfreundliche, offline-fähige Progressive Web App (PWA)** für Kindergartenpädagog:innen in Österreich. Sie ermöglicht die digitale Erfassung von Kinderentwicklungs-Beobachtungen direkt am Handy – ohne Cloud, ohne Installation, ohne Kompromisse beim Datenschutz.
 
 **Entwickler:** Georg Eder · hallo@ederge.org  
-**Status:** Beta v0.12.2  
+**Status:** Beta v0.12.3  
 **Live-URL:** https://edergeorg.github.io/sprosse  
 **Repository:** https://github.com/edergeorg/sprosse  
 
@@ -30,17 +30,17 @@ sprosse/
 Beide Werte müssen immer synchron erhöht werden:
 
 ```javascript
-const APP_VERSION = '0.12.2';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 592!)
-const CACHE_VERSION = 'sprosse-v0.12.2'; // → immer = 'sprosse-v' + APP_VERSION
+const APP_VERSION = '0.12.3';           // → Badge in Mehr-Panel + hartcodiertes Badge (~Zeile 592!)
+const CACHE_VERSION = 'sprosse-v0.12.3'; // → immer = 'sprosse-v' + APP_VERSION
 ```
 
 Und in `sw.js`:
 ```javascript
-const CACHE = 'sprosse-v0.12.2'; // → muss mit CACHE_VERSION übereinstimmen
+const CACHE = 'sprosse-v0.12.3'; // → muss mit CACHE_VERSION übereinstimmen
 ```
 
 **Achtung:** Das Versions-Badge im Mehr-Panel ist zusätzlich **hartcodiert im HTML**
-(`<span ...>v0.12.2</span>`, ~Zeile 592) – beim Bump dort ebenfalls ändern.
+(`<span ...>v0.12.3</span>`, ~Zeile 592) – beim Bump dort ebenfalls ändern.
 
 **Versionierungsschema:** `0.9.x` Bugfixes · `0.10.0` neues Feature · `1.0.0` stabiler Release
 
@@ -258,6 +258,13 @@ Da Sprosse **ausschließlich lokal** speichert, ist Speicherverlust das größte
   erhalten bleibt. Sicherheitsnetz: Wird das Ergebnis nicht kleiner oder schlägt das Dekodieren fehl,
   bleibt das Original erhalten. Bestandsdaten über „Bestehende Fotos verkleinern“ im Mehr-Panel
   (`shrinkAllPhotos()`, löst vorher automatisch einen Sicherungs-Export aus).
+- **Speicheranzeige (v0.12.3):** Die 5MB sind das **localStorage-Limit** des Browsers und gelten
+  unabhängig vom freien Gerätespeicher. `navigator.storage.estimate()` meldet dagegen das
+  Kontingent des gesamten Origin-Speichers (IndexedDB, Cache API) – die beiden Zahlen widersprachen
+  sich in der UI. Die Gerätespeicher-Zeile erklärt die Luecke jetzt, statt sie zu behaupten.
+  Sie wird in einen festen Platzhalter `#storage-device` geschrieben; früher hängte sie
+  `appendChild` an, wodurch sich die Zeile bei jedem `save()` (auch alle 30s per Intervall)
+  vervielfachte.
 - **`navigator.storage.persist()`** wird beim Start best-effort angefragt – reduziert das Risiko, dass iOS/Browser die App-Daten bei Speicherdruck evictiert (kein UI, scheitert lautlos auf nicht unterstützten Browsern).
 - **Sicherheitsnetz vor riskanten Aktionen:** `importData()` (Überschreiben) und `deleteAll()` lösen automatisch einen Sicherungs-Export (`triggerJsonDownload`) aus, **bevor** Daten überschrieben/gelöscht werden (`Sprosse_Sicherung-vor-Import_…`/`Sprosse_Sicherung-vor-Loeschen_…`).
 - **Optionaler verschlüsselter Export:** „🔒 Verschlüsselt exportieren" nutzt Web Crypto (PBKDF2 250k Iterationen + AES-GCM-256, kein Dependency). Format: `{sprosseEncrypted:1, salt, iv, data}` (Base64). `importData()` erkennt dieses Format automatisch und fragt über ein Modal (`decryptImportedData()`) nach der Passphrase; falsches Passwort → saubere Fehlermeldung statt Absturz. **Bei vergessener Passphrase ist die Datei nicht wiederherstellbar** – der normale Klartext-Export bleibt die primäre Sicherung.

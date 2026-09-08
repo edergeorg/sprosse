@@ -1,5 +1,5 @@
-// Sprosse Service Worker v0.12.2
-const CACHE = 'sprosse-v0.12.2';
+// Sprosse Service Worker v0.12.3
+const CACHE = 'sprosse-v0.12.3';
 
 self.addEventListener('install', function(e) {
   self.skipWaiting();
